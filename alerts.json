@@ -2,22 +2,22 @@
  "LTU": {
   "level": "white",
   "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T01:07:59+00:00"
+  "time": "2026-11-03T01:15:28+00:00"
  },
  "LVA": {
   "level": "white",
   "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T01:07:59+00:00"
+  "time": "2026-11-03T01:15:28+00:00"
  },
  "EST": {
   "level": "white",
   "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T01:07:59+00:00"
+  "time": "2026-11-03T01:15:28+00:00"
  },
  "FIN": {
   "level": "white",
   "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T01:07:59+00:00"
+  "time": "2026-11-03T01:15:28+00:00"
  },
  "POL": {
   "level": "yellow",
@@ -87,7 +87,11 @@
     "url": "https://meteoalarm.org?geocode=EMMA_ID:PL0206",
     "src": "MeteoAlarm"
    }
-  ]
+  ],
+  "regions": {
+   "PL-DS": "teal"
+  },
+  "regionsOnly": true
  },
  "UKR": {
   "level": "red",
@@ -119,13 +123,14 @@
    "UA-74": "red",
    "UA-77": "red"
   },
+  "regionsOnly": true,
   "text": "Oro pavojus 25 iš 26 sričių.",
-  "time": "2026-11-03T01:07:59+00:00",
+  "time": "2026-11-03T01:15:28+00:00",
   "src": "ubilling.net.ua (neoficialus)",
   "url": "https://map.ukrainealarm.com/"
  },
  "_meta": {
-  "checked": "2026-11-03T01:07:59+00:00",
+  "checked": "2026-11-03T01:15:28+00:00",
   "sources": {
    "lt72": {
     "ok": false,
@@ -134,37 +139,37 @@
    "meteoalarm-lithuania": {
     "ok": true,
     "n": 0,
-    "ms": 878
+    "ms": 981
    },
    "meteoalarm-latvia": {
     "ok": true,
     "n": 0,
-    "ms": 719
+    "ms": 829
    },
    "kriis": {
     "ok": true,
     "n": 0,
-    "ms": 669
+    "ms": 910
    },
    "meteoalarm-estonia": {
     "ok": true,
     "n": 0,
-    "ms": 941
+    "ms": 1525
    },
    "meteoalarm-finland": {
     "ok": true,
     "n": 0,
-    "ms": 788
+    "ms": 976
    },
    "rcb": {
     "ok": true,
     "n": 0,
-    "ms": 942
+    "ms": 1181
    },
    "meteoalarm-poland": {
     "ok": true,
     "n": 5,
-    "ms": 865
+    "ms": 1604
    },
    "ukrainealarm.com": {
     "ok": false,
@@ -177,7 +182,7 @@
    "ubilling.net.ua": {
     "ok": true,
     "n": 25,
-    "ms": 841
+    "ms": 1208
    }
   }
  }
