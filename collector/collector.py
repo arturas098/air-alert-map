@@ -79,7 +79,7 @@ class Alert(dict):
 # ---------------------------------------------------------------- MeteoAlarm (orai, visos šalys)
 # Jūros / uostų zonos – nedažom visos šalies dėl įspėjimo jūroje
 MARINE = re.compile(r"baltic|gulf|port of|lagoon|marios|marių|\bbay\b|\bsea\b|coastal waters|"
-                    r"meri\b|meren|kurkku|lahti\b|lahden|\bosa\b|saaristomeri|väinameri|"
+                    r"meri\b|meren|kurkku|lahti\b|lahden|\bosa\b|saaristomeri|väinameri|moonsund|archipelago|"
                     r"\blaht\b|jūras|līcis|zatok|morze|morsk|offshore|harbour|harbor|\blake\b|järv|peipsi|ežer|ezers|jezior", re.I)
 def meteoalarm(country_slug: str) -> list[Alert]:
     xml = fetch(f"https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-{country_slug}")
