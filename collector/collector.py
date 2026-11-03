@@ -77,6 +77,10 @@ class Alert(dict):
 
 
 # ---------------------------------------------------------------- MeteoAlarm (orai, visos šalys)
+# Jūros / uostų zonos – nedažom visos šalies dėl įspėjimo jūroje
+MARINE = re.compile(r"baltic|gulf|port of|lagoon|marios|marių|\bbay\b|\bsea\b|coastal waters|"
+                    r"meri\b|meren|kurkku|lahti\b|lahden|\bosa\b|saaristomeri|väinameri|"
+                    r"\blaht\b|jūras|līcis|zatok|morze|morsk|offshore|harbour|harbor", re.I)
 def meteoalarm(country_slug: str) -> list[Alert]:
     xml = fetch(f"https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-{country_slug}")
     root = ET.fromstring(xml)
@@ -102,6 +106,8 @@ def meteoalarm(country_slug: str) -> list[Alert]:
             continue
         event = child_text(e, "event") or child_text(e, "title")
         area = child_text(e, "areaDesc")
+        if MARINE.search(area) or "coastal" in child_text(e, "awareness_type").lower():
+            continue
         link = ""
         for c in e:
             if local(c.tag) == "link" and c.get("href"):
