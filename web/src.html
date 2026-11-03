@@ -27,6 +27,8 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
 .chip.on{color:var(--bg);background:var(--ink);border-color:var(--ink)}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--grey);display:inline-block;margin-right:6px;vertical-align:1px}
 .dot.live{background:#3ddc84;box-shadow:0 0 8px #3ddc84}
+.dot.stale{background:#ff9f0a;box-shadow:0 0 8px #ff9f0a}
+.top .sub.warn{color:#ff9f0a}
 /* cards */
 .cards{position:fixed;left:0;right:0;bottom:0;padding:8px 12px calc(12px + env(safe-area-inset-bottom));
   display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
@@ -51,7 +53,7 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
 .card .kd{display:inline-block;margin-top:5px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--c);border:1px dashed var(--c);border-radius:6px;padding:2px 6px}
 .card .ds{margin-top:4px;font-size:11.5px;line-height:1.45;color:var(--ink);opacity:.88}
 .card .mt{margin-top:8px;font-size:9.5px;color:var(--ink2);letter-spacing:.06em;display:flex;justify-content:space-between;gap:8px}
-@media (min-width:900px){
+@media (min-width:900px) and (orientation:landscape){
   .cards{left:auto;top:64px;width:340px;flex-direction:column;overflow-y:auto;overflow-x:hidden;background:none;padding:8px 16px 16px}
   .card{flex:0 0 auto}
 }
@@ -77,7 +79,7 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
 #detail .src{font-size:11px;line-height:1.7;color:var(--ink)}
 #detail .src a{color:var(--ink)}
 #detail .ok{color:#3ddc84}#detail .bad{color:#ff8a80}
-@media (max-width:899px){#detail{left:10px;right:10px;width:auto;top:calc(196px + env(safe-area-inset-top));transform:none;max-height:36vh}}
+@media (max-width:899px),(orientation:portrait){#detail{left:10px;right:10px;width:auto;top:calc(196px + env(safe-area-inset-top));transform:none;max-height:36vh}}
 </style>
 </head>
 <body>
@@ -146,6 +148,8 @@ const DEMOS = [
 const svg = d3.select("#map");
 const cv = document.getElementById("base"), ctx = cv.getContext("2d");
 const W = () => innerWidth, H = () => innerHeight;
+// plati išdėstymo schema (kortelės dešinėje) tik gulsčiam ekranui; telefonui „desktop“ režime – kaip mobiliam
+const isWide = () => W()>=900 && W()>H();
 const DPR = () => Math.min(devicePixelRatio||1, 2);
 const BG="#0a0a0b", INK="233,230,223";
 const defs = svg.append("defs");
@@ -197,7 +201,7 @@ const SEA=[["BALTIJOS  JŪRA",[19.3,56.2],0],["RYGOS ĮL.",[23.4,57.6],0],["SUOM
 const LBL={UKR:[31.2,49.3],LTU:[24.1,55.55],LVA:[26.4,56.55],EST:[25.9,58.75],FIN:[26.5,64],POL:[20.2,52.6],BLR:[28,53.6],RUS:[31.5,57.2],KGD:[21.4,54.42]};
 function build(){
   const pad = Math.min(W(),H())*.04;
-  const bottom = W()<900 ? 150 : 20, right = W()<900?0:340;
+  const bottom = isWide() ? 20 : 150, right = isWide() ? 340 : 0;
   proj.fitExtent([[pad,60],[W()-pad-right,H()-bottom]],fitTo);
   const P2 = g=>new Path2D(path(g)||"");
   P = {
@@ -268,7 +272,7 @@ function onZoom(t){
   const s=t.k/T0.k; cv.style.transform=`translate(${t.x-T0.x*s}px,${t.y-T0.y*s}px) scale(${s})`;
   clearTimeout(idle); idle=setTimeout(()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>renderBase(t));},140);
 }
-function draw(){ build(); renderAlerts(); }
+function draw(){ build(); limitZoom(); renderAlerts(); }
 /* ---------- pavojų sluoksnis ---------- */
 let STATE = structuredClone(BASE), demoIdx=-1, selected=null;
 function renderAlerts(){
@@ -312,7 +316,8 @@ function renderCards(){
   const box=document.getElementById("cards");
   const list=COUNTRIES.filter(c=>!c.hidden).sort((a,b)=>ORDER[STATE[a.id].level]-ORDER[STATE[b.id].level]);
   box.innerHTML=list.map(c=>{const s=STATE[c.id];
-    const t=s.time?new Date(s.time).toLocaleTimeString("lt-LT",{hour:"2-digit",minute:"2-digit"}):"—";
+    const t=!s.time?"—":s.dateOnly?new Date(s.time).toLocaleDateString("lt-LT",{month:"2-digit",day:"2-digit"})+" (laikas nenurodytas)"
+      :new Date(s.time).toLocaleTimeString("lt-LT",{hour:"2-digit",minute:"2-digit"});
     return `<div class="card${selected===c.id?" sel":""}" data-l="${s.level}" data-k="${s.kind||""}" data-id="${c.id}">
       <div class="row"><span class="cc">${c.cc}</span><span class="nm">${c.nm}</span></div>
       <div class="st">${(s.kind&&s.kind!=="air"&&LEVEL_ALT[s.level])||LEVEL_TXT[s.level]}</div>${s.kind?`<div class="kd">${KIND[s.kind]||KIND.other}</div>`:""}
@@ -327,7 +332,7 @@ function select(id,fromCard){
 }
 // laisvas plotas žemėlapiui: be viršutinės juostos, detalių lango ir kortelių
 function freeRect(){
-  const w=W(), h=H(), wide=w>=900;
+  const w=W(), h=H(), wide=isWide();
   const det=document.getElementById("detail").getBoundingClientRect();
   const cards=document.getElementById("cards").getBoundingClientRect();
   if(wide) return {x0:(selected?det.right:0)+24, y0:70, x1:cards.left-16, y1:h-24};
@@ -367,7 +372,8 @@ function renderDetail(){
   if(s.items && s.items.length){
     items+=`<div class="sec">Aktyvūs įspėjimai · ${s.items.length}</div>`+s.items.map(a=>{
       const ic=COLOR[tone(a)]||COLOR.white;
-      const when=[fmt(a.time), a.expires?"iki "+fmt(a.expires):""].filter(Boolean).join(" – ");
+      const when=[a.dateOnly?new Date(a.time).toLocaleDateString("lt-LT",{month:"2-digit",day:"2-digit"})+" (be laiko)":fmt(a.time),
+        a.expires?"iki "+fmt(a.expires):""].filter(Boolean).join(" – ");
       return `<div class="it" style="--ic:${ic}"><b>${esc(a.event||(a.kind==="air"?"Oro pavojus":"Įspėjimas"))}</b>`+
         `<span>${esc(a.area||a.text)}</span>`+
         `<i>${esc(KIND[a.kind]||"")}${a.severity?" · "+esc(a.severity):""}${when?" · "+when:""} · ${a.url?`<a href="${esc(a.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(a.src)}</a>`:esc(a.src)}</i></div>`;}).join("");
@@ -392,7 +398,7 @@ function renderDetail(){
 /* ---------- duomenys ---------- */
 // Vietinis serveris (Termux / APK) pateikia /alerts.json: {"LTU":{"level":"red","text":"…","time":"ISO"}, …}
 // 1) šalia esantis alerts.json (Termux / APK / Pages), 2) tiesiai iš GitHub (greitesnis nei Pages kešas)
-const RAW="https://raw.githubusercontent.com/arturas098/air-alert-map/main/alerts.json";
+const RAW="https://raw.githubusercontent.com/arturas098/air-alert-map/data/alerts.json";   // šaka „data“ – pildo GitHub Actions
 const DATA_URLS = location.hostname.endsWith("github.io") ? [RAW,"alerts.json"] : ["alerts.json",RAW];
 let META=null;
 async function poll(){
@@ -406,11 +412,13 @@ async function poll(){
   }catch(e){ setLive(false); }
 }
 function setLive(on){
-  document.getElementById("live").classList.toggle("live",on);
-  document.getElementById("src").textContent=on?"live":"offline";
   const t=on&&META&&META.checked?new Date(META.checked):new Date();
-  const ago=Math.round((Date.now()-t)/60000);
-  document.getElementById("upd").textContent=on?`tikrinta ${t.toLocaleTimeString("lt-LT",{hour:"2-digit",minute:"2-digit"})} · prieš ${ago} min`:"nėra ryšio su duomenimis";
+  const ago=Math.round((Date.now()-t)/60000), stale=on&&ago>20;
+  document.getElementById("live").classList.toggle("live",on&&!stale);
+  document.getElementById("live").classList.toggle("stale",stale);
+  document.getElementById("src").textContent=!on?"offline":stale?"pasenę":"live";
+  document.getElementById("upd").classList.toggle("warn",stale);
+  document.getElementById("upd").textContent=on?`${stale?"⚠ duomenys pasenę · ":""}tikrinta ${t.toLocaleTimeString("lt-LT",{hour:"2-digit",minute:"2-digit"})} · prieš ${ago} min`:"nėra ryšio su duomenimis";
 }
 document.getElementById("demo").onclick=e=>{
   demoIdx = demoIdx+1>=DEMOS.length?-1:demoIdx+1;
@@ -424,6 +432,10 @@ document.getElementById("demo").onclick=e=>{
 
 /* ---------- zoom ---------- */
 const zoom=d3.zoom().scaleExtent([.7,14]).on("zoom",ev=>onZoom(ev.transform));
+// neleidžiam nuvažiuoti už duomenų ribų (ten tik tuščias juodas fonas)
+function limitZoom(){ const [[x0,y0],[x1,y1]]=path.bounds(land);
+  const kmin=Math.max(W()/(x1-x0),H()/(y1-y0));
+  zoom.translateExtent([[x0,y0],[x1,y1]]).scaleExtent([Math.min(1,kmin),14]); }
 svg.call(zoom).on("dblclick.zoom",null);
 addEventListener("resize",()=>{clearTimeout(window._r);window._r=setTimeout(()=>{draw();svg.call(zoom.transform,d3.zoomIdentity);renderBase(d3.zoomIdentity);},150)});
 draw(); svg.call(zoom.transform,d3.zoomIdentity); renderBase(d3.zoomIdentity); poll(); setInterval(poll,60000);

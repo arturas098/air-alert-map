@@ -1,59 +1,37 @@
 name: collect-alerts
 
+# GitHub „schedule“ paleidžia nereguliariai, todėl vienas darbas veikia ~55 min ir tikrina
+# šaltinius kas 90 s (collector/loop.py). Grafikas tik vėl įjungia darbą, jei ankstesnis baigėsi.
+# alerts.json publikuojamas į šaką `data` (force-push, be istorijos).
 on:
   schedule:
-    - cron: "*/5 * * * *"     # GitHub leidžia min. kas 5 min (realiai gali vėluoti)
-  workflow_dispatch: {}       # rankinis paleidimas iš Actions skirtuko
-  push:                       # paleidžiam ir pakeitus surinkėją
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+  push:
     branches: [main]
-    paths: ["collector/**", ".github/workflows/collect.yml"]
+    paths: ["collector/**", "data/regions.json", ".github/workflows/collect.yml"]
 
 permissions:
   contents: write
 
 concurrency:
   group: collect-alerts
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'push' }}   # naujas kodas pakeičia seną ciklą; grafikas – ne
 
 jobs:
   collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 4
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Surinkti įspėjimus
-        run: python3 collector/collector.py
-        env:   # nebūtina; be raktų Ukrainai naudojamas viešas agregatorius
+      - name: Nuolatinis surinkimas (~55 min)
+        run: python3 -u collector/loop.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INTERVAL: "90"
+          DURATION: "3300"
           UKRAINEALARM_KEY: ${{ secrets.UKRAINEALARM_KEY }}
           ALERTS_IN_UA_TOKEN: ${{ secrets.ALERTS_IN_UA_TOKEN }}
-      - name: Commit, jei pasikeitė (arba kas valandą gyvybės ženklas)
-        run: |
-          python3 - <<'PY'
-          import json, subprocess, sys, os
-          from datetime import datetime, timezone
-          new = json.load(open("alerts.json"))
-          try:
-              old = json.loads(subprocess.check_output(["git", "show", "HEAD:alerts.json"]))
-          except Exception:
-              old = None
-          strip = lambda d: {k: v for k, v in d.items() if k != "_meta"} if d else None
-          changed = strip(new) != strip(old)
-          stale = True
-          if old and old.get("_meta", {}).get("checked"):
-              age = datetime.now(timezone.utc) - datetime.fromisoformat(old["_meta"]["checked"])
-              stale = age.total_seconds() > 3600
-          with open(os.environ["GITHUB_ENV"], "a") as f:
-              f.write(f"DO_COMMIT={'1' if (changed or stale) else '0'}\n")
-          print("changed:", changed, "stale:", stale)
-          PY
-      - name: Push
-        if: env.DO_COMMIT == '1'
-        run: |
-          git config user.name "air-alert-bot"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add alerts.json
-          git commit -m "alerts: $(date -u +%H:%MZ)" || exit 0
-          git pull --rebase -q origin main && git push -q origin HEAD:main

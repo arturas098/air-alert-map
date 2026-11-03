@@ -121,38 +121,94 @@ def meteoalarm(country_slug: str) -> list[Alert]:
 
 
 # ---------------------------------------------------------------- Lenkija: Alert RCB (gov.pl)
-RCB_AIR = re.compile(r"powietrz|atak|dron|rakiet|lotnictw", re.I)
-RCB_SKIP = re.compile(r"trening|ćwicz|cwicz|test", re.I)
-RCB_END = re.compile(r"odwoł|odwol|zakończ|zakonczon|brak zagro", re.I)
+# Sąraše (komunikaty) yra tik pavadinimas ir data, todėl skaitom patį straipsnį:
+#  - galiojantis statusas = paskutinis pranešimas gijoje (jei po pavojaus yra „zakończył się…“ /
+#    „brak zagrożenia“ / „odwołanie“ → pavojus baigtas),
+#  - laikas iš teksto (HH:MM), sritys – iš vaivadijų / apskričių pavadinimų tekste.
+# Jei pabaigos pranešimo nėra, oro pavojus laikomas pasibaigusiu po RCB_MAX_H valandų.
+RCB_AIR = re.compile(r"powietrz|atak|dron|rakiet|lotnictw|obron", re.I)
+RCB_SKIP = re.compile(r"trening|ćwicz|cwicz|\btest", re.I)
+RCB_END = re.compile(r"odwoł|odwol|zakończ|zakoncz|brak zagro|zagrożenie minęło|koniec zagro", re.I)
+RCB_START = re.compile(r"uwaga|zagroż|zagroz|atak|ostrzeg|podwyższ|podwyzsz|gotowoś|gotowos|śledź|sledz", re.I)
+RCB_TIME = re.compile(r"(?<![\d.])([01]?\d|2[0-3]):([0-5]\d)(?![\d])")
+RCB_MAX_H = 4
+
+
+def rcb_ended(body: str) -> bool:
+    """Ar paskutinis gijos pranešimas yra pabaiga? Pradžios žodžiai pačiame pabaigos sakinyje
+    (pvz. „brak zagrożenia“) neskaičiuojami."""
+    ends = [m.start() for m in RCB_END.finditer(body)]
+    if not ends:
+        return False
+    starts = [m.start() for m in RCB_START.finditer(body)
+              if not any(e - 60 <= m.start() <= e + 80 for e in ends)]
+    return not starts or max(ends) > max(starts)
+
+
+def rcb_article(url: str) -> str:
+    page = fetch(url)
+    m = re.search(r"<article.*?</article>", page, re.S) or re.search(r'class="editor-content".*?</div>\s*</div>', page, re.S)
+    return strip_tags(m.group(0) if m else page)
 
 
 def rcb() -> list[Alert]:
+    from zoneinfo import ZoneInfo
+    WAW = ZoneInfo("Europe/Warsaw")
     page = fetch("https://www.gov.pl/web/rcb/komunikaty")
-    # elementai: data dd.mm.yyyy ir nuoroda su pavadinimu "Alert RCB - ..."
     items = []
     for m in re.finditer(r'href="(/web/rcb/[^"]+)"[^>]*>(.*?)</a>', page, re.S):
         title = strip_tags(m.group(2))
         if not title.lower().startswith("alert rcb"):
             continue
-        # data – artimiausia prieš nuorodą
         before = page[max(0, m.start() - 600):m.start()]
         dates = re.findall(r"(\d{2}\.\d{2}\.\d{4})", before)
         d = parse_dt(dates[-1]) if dates else None
-        items.append((d, title, "https://www.gov.pl" + m.group(1)))
+        items.append((d.date() if d else None, title, "https://www.gov.pl" + m.group(1)))
+    today = NOW.astimezone(WAW).date()
     out: list[Alert] = []
-    from zoneinfo import ZoneInfo
-    today = NOW.astimezone(ZoneInfo("Europe/Warsaw")).date()
-    for d, title, url in items:
-        if not d or (today - d.date()).days > 0:      # tik šiandienos
-            continue
+    for d, title, url in items:                       # naujausi pirmi
+        if not d or (today - d).days > 1:             # šiandien arba vakar (po vidurnakčio)
+            break
         if RCB_SKIP.search(title):
             continue
         if RCB_END.search(title):
-            break                                      # naujesnis atšaukimas – senesni nebegalioja
-        kind = "air" if RCB_AIR.search(title) else "weather" if re.search(
-            r"burz|wiatr|deszcz|upał|upal|śnieg|snieg|mróz|mroz|powód|powod|oblodz", title, re.I) else "other"
-        out.append(Alert(level="yellow", kind=kind, text=title, time=d.isoformat(), url=url, src="Alert RCB"))
-    return out[:1]
+            break                                     # naujesnis atšaukimas – senesni nebegalioja
+        body = ""
+        try:
+            body = rcb_article(url)
+        except Exception:                             # noqa: BLE001 – be straipsnio: tik pavadinimas
+            pass
+        text = f"{title} {body}"
+        # paskutinis pranešimas gijoje: ar pabaiga eina po paskutinio pavojaus pranešimo?
+        if rcb_ended(body):
+            continue                                  # paskutinis pranešimas – atšaukimas
+        kind = "air" if RCB_AIR.search(text) else "weather" if re.search(
+            r"burz|wiatr|deszcz|upał|upal|śnieg|snieg|mróz|mroz|powód|powod|oblodz|ulew", text, re.I) else "other"
+        times = [(int(h), int(mi)) for h, mi in RCB_TIME.findall(body)]
+        onset = None
+        if times:
+            h, mi = times[0]
+            onset = datetime(d.year, d.month, d.day, h, mi, tzinfo=WAW).astimezone(timezone.utc)
+            if onset > NOW + timedelta(minutes=10):  # laikas iš vakar dienos
+                onset -= timedelta(days=1)
+        if kind == "air":
+            if onset and NOW - onset > timedelta(hours=RCB_MAX_H):
+                continue
+            if not onset and d < today:
+                continue
+        elif d < today:
+            continue
+        regions = sorted(match_regions("POL", text))
+        names = [next((n.split(" ", 1)[1] for n in r["names"] if n.lower().startswith("województwo ")), r["name"])
+                 for r in REGIONS if r["iso"] in regions]
+        out.append(Alert(level="yellow", kind=kind, text=title, event="Alert RCB",
+                         area=("Województwa: " + ", ".join(names)) if names else title,
+                         time=(onset.isoformat() if onset else datetime(d.year, d.month, d.day, tzinfo=WAW).isoformat()),
+                         dateOnly=not onset,
+                         expires=(onset + timedelta(hours=RCB_MAX_H)).isoformat() if (onset and kind == "air") else "",
+                         url=url, src="Alert RCB", regionsHint=regions))
+        break
+    return out
 
 
 # ---------------------------------------------------------------- Lietuva: lt72.lt (PAGD)
@@ -352,6 +408,8 @@ for _r in REGIONS:
         _k = re.sub(r"\s+", " ", _k)
         if len(_k) >= 5:
             _ALIASES.setdefault(_r["cc"], []).append((_k, _r["iso"]))
+            if _r["cc"] == "POL" and re.search(r"(sk|ck)ie$", _k) and " " not in _k:
+                _ALIASES[_r["cc"]].append((_k[:-2], _r["iso"]))   # lubelskie → lubelsk(iego|im|ie)
 
 
 for _v in _ALIASES.values():
@@ -408,12 +466,13 @@ def collect() -> dict:
             text = top["text"] + (f"  (+{extra} kiti įspėjimai)" if extra else "")
             result[cc] = {"level": top["level"], "kind": top["kind"], "text": text,
                           "time": top["time"], "url": top.get("url", ""), "src": top["src"],
+                          "dateOnly": bool(top.get("dateOnly")),
                           "items": [dict(a) for a in alerts[:15]]}
             # sritys: jei įspėjimą pavyksta pririšti prie apskrities / maakond / województwo / maakunta
             regions: dict[str, str] = {}
             all_matched = True
             for a in alerts:
-                isos = match_regions(cc, a.get("area") or a.get("text", ""))
+                isos = set(a.get("regionsHint") or []) or match_regions(cc, a.get("area") or a.get("text", ""))
                 if not isos:
                     all_matched = False
                 for iso in isos:
