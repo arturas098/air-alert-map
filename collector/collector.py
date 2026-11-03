@@ -219,7 +219,8 @@ def kriis() -> list[Alert]:
 # Be rakto: ubilling.net.ua/aerialalerts (viešas agregatorius, NEoficialus).
 import os
 UA_ISO = {
-    "автономна республіка крим": "UA-43", "крим": "UA-43", "волинська область": "UA-07",
+    "автономна республіка крим": "UA-43", "крим": "UA-43", "ар крим": "UA-43", "республіка крим": "UA-43",
+    "автономна республіка крим (арк)": "UA-43", "арк": "UA-43", "м. київ (київ)": "UA-30", "київ місто": "UA-30", "волинська область": "UA-07",
     "вінницька область": "UA-05", "дніпропетровська область": "UA-12", "донецька область": "UA-14",
     "житомирська область": "UA-18", "закарпатська область": "UA-21", "запорізька область": "UA-23",
     "івано-франківська область": "UA-26", "м. київ": "UA-30", "київ": "UA-30", "київська область": "UA-32",
@@ -236,9 +237,17 @@ AIU_ORDER = ["UA-43","UA-07","UA-05","UA-12","UA-14","UA-18","UA-21","UA-23","UA
              "UA-65","UA-68","UA-71","UA-77","UA-74"]
 
 
+UA_UNMATCHED: list[str] = []
+
+
 def ua_iso(name: str) -> str | None:
-    n = re.sub(r"\s+", " ", (name or "").strip().lower()).replace("’", "'")
-    return UA_ISO.get(n) or UA_ISO.get(n.replace("м.", "м. ").replace("  ", " "))
+    n = re.sub(r"\s+", " ", (name or "").strip().lower()).replace("’", "'").replace("ʼ", "'")
+    n = n.replace("м.", "м. ").replace("  ", " ")
+    iso = UA_ISO.get(n) or UA_ISO.get(n.replace("м. ", "")) or (
+        "UA-43" if "крим" in n else "UA-40" if "севастоп" in n else None)
+    if not iso and name and name not in UA_UNMATCHED:
+        UA_UNMATCHED.append(name)
+    return iso
 
 
 def fetch_json(url: str, headers: dict | None = None):
@@ -300,7 +309,10 @@ def ukraine(meta: dict) -> dict:
         t0 = time.time()
         try:
             regions = fn()
-            meta["sources"][name] = {"ok": True, "n": sum(regions.values()), "ms": int((time.time() - t0) * 1000)}
+            meta["sources"][name] = {"ok": True, "n": sum(regions.values()), "of": len(regions),
+                                     "ms": int((time.time() - t0) * 1000)}
+            if UA_UNMATCHED:
+                meta["sources"][name]["unmatched"] = UA_UNMATCHED[:10]
         except Exception as ex:  # noqa: BLE001
             meta["sources"][name] = {"ok": False, "err": f"{type(ex).__name__}: {ex}"[:200]}
             continue

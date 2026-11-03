@@ -77,7 +77,7 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
 #detail .src{font-size:11px;line-height:1.7;color:var(--ink)}
 #detail .src a{color:var(--ink)}
 #detail .ok{color:#3ddc84}#detail .bad{color:#ff8a80}
-@media (max-width:899px){#detail{left:10px;right:10px;width:auto;top:calc(50% - 20px)}}
+@media (max-width:899px){#detail{left:10px;right:10px;width:auto;top:calc(196px + env(safe-area-inset-top));transform:none;max-height:36vh}}
 </style>
 </head>
 <body>
@@ -184,8 +184,8 @@ SHAPES.KGD = {type:"Feature",properties:{ADM0_A3:"KGD"},geometry:{type:"MultiPol
 SHAPES.RUS = {type:"Feature",properties:{ADM0_A3:"RUS"},geometry:{type:"MultiPolygon",coordinates:polys.filter(p=>!isKgd(p))}};
 
 const proj = d3.geoConicConformal().parallels([53,66]).rotate([-24,0]);
-const fitTo = {type:"FeatureCollection",features:["LTU","LVA","EST","FIN","KGD","BLR"].map(k=>SHAPES[k]).concat([
-  {type:"Feature",geometry:{type:"MultiPoint",coordinates:[[16.5,51.5],[31.5,58],[25,69.8]]}}])};
+// pradinis vaizdas – visos stebimos šalys
+const fitTo = {type:"FeatureCollection",features:["LTU","LVA","EST","FIN","POL","UKR","KGD"].map(k=>SHAPES[k])};
 const path = d3.geoPath(proj);
 
 const root = svg.append("g");
@@ -322,7 +322,26 @@ function renderCards(){
 }
 function select(id,fromCard){
   selected = selected===id?null:id; renderAlerts(); renderDetail();
-  if(!fromCard){const el=document.querySelector(`.card[data-id="${id}"]`); el&&el.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});}
+  if(selected){ const el=document.querySelector(`.card[data-id="${id}"]`); el&&el.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"}); }
+  focusView();
+}
+// laisvas plotas žemėlapiui: be viršutinės juostos, detalių lango ir kortelių
+function freeRect(){
+  const w=W(), h=H(), wide=w>=900;
+  const det=document.getElementById("detail").getBoundingClientRect();
+  const cards=document.getElementById("cards").getBoundingClientRect();
+  if(wide) return {x0:(selected?det.right:0)+24, y0:70, x1:cards.left-16, y1:h-24};
+  const top=selected?det.bottom+12:70;
+  return {x0:12, y0:top, x1:w-12, y1:cards.top+10};
+}
+function focusView(){
+  let t=d3.zoomIdentity;
+  if(selected){
+    const [[x0,y0],[x1,y1]]=path.bounds(SHAPES[selected]), r=freeRect();
+    const k=Math.max(.7,Math.min(10,.9*Math.min((r.x1-r.x0)/(x1-x0),(r.y1-r.y0)/(y1-y0))));
+    t=d3.zoomIdentity.translate((r.x0+r.x1)/2-k*(x0+x1)/2,(r.y0+r.y1)/2-k*(y0+y1)/2).scale(k);
+  }
+  svg.transition().duration(700).ease(d3.easeCubicInOut).call(zoom.transform,t);
 }
 
 
