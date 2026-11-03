@@ -1,35 +1,26 @@
 {
  "LTU": {
-  "level": "yellow",
-  "kind": "weather",
-  "text": "Dangerous wind — South Eastern Baltic, Curonian Lagoon",
-  "time": "2026-11-03T03:00:00+00:00",
-  "url": "https://meteoalarm.org?geocode=EMMA_ID:LT801",
-  "src": "MeteoAlarm"
+  "level": "white",
+  "text": "Aktyvių perspėjimų nėra.",
+  "time": "2026-11-03T00:55:42+00:00"
  },
  "LVA": {
-  "level": "yellow",
-  "kind": "weather",
-  "text": "Yellow Wind Warning — Central Baltic East",
-  "time": "2026-11-02T20:00:00+00:00",
-  "url": "https://meteoalarm.org?geocode=EMMA_ID:LV803",
-  "src": "MeteoAlarm"
+  "level": "white",
+  "text": "Aktyvių perspėjimų nėra.",
+  "time": "2026-11-03T00:55:42+00:00"
  },
  "EST": {
   "level": "yellow",
   "kind": "weather",
-  "text": "Wind Level 1 — Port of Tallinn  (+5 kiti įspėjimai)",
-  "time": "2026-11-03T10:00:00+00:00",
-  "url": "https://meteoalarm.org?polygon=c5815eae-e687-4daa-b12e-c31e6a7c8093,0,0,0",
+  "text": "Wind Level 1 — Lake Peipus  (+1 kiti įspėjimai)",
+  "time": "2026-11-03T12:00:00+00:00",
+  "url": "https://meteoalarm.org?polygon=94bebe6a-9f90-40e7-9a34-c0e4c802e5b5,0,0,0",
   "src": "MeteoAlarm"
  },
  "FIN": {
-  "level": "yellow",
-  "kind": "weather",
-  "text": "Warning for gale-force winds — Selkämeren pohjoisosa, Merenkurkku, Perämeren eteläosa, Perämeren pohjoisosa  (+3 kiti įspėjimai)",
-  "time": "2026-11-03T01:00:00+00:00",
-  "url": "https://meteoalarm.org?geocode=EMMA_ID:FI809",
-  "src": "MeteoAlarm"
+  "level": "white",
+  "text": "Aktyvių perspėjimų nėra.",
+  "time": "2026-11-03T00:55:42+00:00"
  },
  "POL": {
   "level": "yellow",
@@ -68,12 +59,12 @@
    "UA-77": "red"
   },
   "text": "Oro pavojus 23 iš 26 sričių.",
-  "time": "2026-11-03T00:53:27+00:00",
+  "time": "2026-11-03T00:55:42+00:00",
   "src": "ubilling.net.ua (neoficialus)",
   "url": "https://map.ukrainealarm.com/"
  },
  "_meta": {
-  "checked": "2026-11-03T00:53:27+00:00",
+  "checked": "2026-11-03T00:55:42+00:00",
   "sources": {
    "lt72": {
     "ok": false,
@@ -81,38 +72,38 @@
    },
    "meteoalarm-lithuania": {
     "ok": true,
-    "n": 1,
-    "ms": 761
+    "n": 0,
+    "ms": 675
    },
    "meteoalarm-latvia": {
     "ok": true,
-    "n": 1,
-    "ms": 660
+    "n": 0,
+    "ms": 770
    },
    "kriis": {
     "ok": true,
     "n": 0,
-    "ms": 682
+    "ms": 709
    },
    "meteoalarm-estonia": {
     "ok": true,
-    "n": 6,
-    "ms": 931
+    "n": 2,
+    "ms": 908
    },
    "meteoalarm-finland": {
     "ok": true,
-    "n": 4,
-    "ms": 718
+    "n": 0,
+    "ms": 896
    },
    "rcb": {
     "ok": true,
     "n": 0,
-    "ms": 967
+    "ms": 1114
    },
    "meteoalarm-poland": {
     "ok": true,
     "n": 5,
-    "ms": 514
+    "ms": 511
    },
    "ukrainealarm.com": {
     "ok": false,
@@ -125,7 +116,7 @@
    "ubilling.net.ua": {
     "ok": true,
     "n": 23,
-    "ms": 927
+    "ms": 986
    }
   }
  }
