@@ -1,63 +1,131 @@
 {
  "LTU": {
-  "level": "none",
-  "text": "Šaltiniai šiuo metu nepasiekiami.",
-  "time": "2026-11-03T00:23:28+00:00"
+  "level": "yellow",
+  "kind": "weather",
+  "text": "Dangerous wind — South Eastern Baltic, Curonian Lagoon",
+  "time": "2026-11-03T03:00:00+00:00",
+  "url": "https://meteoalarm.org?geocode=EMMA_ID:LT801",
+  "src": "MeteoAlarm"
  },
  "LVA": {
-  "level": "none",
-  "text": "Šaltiniai šiuo metu nepasiekiami.",
-  "time": "2026-11-03T00:23:28+00:00"
+  "level": "yellow",
+  "kind": "weather",
+  "text": "Yellow Wind Warning — Central Baltic East",
+  "time": "2026-11-02T20:00:00+00:00",
+  "url": "https://meteoalarm.org?geocode=EMMA_ID:LV803",
+  "src": "MeteoAlarm"
  },
  "EST": {
-  "level": "none",
-  "text": "Šaltiniai šiuo metu nepasiekiami.",
-  "time": "2026-11-03T00:23:28+00:00"
+  "level": "yellow",
+  "kind": "weather",
+  "text": "Wind Level 1 — Port of Tallinn  (+5 kiti įspėjimai)",
+  "time": "2026-11-03T10:00:00+00:00",
+  "url": "https://meteoalarm.org?polygon=c5815eae-e687-4daa-b12e-c31e6a7c8093,0,0,0",
+  "src": "MeteoAlarm"
  },
  "FIN": {
-  "level": "none",
-  "text": "Šaltiniai šiuo metu nepasiekiami.",
-  "time": "2026-11-03T00:23:28+00:00"
+  "level": "yellow",
+  "kind": "weather",
+  "text": "Warning for gale-force winds — Selkämeren pohjoisosa, Merenkurkku, Perämeren eteläosa, Perämeren pohjoisosa  (+3 kiti įspėjimai)",
+  "time": "2026-11-03T01:00:00+00:00",
+  "url": "https://meteoalarm.org?geocode=EMMA_ID:FI809",
+  "src": "MeteoAlarm"
  },
  "POL": {
-  "level": "none",
-  "text": "Šaltiniai šiuo metu nepasiekiami.",
-  "time": "2026-11-03T00:23:28+00:00"
+  "level": "yellow",
+  "kind": "weather",
+  "text": "Yellow snow-ice warning — Dolnośląskie Province Jelenia Góra County  (+4 kiti įspėjimai)",
+  "time": "2026-11-02T20:00:00+00:00",
+  "url": "https://meteoalarm.org?geocode=EMMA_ID:PL0261",
+  "src": "MeteoAlarm"
+ },
+ "UKR": {
+  "level": "red",
+  "kind": "air",
+  "regions": {
+   "UA-05": "red",
+   "UA-07": "red",
+   "UA-09": "red",
+   "UA-12": "red",
+   "UA-14": "red",
+   "UA-18": "red",
+   "UA-23": "red",
+   "UA-26": "red",
+   "UA-30": "red",
+   "UA-32": "red",
+   "UA-35": "red",
+   "UA-40": "red",
+   "UA-46": "red",
+   "UA-48": "red",
+   "UA-53": "red",
+   "UA-56": "red",
+   "UA-59": "red",
+   "UA-61": "red",
+   "UA-63": "red",
+   "UA-68": "red",
+   "UA-71": "red",
+   "UA-74": "red",
+   "UA-77": "red"
+  },
+  "text": "Oro pavojus 23 iš 26 sričių.",
+  "time": "2026-11-03T00:53:27+00:00",
+  "src": "ubilling.net.ua (neoficialus)",
+  "url": "https://map.ukrainealarm.com/"
  },
  "_meta": {
-  "checked": "2026-11-03T00:23:28+00:00",
+  "checked": "2026-11-03T00:53:27+00:00",
   "sources": {
    "lt72": {
     "ok": false,
-    "err": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+    "err": "HTTPError: HTTP Error 403: Forbidden"
    },
    "meteoalarm-lithuania": {
-    "ok": false,
-    "err": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+    "ok": true,
+    "n": 1,
+    "ms": 761
    },
    "meteoalarm-latvia": {
-    "ok": false,
-    "err": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+    "ok": true,
+    "n": 1,
+    "ms": 660
    },
    "kriis": {
-    "ok": false,
-    "err": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+    "ok": true,
+    "n": 0,
+    "ms": 682
    },
    "meteoalarm-estonia": {
-    "ok": false,
-    "err": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+    "ok": true,
+    "n": 6,
+    "ms": 931
    },
    "meteoalarm-finland": {
-    "ok": false,
-    "err": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+    "ok": true,
+    "n": 4,
+    "ms": 718
    },
    "rcb": {
-    "ok": false,
-    "err": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+    "ok": true,
+    "n": 0,
+    "ms": 967
    },
    "meteoalarm-poland": {
+    "ok": true,
+    "n": 5,
+    "ms": 514
+   },
+   "ukrainealarm.com": {
     "ok": false,
-    "err": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+    "err": "RuntimeError: nėra UKRAINEALARM_KEY"
+   },
+   "alerts.in.ua": {
+    "ok": false,
+    "err": "RuntimeError: nėra ALERTS_IN_UA_TOKEN"
+   },
+   "ubilling.net.ua": {
+    "ok": true,
+    "n": 23,
+    "ms": 927
    }
   }
  }
