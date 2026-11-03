@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: "*/5 * * * *"     # GitHub leidžia min. kas 5 min (realiai gali vėluoti)
   workflow_dispatch: {}       # rankinis paleidimas iš Actions skirtuko
+  push:                       # paleidžiam ir pakeitus surinkėją
+    branches: [main]
+    paths: ["collector/**", ".github/workflows/collect.yml"]
 
 permissions:
   contents: write
