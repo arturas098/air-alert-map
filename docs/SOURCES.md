@@ -55,3 +55,16 @@ Surinkėjas bando iš eilės ir rašo `UKR.regions = {"UA-63":"red", …}` (ISO 
 
 ## Be šaltinių
 Baltarusija, Rusija, Karaliaučius: viešų pavojaus sistemų nėra. UI jas paslepia.
+
+## Šalių suskirstymas (kaip rodomos dalys)
+| Šalis | Administracinis lygis žemėlapyje | Kaip skelbia oficialūs įspėjimai | Pastabos |
+|---|---|---|---|
+| 🇱🇹 LT | 10 apskričių | PAGD: apskritimis arba savivaldybėmis (60) | savivaldybės → apskritis kol kas neperskaičiuojama |
+| 🇱🇻 LV | 119 senų savivaldybių (Natural Earth) | VUGD/LV-ALERT: novadais (nuo 2021 m. 43) | NE dar turi seną skirstymą, tikslu tik iš dalies |
+| 🇪🇪 EE | 15 maakond | EE-ALARM: poligonais / maakond | |
+| 🇫🇮 FI | 18 maakunta | vaaratiedote: kunta / maakunta; FMI: maakunta + jūros zonos | Ahvenanmaa NE gali trūkti |
+| 🇵🇱 PL | 16 województw | RCB: powiat / województwo; MeteoAlarm: powiat („X Province Y County“) | powiat → województwo |
+| 🇺🇦 UA | 27 sritys (įsk. Kijevo m., Krymą, Sevastopolį) | oblast / raion / hromada | raionai – kai bus oficialus API raktas |
+
+Surinkėjas (`match_regions`) ieško sričių pavadinimų įspėjimo tekste (`area` arba `text`) pagal `data/regions.json`.
+Jei visi šalies įspėjimai pririšti prie sričių → `regionsOnly: true` ir dažomos tik tos sritys; kitaip dažoma visa šalis, o sritys paryškinamos papildomai.

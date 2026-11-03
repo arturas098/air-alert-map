@@ -307,12 +307,55 @@ def ukraine(meta: dict) -> dict:
         on = sorted(k for k, v in regions.items() if v)
         src = name + ("" if official else " (neoficialus)")
         if on:
-            return {"level": "red", "kind": "air", "regions": {k: "red" for k in on},
+            return {"level": "red", "kind": "air", "regions": {k: "red" for k in on}, "regionsOnly": True,
                     "text": f"Oro pavojus {len(on)} iš {len(regions)} sričių.", "time": NOW.isoformat(timespec="seconds"),
                     "src": src, "url": "https://map.ukrainealarm.com/"}
         return {"level": "white", "regions": {}, "text": "Oro pavojaus nėra nė vienoje srityje.",
                 "time": NOW.isoformat(timespec="seconds"), "src": src, "url": "https://map.ukrainealarm.com/"}
     return {"level": "none", "text": "Šaltiniai šiuo metu nepasiekiami.", "time": NOW.isoformat(timespec="seconds")}
+
+# ---------------------------------------------------------------- sritys (admin-1)
+import unicodedata
+REGIONS = json.loads((Path(__file__).resolve().parent.parent / "data/regions.json").read_text(encoding="utf-8"))
+
+
+def norm(t: str) -> str:
+    t = unicodedata.normalize("NFKD", t or "").encode("ascii", "ignore").decode().lower()
+    return re.sub(r"[^a-z0-9]+", " ", t).strip()
+
+
+_ALIASES: dict[str, list[tuple[str, str]]] = {}
+for _r in REGIONS:
+    for _n in _r["names"]:
+        _k = norm(_n)
+        # bendri žodžiai, kurie nėra pavadinimas
+        _k = re.sub(r"\b(wojewodztwo|voivodeship|province|county|apskritis|maakond|bezirk|okreg|woiwodschaft|"
+                    r"oblast|region|lan|laani|novads)\b", " ", _k).strip()
+        _k = re.sub(r"\s+", " ", _k)
+        if len(_k) >= 5:
+            _ALIASES.setdefault(_r["cc"], []).append((_k, _r["iso"]))
+
+
+for _v in _ALIASES.values():
+    _v.sort(key=lambda x: -len(x[0]))   # ilgiausi pirmi: „pohjois pohjanmaa“ prieš „pohjanmaa“
+
+
+def match_regions(cc: str, text: str) -> set[str]:
+    t = " " + norm(text) + " "
+    found = set()
+    for k, iso in _ALIASES.get(cc, []):
+        if f" {k}" in t:
+            found.add(iso)
+            t = t.replace(f" {k}", " " + "#" * len(k))   # sunaudojam, kad trumpesnis nepersidengtų
+    return found
+
+
+TONE_RANK = {"teal": 1, "yellow": 2, "red": 3}
+
+
+def tone(a: dict) -> str:
+    return a["level"] if a.get("kind") == "air" else "teal"
+
 
 # ---------------------------------------------------------------- sujungimas
 SOURCES = {
@@ -348,6 +391,19 @@ def collect() -> dict:
             result[cc] = {"level": top["level"], "kind": top["kind"], "text": text,
                           "time": top["time"], "url": top.get("url", ""), "src": top["src"],
                           "items": [dict(a) for a in alerts[:15]]}
+            # sritys: jei įspėjimą pavyksta pririšti prie apskrities / maakond / województwo / maakunta
+            regions: dict[str, str] = {}
+            all_matched = True
+            for a in alerts:
+                isos = match_regions(cc, a.get("area") or a.get("text", ""))
+                if not isos:
+                    all_matched = False
+                for iso in isos:
+                    if TONE_RANK[tone(a)] > TONE_RANK.get(regions.get(iso, ""), 0):
+                        regions[iso] = tone(a)
+            if regions:
+                result[cc]["regions"] = regions
+                result[cc]["regionsOnly"] = all_matched
         elif ok:
             result[cc] = {"level": "white", "text": "Aktyvių perspėjimų nėra.",
                           "time": meta["checked"]}

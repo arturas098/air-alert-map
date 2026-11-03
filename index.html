@@ -60,8 +60,8 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
   display:flex;flex-direction:column;gap:4px;pointer-events:none;text-transform:uppercase;background:rgba(10,10,11,.7);padding:7px 9px;border-radius:10px;border:1px solid #2a2927}
 .legend i{display:inline-block;width:14px;height:8px;border-radius:3px;margin-right:6px;vertical-align:0;border:1.5px solid}
 /* detalių langas */
-#detail{--c:var(--grey);position:fixed;z-index:20;left:14px;top:calc(60px + env(safe-area-inset-top));width:min(380px,calc(100vw - 28px));
-  max-height:min(440px,calc(100vh - 230px));overflow:auto;border-radius:18px;border:2px solid var(--c);
+#detail{--c:var(--grey);position:fixed;z-index:20;left:14px;top:50%;transform:translateY(-50%);width:min(380px,calc(100vw - 28px));
+  max-height:max(260px,calc(100vh - 420px));overflow:auto;border-radius:18px;border:2px solid var(--c);
   background:color-mix(in srgb,var(--c) 10%,rgba(10,10,11,.9));backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   box-shadow:0 0 0 1px #000,0 0 26px -6px color-mix(in srgb,var(--c) 70%,transparent);padding:16px 16px 14px;display:none}
 #detail.open{display:block}
@@ -77,7 +77,7 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
 #detail .src{font-size:11px;line-height:1.7;color:var(--ink)}
 #detail .src a{color:var(--ink)}
 #detail .ok{color:#3ddc84}#detail .bad{color:#ff8a80}
-@media (max-width:899px){#detail{left:10px;right:10px;width:auto;max-height:calc(100vh - 260px)}}
+@media (max-width:899px){#detail{left:10px;right:10px;width:auto;top:calc(50% - 20px)}}
 </style>
 </head>
 <body>
@@ -281,7 +281,8 @@ function renderAlerts(){
     const s=STATE[c.id], lv=s.level, d=path(SHAPES[c.id]);
     const hit = gAlert.append("path").attr("d",d).attr("fill","transparent").style("cursor","pointer").on("click",()=>select(c.id));
     if(lv==="none") return;
-    if(s.regions){            // sričių lygis: dažom tik sritis su pavojumi, šalį apvedam plonai
+    const hasReg = s.regions && Object.keys(s.regions).length;
+    if(hasReg){               // sričių lygis: dažom sritis su pavojumi
       for(const [iso,rl] of Object.entries(s.regions)){ const f=RSHAPES[iso]; if(!f) continue; const rd=path(f);
         gAlert.append("path").attr("d",rd).attr("fill",COLOR[rl]).attr("fill-opacity",.16).attr("pointer-events","none");
         gAlert.append("path").attr("d",rd).attr("fill",`url(#h-${rl})`).attr("pointer-events","none");
@@ -290,9 +291,11 @@ function renderAlerts(){
         gAlertEdge.append("path").attr("d",rd).attr("fill","none").attr("stroke",COLOR[rl]).attr("stroke-width",1.6)
           .attr("pointer-events","none").attr("vector-effect","non-scaling-stroke");
       }
-      gAlertEdge.append("path").attr("d",d).attr("fill","none").attr("stroke","#f2f0ea").attr("stroke-opacity",.5).attr("stroke-width",1.1)
-        .attr("pointer-events","none").attr("vector-effect","non-scaling-stroke");
-      return;
+      if(s.regionsOnly!==false){   // visi įspėjimai pririšti prie sričių – šalį tik plonai apvedam
+        gAlertEdge.append("path").attr("d",d).attr("fill","none").attr("stroke","#f2f0ea").attr("stroke-opacity",.5).attr("stroke-width",1.1)
+          .attr("pointer-events","none").attr("vector-effect","non-scaling-stroke");
+        return;
+      }
     }
     const tn=tone(s), col=COLOR[tn];
     gAlert.append("path").attr("d",d).attr("fill",col).attr("fill-opacity",lv==="white"?.05:(tn==="teal"&&lv==="yellow"?.10:.16)).attr("pointer-events","none");
@@ -342,18 +345,17 @@ function renderDetail(){
   const status=(!isAir(s)&&LEVEL_ALT[s.level])||LEVEL_TXT[s.level];
   let items="";
   if(s.regions && Object.keys(s.regions).length){
-    const names=Object.keys(s.regions).map(i=>RSHAPES[i]?RSHAPES[i].properties.name:i).sort();
-    items=`<div class="sec">Sritys su pavojumi · ${names.length}</div>`+
-      `<div class="it" style="--ic:${COLOR.red}"><span>${names.map(esc).join(" · ")}</span></div>`;
-  } else if(s.items && s.items.length){
-    items=`<div class="sec">Aktyvūs įspėjimai · ${s.items.length}</div>`+s.items.map(a=>{
+    const byTone={}; for(const [i,t] of Object.entries(s.regions)) (byTone[t]=byTone[t]||[]).push(RSHAPES[i]?RSHAPES[i].properties.name:i);
+    items=`<div class="sec">Sritys · ${Object.keys(s.regions).length}</div>`+["red","yellow","teal"].filter(t=>byTone[t]).map(t=>
+      `<div class="it" style="--ic:${COLOR[t]}"><span>${byTone[t].sort().map(esc).join(" · ")}</span></div>`).join("");
+  }
+  if(s.items && s.items.length){
+    items+=`<div class="sec">Aktyvūs įspėjimai · ${s.items.length}</div>`+s.items.map(a=>{
       const ic=COLOR[tone(a)]||COLOR.white;
       const when=[fmt(a.time), a.expires?"iki "+fmt(a.expires):""].filter(Boolean).join(" – ");
       return `<div class="it" style="--ic:${ic}"><b>${esc(a.event||(a.kind==="air"?"Oro pavojus":"Įspėjimas"))}</b>`+
         `<span>${esc(a.area||a.text)}</span>`+
         `<i>${esc(KIND[a.kind]||"")}${a.severity?" · "+esc(a.severity):""}${when?" · "+when:""} · ${a.url?`<a href="${esc(a.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(a.src)}</a>`:esc(a.src)}</i></div>`;}).join("");
-  } else {
-    items=`<div class="sec">Aprašymas</div><div class="src">${esc(s.text)}</div>`;
   }
   const keys=SRC_KEYS[selected]||[], ms=(META&&META.sources)||{};
   const srcs=keys.map(k=>{const m=ms[k], nm=SRC_NAME[k]||k.replace("meteoalarm-","MeteoAlarm · ");
