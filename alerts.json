@@ -2,22 +2,22 @@
  "LTU": {
   "level": "white",
   "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T01:15:28+00:00"
+  "time": "2026-11-03T01:22:37+00:00"
  },
  "LVA": {
   "level": "white",
   "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T01:15:28+00:00"
+  "time": "2026-11-03T01:22:37+00:00"
  },
  "EST": {
   "level": "white",
   "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T01:15:28+00:00"
+  "time": "2026-11-03T01:22:37+00:00"
  },
  "FIN": {
   "level": "white",
   "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T01:15:28+00:00"
+  "time": "2026-11-03T01:22:37+00:00"
  },
  "POL": {
   "level": "yellow",
@@ -98,7 +98,6 @@
   "kind": "air",
   "regions": {
    "UA-05": "red",
-   "UA-07": "red",
    "UA-09": "red",
    "UA-12": "red",
    "UA-14": "red",
@@ -109,7 +108,6 @@
    "UA-32": "red",
    "UA-35": "red",
    "UA-40": "red",
-   "UA-46": "red",
    "UA-48": "red",
    "UA-51": "red",
    "UA-53": "red",
@@ -124,13 +122,13 @@
    "UA-77": "red"
   },
   "regionsOnly": true,
-  "text": "Oro pavojus 25 iš 26 sričių.",
-  "time": "2026-11-03T01:15:28+00:00",
+  "text": "Oro pavojus 23 iš 26 sričių.",
+  "time": "2026-11-03T01:22:37+00:00",
   "src": "ubilling.net.ua (neoficialus)",
   "url": "https://map.ukrainealarm.com/"
  },
  "_meta": {
-  "checked": "2026-11-03T01:15:28+00:00",
+  "checked": "2026-11-03T01:22:37+00:00",
   "sources": {
    "lt72": {
     "ok": false,
@@ -139,37 +137,37 @@
    "meteoalarm-lithuania": {
     "ok": true,
     "n": 0,
-    "ms": 981
+    "ms": 1273
    },
    "meteoalarm-latvia": {
     "ok": true,
     "n": 0,
-    "ms": 829
+    "ms": 712
    },
    "kriis": {
     "ok": true,
     "n": 0,
-    "ms": 910
+    "ms": 975
    },
    "meteoalarm-estonia": {
     "ok": true,
     "n": 0,
-    "ms": 1525
+    "ms": 857
    },
    "meteoalarm-finland": {
     "ok": true,
     "n": 0,
-    "ms": 976
+    "ms": 839
    },
    "rcb": {
     "ok": true,
     "n": 0,
-    "ms": 1181
+    "ms": 1211
    },
    "meteoalarm-poland": {
     "ok": true,
     "n": 5,
-    "ms": 1604
+    "ms": 586
    },
    "ukrainealarm.com": {
     "ok": false,
@@ -181,8 +179,9 @@
    },
    "ubilling.net.ua": {
     "ok": true,
-    "n": 25,
-    "ms": 1208
+    "n": 23,
+    "of": 26,
+    "ms": 1297
    }
   }
  }
