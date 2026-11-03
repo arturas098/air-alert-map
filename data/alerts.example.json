@@ -1,0 +1,7 @@
+{
+  "LTU": {"level": "yellow", "kind": "air", "text": "TIKĖTINAS ORO PAVOJUS (GELTONA). Galbūt fiksuotas dronas. Nusimatykite saugią vietą ar priedangą.", "time": "2026-11-03T00:00:00Z", "url": "https://lt72.lt"},
+  "LVA": {"level": "white", "text": "Aktyvių perspėjimų nėra."},
+  "EST": {"level": "white", "text": "Aktyvių perspėjimų nėra."},
+  "FIN": {"level": "yellow", "kind": "weather", "text": "Keltainen varoitus: tuulivaroitus merialueille.", "time": "2026-11-03T00:00:00Z"},
+  "POL": {"level": "white", "text": "Aktyvių perspėjimų nėra."}
+}

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0b">
+<title>Oro pavojus · Baltija</title>
+<style>
+:root{
+  --bg:#0a0a0b; --ink:#e9e6df; --ink2:#a9a59c; --ink3:#5d5a55; --ink4:#2a2927;
+  --white:#f2f0ea; --yellow:#ffd23f; --red:#ff3b30; --grey:#7c7a75;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mono);overflow:hidden;-webkit-tap-highlight-color:transparent}
+#map{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+/* header */
+.top{position:fixed;top:0;left:0;right:0;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;display:flex;align-items:center;gap:10px;pointer-events:none;
+  background:linear-gradient(var(--bg) 30%,transparent)}
+.top h1{font-size:11px;letter-spacing:.24em;white-space:nowrap;font-weight:600;text-transform:uppercase}
+.top .sub{font-size:10px;color:var(--ink2);letter-spacing:.12em}
+.top .sp{flex:1}
+.chip{pointer-events:auto;font:inherit;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);
+  background:rgba(10,10,11,.6);border:1px solid var(--ink3);border-radius:999px;padding:6px 10px;cursor:pointer}
+.chip.on{color:var(--bg);background:var(--ink);border-color:var(--ink)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--grey);display:inline-block;margin-right:6px;vertical-align:1px}
+.dot.live{background:#3ddc84;box-shadow:0 0 8px #3ddc84}
+/* cards */
+.cards{position:fixed;left:0;right:0;bottom:0;padding:8px 12px calc(12px + env(safe-area-inset-bottom));
+  display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+  background:linear-gradient(transparent,var(--bg) 40%)}
+.cards::-webkit-scrollbar{display:none}
+.card{--c:var(--grey);flex:0 0 min(78vw,300px);scroll-snap-align:center;border-radius:16px;padding:12px 14px 12px;
+  border:2px solid var(--c);background:color-mix(in srgb,var(--c) 13%,rgba(10,10,11,.72));
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  box-shadow:0 0 0 1px rgba(0,0,0,.6),0 0 18px -4px color-mix(in srgb,var(--c) 70%,transparent);cursor:pointer;transition:transform .2s}
+.card.sel{transform:translateY(-4px)}
+.card[data-l="red"]{--c:var(--red);animation:pulse 1.6s ease-in-out infinite}
+.card[data-l="yellow"]{--c:var(--yellow)}
+.card[data-l="white"]{--c:var(--white)}
+.card[data-l="none"]{--c:var(--grey)}
+@keyframes pulse{50%{box-shadow:0 0 0 1px rgba(0,0,0,.6),0 0 30px 2px color-mix(in srgb,var(--c) 75%,transparent)}}
+.card .row{display:flex;align-items:baseline;gap:8px}
+.card .cc{font-size:10px;letter-spacing:.2em;color:var(--c);border:1px solid var(--c);border-radius:6px;padding:1px 5px}
+.card .nm{font-size:13px;letter-spacing:.2em;text-transform:uppercase;font-weight:600}
+.card .st{margin-top:8px;font-size:15px;font-weight:700;color:var(--c);letter-spacing:.04em;text-transform:uppercase}
+.card .kd{display:inline-block;margin-top:5px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--c);border:1px dashed var(--c);border-radius:6px;padding:2px 6px}
+.card .ds{margin-top:4px;font-size:11.5px;line-height:1.45;color:var(--ink);opacity:.88}
+.card .mt{margin-top:8px;font-size:9.5px;color:var(--ink2);letter-spacing:.06em;display:flex;justify-content:space-between;gap:8px}
+@media (min-width:900px){
+  .cards{left:auto;top:64px;width:340px;flex-direction:column;overflow-y:auto;overflow-x:hidden;background:none;padding:8px 16px 16px}
+  .card{flex:0 0 auto}
+}
+/* legend */
+.legend{position:fixed;left:14px;top:calc(62px + env(safe-area-inset-top));font-size:9.5px;letter-spacing:.1em;color:var(--ink2);
+  display:flex;flex-direction:column;gap:4px;pointer-events:none;text-transform:uppercase;background:rgba(10,10,11,.7);padding:7px 9px;border-radius:10px;border:1px solid #2a2927}
+.legend i{display:inline-block;width:14px;height:8px;border-radius:3px;margin-right:6px;vertical-align:0;border:1.5px solid}
+</style>
+</head>
+<body>
+<svg id="map" xmlns="http://www.w3.org/2000/svg"></svg>
+
+<div class="top">
+  <div><h1>Oro pavojus · Baltija</h1><div class="sub" id="upd">kraunama…</div></div>
+  <div class="sp"></div>
+  <button class="chip" id="demo">Demo</button>
+  <span class="chip" style="pointer-events:none"><span class="dot" id="live"></span><span id="src">offline</span></span>
+</div>
+
+<div class="legend">
+  <div><i style="border-color:var(--red);background:rgba(255,59,48,.25)"></i>Oro pavojus</div>
+  <div><i style="border-color:var(--yellow);background:rgba(255,210,63,.2)"></i>Tikėtinas pavojus</div>
+  <div><i style="border-color:var(--white);background:rgba(255,255,255,.12)"></i>Pavojaus nėra</div>
+  <div><i style="border-color:var(--grey)"></i>Nenustatyta</div>
+</div>
+
+<div class="cards" id="cards"></div>
+
+<script>/*D3*/</script>
+<script>/*TOPOJSON*/</script>
+<script>
+const TOPO = /*MAPDATA*/;
+
+/* ---------- šalys ---------- */
+const COUNTRIES = [
+  {id:"LTU", cc:"LT", nm:"Lietuva",      src:"lt72.lt (PAGD) · LRT"},
+  {id:"LVA", cc:"LV", nm:"Latvija",      src:"112.lv (VUGD) · LSM"},
+  {id:"EST", cc:"EE", nm:"Estija",       src:"kriis.ee (EE-ALARM) · ERR"},
+  {id:"FIN", cc:"FI", nm:"Suomija",      src:"Yle Teksti-TV 112 · FMI"},
+  {id:"POL", cc:"PL", nm:"Lenkija",      src:"gov.pl/rcb (Alert RCB)"},
+  {id:"KGD", cc:"KG", nm:"Karaliaučius", hidden:true},
+  {id:"BLR", cc:"BY", nm:"Baltarusija", hidden:true},
+  {id:"RUS", cc:"RU", nm:"Rusija", hidden:true},
+];
+const LEVEL_TXT = {red:"Oro pavojus", yellow:"Tikėtinas oro pavojus", white:"Pavojaus nėra", none:"Nenustatyta"};
+const LEVEL_ALT = {red:"Pavojus", yellow:"Įspėjimas"};
+const KIND = {air:"✈ Oro grėsmė", weather:"☂ Stichija", chem:"☣ Tarša / avarija", other:"! Kita"};
+const COLOR = {red:"#ff3b30", yellow:"#ffd23f", white:"#f2f0ea", none:"#7c7a75"};
+
+const BASE = Object.fromEntries(COUNTRIES.map(c=>[c.id,{level:"none",text:"Duomenų nėra arba šaltinis nepasiekiamas.",time:null}]));
+const DEMOS = [
+  {LTU:{level:"yellow",kind:"air",text:"Tikėtinas oro pavojus (GELTONA), galbūt dronas. Nusimatykite saugią vietą ar priedangą."},
+   LVA:{level:"white",text:"Aktyvių perspėjimų nėra."}, EST:{level:"white",text:"Aktyvių perspėjimų nėra."},
+   FIN:{level:"white",text:"Aktyvių vaaratiedote nėra."}, POL:{level:"yellow",kind:"air",text:"Alert RCB: Lenkijos aviacija ore, sekite pranešimus."}},
+  {LTU:{level:"red",kind:"air",text:"ORO PAVOJUS (RAUDONA). Nedelsdami eikite į saugią vietą ar priedangą. Rekomendacijos: lt72.lt"},
+   LVA:{level:"yellow",kind:"weather",text:"Oranžais brīdinājums: stiprs vējš, brāzmas līdz 25 m/s. Sekite 112.lv."}, EST:{level:"white",text:"Aktyvių perspėjimų nėra."},
+   FIN:{level:"yellow",kind:"air",text:"Vaaratiedote: ilmauhka, Kaakkois-Suomi. Mene sisätiloihin."}, POL:{level:"white",text:"Aktyvių perspėjimų nėra."}},
+];
+
+/* ---------- žemėlapis ---------- */
+const svg = d3.select("#map");
+const W = () => innerWidth, H = () => innerHeight;
+const defs = svg.append("defs");
+
+// pieštuko drebulys
+defs.append("filter").attr("id","rough").attr("x","-5%").attr("y","-5%").attr("width","110%").attr("height","110%")
+  .call(f=>{f.append("feTurbulence").attr("type","fractalNoise").attr("baseFrequency",.9).attr("numOctaves",2).attr("seed",3).attr("result","n");
+           f.append("feDisplacementMap").attr("in","SourceGraphic").attr("in2","n").attr("scale",1.6);});
+defs.append("filter").attr("id","glow").attr("x","-20%").attr("y","-20%").attr("width","140%").attr("height","140%")
+  .call(f=>{f.append("feGaussianBlur").attr("stdDeviation",4).attr("result","b");
+           const m=f.append("feMerge");m.append("feMergeNode").attr("in","b");m.append("feMergeNode").attr("in","SourceGraphic");});
+// popieriaus grūdas
+defs.append("filter").attr("id","grain").call(f=>{
+  f.append("feTurbulence").attr("type","fractalNoise").attr("baseFrequency",1.2).attr("numOctaves",2).attr("stitchTiles","stitch");
+  f.append("feColorMatrix").attr("values","0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .07 0");});
+// štrichavimas
+function hatch(id,color,gap,w,op,ang){
+  defs.append("pattern").attr("id",id).attr("patternUnits","userSpaceOnUse").attr("width",gap).attr("height",gap)
+    .attr("patternTransform",`rotate(${ang})`)
+    .append("line").attr("x1",0).attr("y1",0).attr("x2",0).attr("y2",gap).attr("stroke",color).attr("stroke-width",w).attr("stroke-opacity",op);
+}
+hatch("h-land","#e9e6df",5,.5,.10,35);
+hatch("h-lake","#e9e6df",3,.5,.22,-35);
+for(const k of ["red","yellow","white"]) hatch("h-"+k,COLOR[k],6,1.2,.55,45);
+
+const o = topojson.object;
+const L = TOPO.objects;
+const countries = topojson.feature(TOPO,L.c).features;
+const regions = topojson.feature(TOPO,L.r).features;
+const rivers = topojson.feature(TOPO,L.rv).features;
+const lakes = topojson.feature(TOPO,L.lk).features;
+const roads = topojson.feature(TOPO,L.rd).features;
+const rails = topojson.feature(TOPO,L.rl).features;
+const places = topojson.feature(TOPO,L.pl).features;
+const land = topojson.merge(TOPO,L.c.geometries);
+const inner = topojson.mesh(TOPO,L.c,(a,b)=>a!==b);
+const regMesh = topojson.mesh(TOPO,L.r,(a,b)=>a!==b && a.properties.adm0_a3===b.properties.adm0_a3);
+
+// Karaliaučių atskiriam nuo Rusijos
+const rus = countries.find(f=>f.properties.ADM0_A3==="RUS");
+const polys = rus.geometry.type==="MultiPolygon"?rus.geometry.coordinates:[rus.geometry.coordinates];
+const isKgd = p=>{const c=d3.geoCentroid({type:"Polygon",coordinates:p});return c[0]<23 && c[1]<56;};
+const SHAPES = {};
+for(const f of countries) SHAPES[f.properties.ADM0_A3]=f;
+SHAPES.KGD = {type:"Feature",properties:{ADM0_A3:"KGD"},geometry:{type:"MultiPolygon",coordinates:polys.filter(isKgd)}};
+SHAPES.RUS = {type:"Feature",properties:{ADM0_A3:"RUS"},geometry:{type:"MultiPolygon",coordinates:polys.filter(p=>!isKgd(p))}};
+
+const proj = d3.geoConicConformal().parallels([53,66]).rotate([-24,0]);
+const fitTo = {type:"FeatureCollection",features:["LTU","LVA","EST","FIN","KGD","BLR"].map(k=>SHAPES[k]).concat([
+  {type:"Feature",geometry:{type:"MultiPoint",coordinates:[[16.5,51.5],[31.5,58],[25,69.8]]}}])};
+const path = d3.geoPath(proj);
+
+const root = svg.append("g");
+const gSea = root.append("g"), gLand=root.append("g"), gAlert=root.append("g"), gLines=root.append("g"),
+      gBord=root.append("g"), gAlertEdge=root.append("g"), gLab=root.append("g");
+svg.append("rect").attr("width","100%").attr("height","100%").attr("filter","url(#grain)").attr("pointer-events","none");
+
+let k=1;
+function draw(){
+  const pad = Math.min(W(),H())*.04;
+  const bottom = W()<900 ? 150 : 20, right = W()<900?0:340;
+  proj.fitExtent([[pad,60],[W()-pad-right,H()-bottom]],fitTo);
+  [gSea,gLand,gAlert,gLines,gBord,gAlertEdge,gLab].forEach(g=>g.selectAll("*").remove());
+
+  // graticule
+  gSea.append("path").datum(d3.geoGraticule().step([2,1])()).attr("d",path)
+    .attr("fill","none").attr("stroke","#e9e6df").attr("stroke-opacity",.05).attr("stroke-width",.6);
+  // vandens linijos aplink krantą
+  const landD = path(land);
+  const rings=[38,31,25,20,15.5,12,9,6.5,4.5,3];
+  rings.forEach((w,i)=>{
+    gSea.append("path").attr("d",landD).attr("fill","none").attr("stroke","#e9e6df")
+      .attr("stroke-opacity",.07+i*.03).attr("stroke-width",w*2).attr("stroke-linejoin","round");
+    gSea.append("path").attr("d",landD).attr("fill","none").attr("stroke","#0a0a0b")
+      .attr("stroke-width",w*2-1.1).attr("stroke-linejoin","round");
+  });
+  // sausuma
+  gLand.append("path").attr("d",landD).attr("fill","#0f0f10");
+  gLand.append("path").attr("d",landD).attr("fill","url(#h-land)");
+  // regionai
+  gLines.append("path").attr("d",path(regMesh)).attr("fill","none").attr("stroke","#e9e6df")
+    .attr("stroke-opacity",.16).attr("stroke-width",.5).attr("stroke-dasharray","2 2.5");
+  // keliai
+  gLines.append("g").selectAll("path").data(roads).join("path").attr("d",path).attr("fill","none")
+    .attr("stroke","#e9e6df").attr("stroke-opacity",d=>d.properties.scalerank<=4?.22:.11).attr("stroke-width",d=>d.properties.scalerank<=4?.7:.45);
+  // geležinkeliai
+  const rd=path({type:"FeatureCollection",features:rails});
+  gLines.append("path").attr("d",rd).attr("fill","none").attr("stroke","#e9e6df").attr("stroke-opacity",.2).attr("stroke-width",.5);
+  gLines.append("path").attr("d",rd).attr("fill","none").attr("stroke","#e9e6df").attr("stroke-opacity",.22).attr("stroke-width",2.2).attr("stroke-dasharray",".5 5");
+  // upės, ežerai
+  gLines.append("g").selectAll("path").data(rivers).join("path").attr("d",path).attr("fill","none")
+    .attr("stroke","#cfd8dc").attr("stroke-opacity",.35).attr("stroke-width",d=>Math.max(.4,1.3-d.properties.scalerank*.1));
+  const lk = path({type:"FeatureCollection",features:lakes});
+  gLines.append("path").attr("d",lk).attr("fill","#0a0a0b");
+  gLines.append("path").attr("d",lk).attr("fill","url(#h-lake)").attr("stroke","#e9e6df").attr("stroke-opacity",.5).attr("stroke-width",.6);
+  // sienos – dvigubas pieštukas
+  const bd = path(inner);
+  gBord.append("path").attr("d",bd).attr("fill","none").attr("stroke","#e9e6df").attr("stroke-opacity",.55).attr("stroke-width",1.1).attr("filter","url(#rough)");
+  gBord.append("path").attr("d",bd).attr("fill","none").attr("stroke","#e9e6df").attr("stroke-opacity",.3).attr("stroke-width",.5).attr("transform","translate(1.2,.8)");
+  gBord.append("path").attr("d",landD).attr("fill","none").attr("stroke","#e9e6df").attr("stroke-opacity",.85).attr("stroke-width",1).attr("filter","url(#rough)");
+  gBord.append("path").attr("d",landD).attr("fill","none").attr("stroke","#e9e6df").attr("stroke-opacity",.25).attr("stroke-width",.5).attr("transform","translate(-1,1.1)");
+
+  // miestai
+  const pl = places.filter(d=>d.properties.scalerank<=5 || ["LTU","LVA","EST"].includes(d.properties.adm0_a3)&&d.properties.scalerank<=7);
+  const cg = gLab.append("g").attr("class","cities");
+  pl.forEach(d=>{
+    const [x,y]=proj(d.geometry.coordinates); const cap=d.properties.featurecla.includes("capital");
+    if(x<0||y<0||x>W()||y>H())return;
+    const g=cg.append("g").attr("transform",`translate(${x},${y})`).attr("data-r",d.properties.scalerank);
+    if(cap){g.append("rect").attr("x",-3).attr("y",-3).attr("width",6).attr("height",6).attr("fill","none").attr("stroke","#e9e6df").attr("stroke-width",1);
+            g.append("circle").attr("r",1.2).attr("fill","#e9e6df");}
+    else g.append("circle").attr("r",1.6).attr("fill","#0a0a0b").attr("stroke","#e9e6df").attr("stroke-opacity",.7).attr("stroke-width",.8);
+    g.append("text").attr("x",6).attr("y",3).text(d.properties.name)
+      .attr("fill","#e9e6df").attr("fill-opacity",cap?.95:.6).attr("font-size",cap?10.5:8.5).attr("font-family","var(--mono)")
+      .attr("letter-spacing",cap?".08em":".02em").attr("paint-order","stroke").attr("stroke","#0a0a0b").attr("stroke-width",3);
+  });
+  // jūrų pavadinimai
+  [["BALTIJOS  JŪRA",[19.3,56.2],0],["RYGOS ĮL.",[23.4,57.6],0],["SUOMIJOS  ĮLANKA",[25.5,59.85],-6],["BOTNIJOS  ĮLANKA",[20.6,62.4],-62]]
+    .forEach(([t,c,r])=>{const [x,y]=proj(c);gLab.append("text").attr("transform",`translate(${x},${y}) rotate(${r})`).attr("text-anchor","middle")
+      .text(t).attr("fill","#cfd8dc").attr("fill-opacity",.45).attr("font-size",10).attr("font-style","italic").attr("letter-spacing",".3em").attr("font-family","Georgia,serif");});
+  // šalių pavadinimai
+  const LBL={LTU:[24.1,55.55],LVA:[26.4,56.55],EST:[25.9,58.75],FIN:[26.5,64],POL:[20.2,52.6],BLR:[28,53.6],RUS:[31.5,57.2],KGD:[21.4,54.42]};
+  COUNTRIES.forEach(c=>{const [x,y]=proj(LBL[c.id]);
+    gLab.append("text").attr("x",x).attr("y",y).attr("text-anchor","middle").text(c.nm.toUpperCase())
+      .attr("class","clabel").attr("data-id",c.id)
+      .attr("fill","#e9e6df").attr("fill-opacity",c.hidden?.38:.9).attr("font-size",c.id==="KGD"?9:13).attr("font-weight",600)
+      .attr("letter-spacing",".42em").attr("font-family","var(--mono)").attr("paint-order","stroke").attr("stroke","#0a0a0b").attr("stroke-width",4);});
+  renderAlerts();
+}
+
+/* ---------- pavojų sluoksnis ---------- */
+let STATE = structuredClone(BASE), demoIdx=-1, selected=null;
+function renderAlerts(){
+  gAlert.selectAll("*").remove(); gAlertEdge.selectAll("*").remove();
+  COUNTRIES.filter(c=>!c.hidden).forEach(c=>{
+    const s=STATE[c.id], lv=s.level, d=path(SHAPES[c.id]);
+    const hit = gAlert.append("path").attr("d",d).attr("fill","transparent").style("cursor","pointer").on("click",()=>select(c.id));
+    if(lv==="none") return;
+    gAlert.append("path").attr("d",d).attr("fill",COLOR[lv]).attr("fill-opacity",lv==="white"?.05:.16).attr("pointer-events","none");
+    if(lv!=="white") gAlert.append("path").attr("d",d).attr("fill",`url(#h-${lv})`).attr("pointer-events","none");
+    const e=gAlertEdge.append("path").attr("d",d).attr("fill","none").attr("stroke",COLOR[lv])
+      .attr("stroke-width",lv==="white"?1.2:2.4).attr("stroke-opacity",lv==="white"?.55:1).attr("stroke-linejoin","round")
+      .attr("filter",lv==="white"?null:"url(#glow)").attr("pointer-events","none").attr("vector-effect","non-scaling-stroke");
+    if(lv==="red") e.append("animate").attr("attributeName","stroke-opacity").attr("values","1;.35;1").attr("dur","1.6s").attr("repeatCount","indefinite");
+  });
+  if(selected){gAlertEdge.append("path").attr("d",path(SHAPES[selected])).attr("fill","none").attr("stroke","#fff")
+    .attr("stroke-width",1).attr("stroke-dasharray","4 3").attr("vector-effect","non-scaling-stroke").attr("pointer-events","none");}
+  renderCards();
+}
+const ORDER={red:0,yellow:1,white:2,none:3};
+function renderCards(){
+  const box=document.getElementById("cards");
+  const list=COUNTRIES.filter(c=>!c.hidden).sort((a,b)=>ORDER[STATE[a.id].level]-ORDER[STATE[b.id].level]);
+  box.innerHTML=list.map(c=>{const s=STATE[c.id];
+    const t=s.time?new Date(s.time).toLocaleTimeString("lt-LT",{hour:"2-digit",minute:"2-digit"}):"—";
+    return `<div class="card${selected===c.id?" sel":""}" data-l="${s.level}" data-id="${c.id}">
+      <div class="row"><span class="cc">${c.cc}</span><span class="nm">${c.nm}</span></div>
+      <div class="st">${(s.kind&&s.kind!=="air"&&LEVEL_ALT[s.level])||LEVEL_TXT[s.level]}</div>${s.kind?`<div class="kd">${KIND[s.kind]||KIND.other}</div>`:""}
+      <div class="ds">${s.text}</div>
+      <div class="mt"><span>${c.src}</span><span>${t}</span></div></div>`;}).join("");
+  box.querySelectorAll(".card").forEach(el=>el.onclick=()=>select(el.dataset.id,true));
+}
+function select(id,fromCard){
+  selected = selected===id?null:id; renderAlerts();
+  if(!fromCard){const el=document.querySelector(`.card[data-id="${id}"]`); el&&el.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});}
+}
+
+/* ---------- duomenys ---------- */
+// Vietinis serveris (Termux / APK) pateikia /alerts.json: {"LTU":{"level":"red","text":"…","time":"ISO"}, …}
+async function poll(){
+  if(demoIdx>=0) return;
+  try{
+    const r=await fetch("alerts.json?t="+Date.now(),{cache:"no-store"}); if(!r.ok) throw 0;
+    const j=await r.json(); STATE=structuredClone(BASE); for(const k in j) if(STATE[k]) STATE[k]={...STATE[k],...j[k]};
+    setLive(true); renderAlerts();
+  }catch(e){ setLive(false); }
+}
+function setLive(on){
+  document.getElementById("live").classList.toggle("live",on);
+  document.getElementById("src").textContent=on?"live":"offline";
+  document.getElementById("upd").textContent=(on?"atnaujinta ":"nėra ryšio su serveriu · ")+new Date().toLocaleTimeString("lt-LT",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+}
+document.getElementById("demo").onclick=e=>{
+  demoIdx = demoIdx+1>=DEMOS.length?-1:demoIdx+1;
+  e.target.classList.toggle("on",demoIdx>=0); e.target.textContent=demoIdx>=0?`Demo ${demoIdx+1}/${DEMOS.length}`:"Demo";
+  STATE=structuredClone(BASE);
+  if(demoIdx>=0){const now=new Date().toISOString();for(const k in DEMOS[demoIdx])STATE[k]={...DEMOS[demoIdx][k],time:now};
+    document.getElementById("upd").textContent="demonstraciniai duomenys";}
+  else poll();
+  renderAlerts();
+};
+
+/* ---------- zoom ---------- */
+const zoom=d3.zoom().scaleExtent([.7,14]).on("zoom",ev=>{
+  root.attr("transform",ev.transform); k=ev.transform.k;
+  gLab.selectAll(".cities g").style("display",function(){return (+this.dataset.r>4 && k<1.8)?"none":null})
+    .each(function(){const t=this.getAttribute("transform").replace(/ scale\(.*\)/,"");this.setAttribute("transform",t+` scale(${1/k})`);});
+  gLab.selectAll(".clabel").attr("transform",function(){const x=this.getAttribute("x"),y=this.getAttribute("y");return `translate(${x},${y}) scale(${1/Math.sqrt(k)}) translate(${-x},${-y})`;});
+});
+svg.call(zoom).on("dblclick.zoom",null);
+
+addEventListener("resize",()=>{clearTimeout(window._r);window._r=setTimeout(()=>{draw();svg.call(zoom.transform,d3.zoomIdentity)},150)});
+draw(); svg.call(zoom.transform,d3.zoomIdentity); poll(); setInterval(poll,20000);
+</script>
+</body>
+</html>

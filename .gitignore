@@ -1,0 +1,4 @@
+.ne/
+__pycache__/
+*.pyc
+alerts.json
