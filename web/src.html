@@ -13,7 +13,9 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mono);overflow:hidden;-webkit-tap-highlight-color:transparent}
+#base{position:fixed;left:0;top:0;transform-origin:0 0;will-change:transform;display:block}
 #map{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#grain{position:fixed;inset:0;pointer-events:none;opacity:.6}
 /* header */
 .top{position:fixed;top:0;left:0;right:0;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;display:flex;align-items:center;gap:10px;pointer-events:none;
   background:linear-gradient(var(--bg) 30%,transparent)}
@@ -58,7 +60,9 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
 </style>
 </head>
 <body>
+<canvas id="base"></canvas>
 <svg id="map" xmlns="http://www.w3.org/2000/svg"></svg>
+<div id="grain"></div>
 
 <div class="top">
   <div><h1>Oro pavojus · Baltija</h1><div class="sub" id="upd">kraunama…</div></div>
@@ -107,40 +111,34 @@ const DEMOS = [
    FIN:{level:"yellow",kind:"air",text:"Vaaratiedote: ilmauhka, Kaakkois-Suomi. Mene sisätiloihin."}, POL:{level:"white",text:"Aktyvių perspėjimų nėra."}},
 ];
 
-/* ---------- žemėlapis ---------- */
+/* ---------- žemėlapis ----------
+   Pagrindas (jūra, sausuma, keliai, upės, sienos, užrašai) piešiamas į <canvas> vieną kartą.
+   Per zoom/pan canvas tik pastumiamas CSS transform'u, o pabaigus perpiešiamas ryškiai.
+   SVG lieka tik pavojų sluoksniui (≤5 kontūrai), todėl judėjimas lengvas. */
 const svg = d3.select("#map");
+const cv = document.getElementById("base"), ctx = cv.getContext("2d");
 const W = () => innerWidth, H = () => innerHeight;
+const DPR = () => Math.min(devicePixelRatio||1, 2);
+const BG="#0a0a0b", INK="233,230,223";
 const defs = svg.append("defs");
-
-// pieštuko drebulys
-defs.append("filter").attr("id","rough").attr("x","-5%").attr("y","-5%").attr("width","110%").attr("height","110%")
-  .call(f=>{f.append("feTurbulence").attr("type","fractalNoise").attr("baseFrequency",.9).attr("numOctaves",2).attr("seed",3).attr("result","n");
-           f.append("feDisplacementMap").attr("in","SourceGraphic").attr("in2","n").attr("scale",1.6);});
-defs.append("filter").attr("id","glow").attr("x","-20%").attr("y","-20%").attr("width","140%").attr("height","140%")
-  .call(f=>{f.append("feGaussianBlur").attr("stdDeviation",4).attr("result","b");
-           const m=f.append("feMerge");m.append("feMergeNode").attr("in","b");m.append("feMergeNode").attr("in","SourceGraphic");});
-// popieriaus grūdas
-defs.append("filter").attr("id","grain").call(f=>{
-  f.append("feTurbulence").attr("type","fractalNoise").attr("baseFrequency",1.2).attr("numOctaves",2).attr("stitchTiles","stitch");
-  f.append("feColorMatrix").attr("values","0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .07 0");});
-// štrichavimas
 function hatch(id,color,gap,w,op,ang){
   defs.append("pattern").attr("id",id).attr("patternUnits","userSpaceOnUse").attr("width",gap).attr("height",gap)
     .attr("patternTransform",`rotate(${ang})`)
     .append("line").attr("x1",0).attr("y1",0).attr("x2",0).attr("y2",gap).attr("stroke",color).attr("stroke-width",w).attr("stroke-opacity",op);
 }
-hatch("h-land","#e9e6df",5,.5,.10,35);
-hatch("h-lake","#e9e6df",3,.5,.22,-35);
 for(const k of ["red","yellow","white"]) hatch("h-"+k,COLOR[k],6,1.2,.55,45);
 
-const o = topojson.object;
+// popieriaus grūdas – maža triukšmo plytelė kaip CSS fonas (be SVG filtrų)
+(()=>{const c=document.createElement("canvas");c.width=c.height=128;const x=c.getContext("2d");const d=x.createImageData(128,128);
+  for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=Math.random()*20;}
+  x.putImageData(d,0,0);document.getElementById("grain").style.backgroundImage=`url(${c.toDataURL()})`;})();
+
 const L = TOPO.objects;
 const countries = topojson.feature(TOPO,L.c).features;
-const regions = topojson.feature(TOPO,L.r).features;
 const rivers = topojson.feature(TOPO,L.rv).features;
 const lakes = topojson.feature(TOPO,L.lk).features;
 const roads = topojson.feature(TOPO,L.rd).features;
-const rails = topojson.feature(TOPO,L.rl).features;
+const rails = topojson.feature(TOPO,L.rl);
 const places = topojson.feature(TOPO,L.pl).features;
 const land = topojson.merge(TOPO,L.c.geometries);
 const inner = topojson.mesh(TOPO,L.c,(a,b)=>a!==b);
@@ -161,83 +159,86 @@ const fitTo = {type:"FeatureCollection",features:["LTU","LVA","EST","FIN","KGD",
 const path = d3.geoPath(proj);
 
 const root = svg.append("g");
-const gSea = root.append("g"), gLand=root.append("g"), gAlert=root.append("g"), gLines=root.append("g"),
-      gBord=root.append("g"), gAlertEdge=root.append("g"), gLab=root.append("g");
-svg.append("rect").attr("width","100%").attr("height","100%").attr("filter","url(#grain)").attr("pointer-events","none");
+const gAlert=root.append("g"), gAlertEdge=root.append("g");
 
-let k=1;
-function draw(){
+// Path2D talpykla – suskaičiuojama tik pasikeitus ekrano dydžiui
+let P = null, LABELS = [];
+const SEA=[["BALTIJOS  JŪRA",[19.3,56.2],0],["RYGOS ĮL.",[23.4,57.6],0],["SUOMIJOS  ĮLANKA",[25.5,59.85],-6],["BOTNIJOS  ĮLANKA",[20.6,62.4],-62]];
+const LBL={LTU:[24.1,55.55],LVA:[26.4,56.55],EST:[25.9,58.75],FIN:[26.5,64],POL:[20.2,52.6],BLR:[28,53.6],RUS:[31.5,57.2],KGD:[21.4,54.42]};
+function build(){
   const pad = Math.min(W(),H())*.04;
   const bottom = W()<900 ? 150 : 20, right = W()<900?0:340;
   proj.fitExtent([[pad,60],[W()-pad-right,H()-bottom]],fitTo);
-  [gSea,gLand,gAlert,gLines,gBord,gAlertEdge,gLab].forEach(g=>g.selectAll("*").remove());
-
-  // graticule
-  gSea.append("path").datum(d3.geoGraticule().step([2,1])()).attr("d",path)
-    .attr("fill","none").attr("stroke","#e9e6df").attr("stroke-opacity",.05).attr("stroke-width",.6);
-  // vandens linijos aplink krantą
-  const landD = path(land);
-  const rings=[38,31,25,20,15.5,12,9,6.5,4.5,3];
-  rings.forEach((w,i)=>{
-    gSea.append("path").attr("d",landD).attr("fill","none").attr("stroke","#e9e6df")
-      .attr("stroke-opacity",.07+i*.03).attr("stroke-width",w*2).attr("stroke-linejoin","round");
-    gSea.append("path").attr("d",landD).attr("fill","none").attr("stroke","#0a0a0b")
-      .attr("stroke-width",w*2-1.1).attr("stroke-linejoin","round");
-  });
-  // sausuma
-  gLand.append("path").attr("d",landD).attr("fill","#0f0f10");
-  gLand.append("path").attr("d",landD).attr("fill","url(#h-land)");
-  // regionai
-  gLines.append("path").attr("d",path(regMesh)).attr("fill","none").attr("stroke","#e9e6df")
-    .attr("stroke-opacity",.16).attr("stroke-width",.5).attr("stroke-dasharray","2 2.5");
-  // keliai
-  gLines.append("g").selectAll("path").data(roads).join("path").attr("d",path).attr("fill","none")
-    .attr("stroke","#e9e6df").attr("stroke-opacity",d=>d.properties.scalerank<=4?.22:.11).attr("stroke-width",d=>d.properties.scalerank<=4?.7:.45);
-  // geležinkeliai
-  const rd=path({type:"FeatureCollection",features:rails});
-  gLines.append("path").attr("d",rd).attr("fill","none").attr("stroke","#e9e6df").attr("stroke-opacity",.2).attr("stroke-width",.5);
-  gLines.append("path").attr("d",rd).attr("fill","none").attr("stroke","#e9e6df").attr("stroke-opacity",.22).attr("stroke-width",2.2).attr("stroke-dasharray",".5 5");
-  // upės, ežerai
-  gLines.append("g").selectAll("path").data(rivers).join("path").attr("d",path).attr("fill","none")
-    .attr("stroke","#cfd8dc").attr("stroke-opacity",.35).attr("stroke-width",d=>Math.max(.4,1.3-d.properties.scalerank*.1));
-  const lk = path({type:"FeatureCollection",features:lakes});
-  gLines.append("path").attr("d",lk).attr("fill","#0a0a0b");
-  gLines.append("path").attr("d",lk).attr("fill","url(#h-lake)").attr("stroke","#e9e6df").attr("stroke-opacity",.5).attr("stroke-width",.6);
-  // sienos – dvigubas pieštukas
-  const bd = path(inner);
-  gBord.append("path").attr("d",bd).attr("fill","none").attr("stroke","#e9e6df").attr("stroke-opacity",.55).attr("stroke-width",1.1).attr("filter","url(#rough)");
-  gBord.append("path").attr("d",bd).attr("fill","none").attr("stroke","#e9e6df").attr("stroke-opacity",.3).attr("stroke-width",.5).attr("transform","translate(1.2,.8)");
-  gBord.append("path").attr("d",landD).attr("fill","none").attr("stroke","#e9e6df").attr("stroke-opacity",.85).attr("stroke-width",1).attr("filter","url(#rough)");
-  gBord.append("path").attr("d",landD).attr("fill","none").attr("stroke","#e9e6df").attr("stroke-opacity",.25).attr("stroke-width",.5).attr("transform","translate(-1,1.1)");
-
-  // miestai
+  const P2 = g=>new Path2D(path(g)||"");
+  P = {
+    grat: P2(d3.geoGraticule().step([2,1])()), land: P2(land), reg: P2(regMesh), inner: P2(inner),
+    roadsMaj: P2({type:"FeatureCollection",features:roads.filter(d=>d.properties.m===1)}),
+    roadsMin: P2({type:"FeatureCollection",features:roads.filter(d=>d.properties.m!==1)}),
+    rails: P2(rails), lakes: P2({type:"FeatureCollection",features:lakes}),
+    rivers: d3.groups(rivers,d=>Math.min(9,d.properties.scalerank|0)).map(([r,fs])=>[r,P2({type:"FeatureCollection",features:fs})]),
+  };
   const pl = places.filter(d=>d.properties.scalerank<=5 || ["LTU","LVA","EST"].includes(d.properties.adm0_a3)&&d.properties.scalerank<=7);
-  const cg = gLab.append("g").attr("class","cities");
-  pl.forEach(d=>{
-    const [x,y]=proj(d.geometry.coordinates); const cap=d.properties.featurecla.includes("capital");
-    if(x<0||y<0||x>W()||y>H())return;
-    const g=cg.append("g").attr("transform",`translate(${x},${y})`).attr("data-r",d.properties.scalerank);
-    if(cap){g.append("rect").attr("x",-3).attr("y",-3).attr("width",6).attr("height",6).attr("fill","none").attr("stroke","#e9e6df").attr("stroke-width",1);
-            g.append("circle").attr("r",1.2).attr("fill","#e9e6df");}
-    else g.append("circle").attr("r",1.6).attr("fill","#0a0a0b").attr("stroke","#e9e6df").attr("stroke-opacity",.7).attr("stroke-width",.8);
-    g.append("text").attr("x",6).attr("y",3).text(d.properties.name)
-      .attr("fill","#e9e6df").attr("fill-opacity",cap?.95:.6).attr("font-size",cap?10.5:8.5).attr("font-family","var(--mono)")
-      .attr("letter-spacing",cap?".08em":".02em").attr("paint-order","stroke").attr("stroke","#0a0a0b").attr("stroke-width",3);
-  });
-  // jūrų pavadinimai
-  [["BALTIJOS  JŪRA",[19.3,56.2],0],["RYGOS ĮL.",[23.4,57.6],0],["SUOMIJOS  ĮLANKA",[25.5,59.85],-6],["BOTNIJOS  ĮLANKA",[20.6,62.4],-62]]
-    .forEach(([t,c,r])=>{const [x,y]=proj(c);gLab.append("text").attr("transform",`translate(${x},${y}) rotate(${r})`).attr("text-anchor","middle")
-      .text(t).attr("fill","#cfd8dc").attr("fill-opacity",.45).attr("font-size",10).attr("font-style","italic").attr("letter-spacing",".3em").attr("font-family","Georgia,serif");});
-  // šalių pavadinimai
-  const LBL={LTU:[24.1,55.55],LVA:[26.4,56.55],EST:[25.9,58.75],FIN:[26.5,64],POL:[20.2,52.6],BLR:[28,53.6],RUS:[31.5,57.2],KGD:[21.4,54.42]};
-  COUNTRIES.forEach(c=>{const [x,y]=proj(LBL[c.id]);
-    gLab.append("text").attr("x",x).attr("y",y).attr("text-anchor","middle").text(c.nm.toUpperCase())
-      .attr("class","clabel").attr("data-id",c.id)
-      .attr("fill","#e9e6df").attr("fill-opacity",c.hidden?.38:.9).attr("font-size",c.id==="KGD"?9:13).attr("font-weight",600)
-      .attr("letter-spacing",".42em").attr("font-family","var(--mono)").attr("paint-order","stroke").attr("stroke","#0a0a0b").attr("stroke-width",4);});
-  renderAlerts();
+  LABELS = pl.map(d=>({p:proj(d.geometry.coordinates),t:d.properties.name,r:d.properties.scalerank,cap:d.properties.featurecla.includes("capital")}));
 }
+// štrichų raštai (canvas)
+function pat(gap,w,a,ang){const c=document.createElement("canvas");const n=gap*4;c.width=c.height=n;const x=c.getContext("2d");
+  x.strokeStyle=`rgba(${INK},${a})`;x.lineWidth=w;for(let i=-n;i<2*n;i+=gap){x.beginPath();x.moveTo(i,0);x.lineTo(i+n*Math.tan(ang),n);x.stroke();}
+  return ctx.createPattern(c,"repeat");}
+const PAT_LAND = pat(5,.5,.10,.6), PAT_LAKE = pat(3,.5,.22,-.6);
 
+let T0 = d3.zoomIdentity;   // transformacija, kuria paskutinį kartą nupieštas canvas
+function renderBase(t){
+  const dpr=DPR(), w=W(), h=H();
+  if(cv.width!==w*dpr||cv.height!==h*dpr){cv.width=w*dpr;cv.height=h*dpr;cv.style.width=w+"px";cv.style.height=h+"px";}
+  cv.style.transform=""; T0=t;
+  const k=t.k, px=1/k;   // px – vienas ekrano pikselis žemėlapio koordinatėmis
+  ctx.setTransform(dpr,0,0,dpr,0,0); ctx.fillStyle=BG; ctx.fillRect(0,0,w,h);
+  ctx.setTransform(dpr*k,0,0,dpr*k,dpr*t.x,dpr*t.y);
+  ctx.lineJoin="round"; ctx.lineCap="round";
+  const S=(p2,a,lw,dash)=>{ctx.strokeStyle=`rgba(${INK},${a})`;ctx.lineWidth=lw*px;ctx.setLineDash(dash?dash.map(v=>v*px):[]);ctx.stroke(p2);};
+  S(P.grat,.05,.6);
+  // vandens linijos aplink krantą
+  [38,31,25,20,15.5,12,9,6.5,4.5,3].forEach((r,i)=>{S(P.land,.07+i*.03,r*2);ctx.strokeStyle=BG;ctx.lineWidth=(r*2-1.1)*px;ctx.stroke(P.land);});
+  ctx.setLineDash([]);
+  ctx.fillStyle="#0f0f10"; ctx.fill(P.land);
+  const m=new DOMMatrix().scale(px); PAT_LAND.setTransform(m); PAT_LAKE.setTransform(m);
+  ctx.fillStyle=PAT_LAND; ctx.fill(P.land);
+  S(P.reg,.16,.5,[2,2.5]);
+  S(P.roadsMin,.11,.45); S(P.roadsMaj,.22,.7);
+  S(P.rails,.2,.5); S(P.rails,.22,2.2,[.5,5]); ctx.setLineDash([]);
+  for(const [r,p2] of P.rivers){ctx.strokeStyle="rgba(207,216,220,.35)";ctx.lineWidth=Math.max(.4,1.3-r*.1)*px;ctx.stroke(p2);}
+  ctx.fillStyle=BG; ctx.fill(P.lakes); ctx.fillStyle=PAT_LAKE; ctx.fill(P.lakes); S(P.lakes,.5,.6);
+  // sienos – dvigubas pieštukas
+  S(P.inner,.55,1.1); S(P.land,.85,1);
+  ctx.save(); ctx.translate(1.2*px,.8*px); S(P.inner,.3,.5); ctx.restore();
+  ctx.save(); ctx.translate(-1*px,1.1*px); S(P.land,.25,.5); ctx.restore();
+  // užrašai – ekrano koordinatėmis, kad liktų ryškūs ir nesididintų
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const mono = getComputedStyle(document.body).fontFamily;
+  const txt=(s,x,y,size,a,opts={})=>{ctx.font=`${opts.w||400} ${opts.it?"italic ":""}${size}px ${opts.ff||mono}`;
+    ctx.letterSpacing=(opts.ls||0)+"px"; ctx.textAlign=opts.al||"left";
+    ctx.lineWidth=opts.sw||3; ctx.strokeStyle=BG; ctx.strokeText(s,x,y); ctx.fillStyle=opts.col||`rgba(${INK},${a})`; ctx.fillText(s,x,y);};
+  SEA.forEach(([s,c,r])=>{const [x,y]=t.apply(proj(c));ctx.save();ctx.translate(x,y);ctx.rotate(r*Math.PI/180);
+    txt(s,0,0,10,.45,{it:1,ls:3,al:"center",ff:"Georgia,serif",col:"rgba(207,216,220,.45)",sw:0});ctx.restore();});
+  for(const l of LABELS){ if(l.r>4 && k<1.8) continue; const [x,y]=t.apply(l.p); if(x<-50||y<-20||x>w+20||y>h+20) continue;
+    ctx.strokeStyle=`rgba(${INK},.9)`; ctx.lineWidth=1;
+    if(l.cap){ctx.strokeRect(x-3,y-3,6,6);ctx.fillStyle=`rgba(${INK},1)`;ctx.beginPath();ctx.arc(x,y,1.2,0,7);ctx.fill();}
+    else{ctx.fillStyle=BG;ctx.beginPath();ctx.arc(x,y,1.6,0,7);ctx.fill();ctx.strokeStyle=`rgba(${INK},.7)`;ctx.lineWidth=.8;ctx.stroke();}
+    txt(l.t,x+6,y+3,l.cap?10.5:8.5,l.cap?.95:.6,{ls:l.cap?.8:.2});
+  }
+  const ks=Math.max(.75,Math.min(1.6,Math.sqrt(k)));
+  COUNTRIES.forEach(c=>{const [x,y]=t.apply(proj(LBL[c.id]));
+    txt(c.nm.toUpperCase(),x,y,(c.id==="KGD"?9:13)*ks,c.hidden?.38:.9,{w:600,ls:5.5*ks,al:"center",sw:4});});
+}
+let raf=0, idle=0;
+function onZoom(t){
+  root.attr("transform",t);
+  defs.selectAll("pattern").attr("patternTransform",`scale(${1/t.k}) rotate(45)`);   // štrichai lieka vienodo tankio
+  // greitas kelias: tik pastumiam jau nupieštą canvas
+  const s=t.k/T0.k; cv.style.transform=`translate(${t.x-T0.x*s}px,${t.y-T0.y*s}px) scale(${s})`;
+  clearTimeout(idle); idle=setTimeout(()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>renderBase(t));},140);
+}
+function draw(){ build(); renderAlerts(); }
 /* ---------- pavojų sluoksnis ---------- */
 let STATE = structuredClone(BASE), demoIdx=-1, selected=null;
 function renderAlerts(){
@@ -248,9 +249,11 @@ function renderAlerts(){
     if(lv==="none") return;
     gAlert.append("path").attr("d",d).attr("fill",COLOR[lv]).attr("fill-opacity",lv==="white"?.05:.16).attr("pointer-events","none");
     if(lv!=="white") gAlert.append("path").attr("d",d).attr("fill",`url(#h-${lv})`).attr("pointer-events","none");
+    if(lv!=="white") gAlertEdge.append("path").attr("d",d).attr("fill","none").attr("stroke",COLOR[lv]).attr("stroke-opacity",.22)
+      .attr("stroke-width",9).attr("stroke-linejoin","round").attr("pointer-events","none").attr("vector-effect","non-scaling-stroke");
     const e=gAlertEdge.append("path").attr("d",d).attr("fill","none").attr("stroke",COLOR[lv])
       .attr("stroke-width",lv==="white"?1.2:2.4).attr("stroke-opacity",lv==="white"?.55:1).attr("stroke-linejoin","round")
-      .attr("filter",lv==="white"?null:"url(#glow)").attr("pointer-events","none").attr("vector-effect","non-scaling-stroke");
+      .attr("pointer-events","none").attr("vector-effect","non-scaling-stroke");
     if(lv==="red") e.append("animate").attr("attributeName","stroke-opacity").attr("values","1;.35;1").attr("dur","1.6s").attr("repeatCount","indefinite");
   });
   if(selected){gAlertEdge.append("path").attr("d",path(SHAPES[selected])).attr("fill","none").attr("stroke","#fff")
@@ -308,16 +311,10 @@ document.getElementById("demo").onclick=e=>{
 };
 
 /* ---------- zoom ---------- */
-const zoom=d3.zoom().scaleExtent([.7,14]).on("zoom",ev=>{
-  root.attr("transform",ev.transform); k=ev.transform.k;
-  gLab.selectAll(".cities g").style("display",function(){return (+this.dataset.r>4 && k<1.8)?"none":null})
-    .each(function(){const t=this.getAttribute("transform").replace(/ scale\(.*\)/,"");this.setAttribute("transform",t+` scale(${1/k})`);});
-  gLab.selectAll(".clabel").attr("transform",function(){const x=this.getAttribute("x"),y=this.getAttribute("y");return `translate(${x},${y}) scale(${1/Math.sqrt(k)}) translate(${-x},${-y})`;});
-});
+const zoom=d3.zoom().scaleExtent([.7,14]).on("zoom",ev=>onZoom(ev.transform));
 svg.call(zoom).on("dblclick.zoom",null);
-
-addEventListener("resize",()=>{clearTimeout(window._r);window._r=setTimeout(()=>{draw();svg.call(zoom.transform,d3.zoomIdentity)},150)});
-draw(); svg.call(zoom.transform,d3.zoomIdentity); poll(); setInterval(poll,60000);
+addEventListener("resize",()=>{clearTimeout(window._r);window._r=setTimeout(()=>{draw();svg.call(zoom.transform,d3.zoomIdentity);renderBase(d3.zoomIdentity);},150)});
+draw(); svg.call(zoom.transform,d3.zoomIdentity); renderBase(d3.zoomIdentity); poll(); setInterval(poll,60000);
 </script>
 </body>
 </html>
