@@ -2,96 +2,57 @@
  "LTU": {
   "level": "white",
   "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T01:36:50+00:00"
+  "time": "2026-11-03T07:07:43+00:00"
  },
  "LVA": {
   "level": "white",
   "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T01:36:50+00:00"
+  "time": "2026-11-03T07:07:43+00:00"
  },
  "EST": {
-  "level": "white",
-  "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T01:36:50+00:00"
- },
- "FIN": {
-  "level": "white",
-  "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T01:36:50+00:00"
- },
- "POL": {
   "level": "yellow",
   "kind": "weather",
-  "text": "Yellow snow-ice warning — Dolnośląskie Province Jelenia Góra County  (+4 kiti įspėjimai)",
-  "time": "2026-11-02T20:00:00+00:00",
-  "url": "https://meteoalarm.org?geocode=EMMA_ID:PL0261",
+  "text": "Wind Level 1 — Moonsund",
+  "time": "2026-11-03T15:00:00+00:00",
+  "url": "https://meteoalarm.org?polygon=c3ec0517-545c-42c1-97d5-5b05696431de,0,0,0",
   "src": "MeteoAlarm",
   "items": [
    {
     "level": "yellow",
     "kind": "weather",
-    "text": "Yellow snow-ice warning — Dolnośląskie Province Jelenia Góra County",
-    "event": "Yellow snow-ice warning",
-    "area": "Dolnośląskie Province Jelenia Góra County",
+    "text": "Wind Level 1 — Moonsund",
+    "event": "Wind Level 1",
+    "area": "Moonsund",
     "severity": "Moderate",
-    "expires": "2026-11-03T09:00:00+00:00",
-    "time": "2026-11-02T20:00:00+00:00",
-    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL0261",
-    "src": "MeteoAlarm"
-   },
-   {
-    "level": "yellow",
-    "kind": "weather",
-    "text": "Yellow snow-ice warning — Dolnośląskie Province Wałbrzyski County",
-    "event": "Yellow snow-ice warning",
-    "area": "Dolnośląskie Province Wałbrzyski County",
-    "severity": "Moderate",
-    "expires": "2026-11-03T09:00:00+00:00",
-    "time": "2026-11-02T20:00:00+00:00",
-    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL0221",
-    "src": "MeteoAlarm"
-   },
-   {
-    "level": "yellow",
-    "kind": "weather",
-    "text": "Yellow snow-ice warning — Dolnośląskie Province Lwówecki County",
-    "event": "Yellow snow-ice warning",
-    "area": "Dolnośląskie Province Lwówecki County",
-    "severity": "Moderate",
-    "expires": "2026-11-03T09:00:00+00:00",
-    "time": "2026-11-02T20:00:00+00:00",
-    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL0212",
-    "src": "MeteoAlarm"
-   },
-   {
-    "level": "yellow",
-    "kind": "weather",
-    "text": "Yellow snow-ice warning — Dolnośląskie Province Kamiennogórski County",
-    "event": "Yellow snow-ice warning",
-    "area": "Dolnośląskie Province Kamiennogórski County",
-    "severity": "Moderate",
-    "expires": "2026-11-03T09:00:00+00:00",
-    "time": "2026-11-02T20:00:00+00:00",
-    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL0207",
-    "src": "MeteoAlarm"
-   },
-   {
-    "level": "yellow",
-    "kind": "weather",
-    "text": "Yellow snow-ice warning — Dolnośląskie Province Karkonoski County",
-    "event": "Yellow snow-ice warning",
-    "area": "Dolnośląskie Province Karkonoski County",
-    "severity": "Moderate",
-    "expires": "2026-11-03T09:00:00+00:00",
-    "time": "2026-11-02T20:00:00+00:00",
-    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL0206",
+    "expires": "2026-11-04T02:00:00+00:00",
+    "time": "2026-11-03T15:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=c3ec0517-545c-42c1-97d5-5b05696431de,0,0,0",
     "src": "MeteoAlarm"
    }
-  ],
-  "regions": {
-   "PL-DS": "teal"
-  },
-  "regionsOnly": true
+  ]
+ },
+ "FIN": {
+  "level": "white",
+  "text": "Aktyvių perspėjimų nėra.",
+  "time": "2026-11-03T07:07:43+00:00"
+ },
+ "POL": {
+  "level": "yellow",
+  "kind": "air",
+  "text": "Alert RCB - zagrożenie z powietrza (03.11)",
+  "time": "2026-11-03T00:00:00+00:00",
+  "url": "https://www.gov.pl/web/rcb/alert-rcb---zagrozenie-z-powietrza-0311",
+  "src": "Alert RCB",
+  "items": [
+   {
+    "level": "yellow",
+    "kind": "air",
+    "text": "Alert RCB - zagrożenie z powietrza (03.11)",
+    "time": "2026-11-03T00:00:00+00:00",
+    "url": "https://www.gov.pl/web/rcb/alert-rcb---zagrozenie-z-powietrza-0311",
+    "src": "Alert RCB"
+   }
+  ]
  },
  "UKR": {
   "level": "red",
@@ -103,8 +64,6 @@
    "UA-14": "red",
    "UA-18": "red",
    "UA-23": "red",
-   "UA-26": "red",
-   "UA-30": "red",
    "UA-32": "red",
    "UA-35": "red",
    "UA-40": "red",
@@ -112,23 +71,17 @@
    "UA-48": "red",
    "UA-51": "red",
    "UA-53": "red",
-   "UA-59": "red",
-   "UA-61": "red",
-   "UA-63": "red",
-   "UA-65": "red",
-   "UA-68": "red",
    "UA-71": "red",
-   "UA-74": "red",
-   "UA-77": "red"
+   "UA-74": "red"
   },
   "regionsOnly": true,
-  "text": "Oro pavojus 23 iš 27 sričių. Krymas – nuolatinis pavojus (okupuota teritorija; šaltinis jo nepateikia).",
-  "time": "2026-11-03T01:36:50+00:00",
+  "text": "Oro pavojus 15 iš 27 sričių. Krymas – nuolatinis pavojus (okupuota teritorija; šaltinis jo nepateikia).",
+  "time": "2026-11-03T07:07:43+00:00",
   "src": "ubilling.net.ua (neoficialus)",
   "url": "https://map.ukrainealarm.com/"
  },
  "_meta": {
-  "checked": "2026-11-03T01:36:50+00:00",
+  "checked": "2026-11-03T07:07:43+00:00",
   "sources": {
    "lt72": {
     "ok": false,
@@ -137,37 +90,37 @@
    "meteoalarm-lithuania": {
     "ok": true,
     "n": 0,
-    "ms": 948
+    "ms": 782
    },
    "meteoalarm-latvia": {
     "ok": true,
     "n": 0,
-    "ms": 785
+    "ms": 1023
    },
    "kriis": {
     "ok": true,
     "n": 0,
-    "ms": 1658
+    "ms": 779
    },
    "meteoalarm-estonia": {
     "ok": true,
-    "n": 0,
-    "ms": 944
+    "n": 1,
+    "ms": 1052
    },
    "meteoalarm-finland": {
     "ok": true,
     "n": 0,
-    "ms": 1832
+    "ms": 902
    },
    "rcb": {
     "ok": true,
-    "n": 0,
-    "ms": 1222
+    "n": 1,
+    "ms": 1523
    },
    "meteoalarm-poland": {
     "ok": true,
-    "n": 5,
-    "ms": 549
+    "n": 0,
+    "ms": 458
    },
    "ukrainealarm.com": {
     "ok": false,
@@ -179,9 +132,9 @@
    },
    "ubilling.net.ua": {
     "ok": true,
-    "n": 22,
+    "n": 14,
     "of": 26,
-    "ms": 1030
+    "ms": 1233
    }
   }
  }
