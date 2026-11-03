@@ -299,7 +299,7 @@ function setLive(on){
   document.getElementById("src").textContent=on?"live":"offline";
   const t=on&&META&&META.checked?new Date(META.checked):new Date();
   const ago=Math.round((Date.now()-t)/60000);
-  document.getElementById("upd").textContent=on?`šaltiniai tikrinti ${t.toLocaleTimeString("lt-LT",{hour:"2-digit",minute:"2-digit"})} (prieš ${ago} min)`:"nėra ryšio su duomenimis";
+  document.getElementById("upd").textContent=on?`tikrinta ${t.toLocaleTimeString("lt-LT",{hour:"2-digit",minute:"2-digit"})} · prieš ${ago} min`:"nėra ryšio su duomenimis";
 }
 document.getElementById("demo").onclick=e=>{
   demoIdx = demoIdx+1>=DEMOS.length?-1:demoIdx+1;
