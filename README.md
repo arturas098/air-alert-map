@@ -1,6 +1,6 @@
 # Oro pavojus · Baltija (air-alert-map)
 
-Tamsus, eskizo stiliaus žemėlapis, rodantis oficialius valstybinius įspėjimus: **oro pavojus (karas)** ir **stichija / tarša** Lietuvoje, Latvijoje, Estijoje, Suomijoje ir Lenkijoje. Baltarusija, Rusija ir Karaliaučius piešiami kaip kontekstas, bet neturi viešų šaltinių, todėl jų įspėjimai nerodomi.
+Tamsus, eskizo stiliaus žemėlapis, rodantis oficialius valstybinius įspėjimus: **oro pavojus (karas)** ir **stichija / tarša** Lietuvoje, Latvijoje, Estijoje, Suomijoje, Lenkijoje ir **Ukrainoje (sričių lygiu)**. Baltarusija, Rusija ir Karaliaučius piešiami kaip kontekstas, bet neturi viešų šaltinių, todėl jų įspėjimai nerodomi.
 
 ![desktop](docs/screenshot-desktop.png)
 
@@ -37,7 +37,7 @@ Pakeitus `web/src.html`, visada perbuildink ir commitink `index.html`.
 ## Duomenys
 Puslapis kas 20 s kreipiasi į `alerts.json` šalia savęs. Nėra failo → rodoma „offline“, visos šalys pilkos. Mygtukas **Demo** perjungia demonstracinius scenarijus.
 
-Formatas, raktai `LTU LVA EST FIN POL`:
+Formatas, raktai `LTU LVA EST FIN POL UKR` (UKR turi papildomą `regions: {"UA-63":"red"}`):
 ```json
 {"LTU":{"level":"red|yellow|white|none","kind":"air|weather|chem|other","text":"…","time":"ISO8601","url":"…"}}
 ```

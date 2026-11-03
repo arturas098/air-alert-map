@@ -204,6 +204,108 @@ def kriis() -> list[Alert]:
     return out
 
 
+
+# ---------------------------------------------------------------- Ukraina (sričių lygiu)
+# Oficialūs: api.ukrainealarm.com (Mincifra + Ajax, „Повітряна тривога“), alerts.in.ua.
+# Abiem reikia nemokamo rakto → GitHub Secrets UKRAINEALARM_KEY / ALERTS_IN_UA_TOKEN.
+# Be rakto: ubilling.net.ua/aerialalerts (viešas agregatorius, NEoficialus).
+import os
+UA_ISO = {
+    "автономна республіка крим": "UA-43", "крим": "UA-43", "волинська область": "UA-07",
+    "вінницька область": "UA-05", "дніпропетровська область": "UA-12", "донецька область": "UA-14",
+    "житомирська область": "UA-18", "закарпатська область": "UA-21", "запорізька область": "UA-23",
+    "івано-франківська область": "UA-26", "м. київ": "UA-30", "київ": "UA-30", "київська область": "UA-32",
+    "кіровоградська область": "UA-35", "луганська область": "UA-09", "львівська область": "UA-46",
+    "миколаївська область": "UA-48", "одеська область": "UA-51", "полтавська область": "UA-53",
+    "рівненська область": "UA-56", "м. севастополь": "UA-40", "севастополь": "UA-40",
+    "сумська область": "UA-59", "тернопільська область": "UA-61", "харківська область": "UA-63",
+    "херсонська область": "UA-65", "хмельницька область": "UA-68", "черкаська область": "UA-71",
+    "чернівецька область": "UA-77", "чернігівська область": "UA-74",
+}
+# alerts.in.ua /iot/active_air_raid_alerts_by_oblast.json grąžina 27 simbolių eilutę šia tvarka
+AIU_ORDER = ["UA-43","UA-07","UA-05","UA-12","UA-14","UA-18","UA-21","UA-23","UA-26","UA-30","UA-32",
+             "UA-35","UA-09","UA-46","UA-48","UA-51","UA-53","UA-56","UA-40","UA-59","UA-61","UA-63",
+             "UA-65","UA-68","UA-71","UA-77","UA-74"]
+
+
+def ua_iso(name: str) -> str | None:
+    n = re.sub(r"\s+", " ", (name or "").strip().lower()).replace("’", "'")
+    return UA_ISO.get(n) or UA_ISO.get(n.replace("м.", "м. ").replace("  ", " "))
+
+
+def fetch_json(url: str, headers: dict | None = None):
+    req = urllib.request.Request(url, headers={"User-Agent": UA, **(headers or {})})
+    with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+        return json.loads(r.read().decode("utf-8"))
+
+
+def ua_ukrainealarm() -> dict[str, bool]:
+    key = os.environ.get("UKRAINEALARM_KEY")
+    if not key:
+        raise RuntimeError("nėra UKRAINEALARM_KEY")
+    data = fetch_json("https://api.ukrainealarm.com/api/v3/alerts", {"Authorization": key})
+    out = {}
+    for r in data:
+        if r.get("regionType") != "State":
+            continue
+        iso = ua_iso(r.get("regionName", ""))
+        if iso:
+            out[iso] = any((a.get("type") or "").upper() == "AIR" for a in r.get("activeAlerts", [])) or bool(r.get("activeAlerts"))
+    return out
+
+
+def ua_alertsinua() -> dict[str, bool]:
+    tok = os.environ.get("ALERTS_IN_UA_TOKEN")
+    if not tok:
+        raise RuntimeError("nėra ALERTS_IN_UA_TOKEN")
+    req = urllib.request.Request("https://api.alerts.in.ua/v1/iot/active_air_raid_alerts_by_oblast.json",
+                                 headers={"User-Agent": UA, "Authorization": f"Bearer {tok}"})
+    with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+        st = json.loads(r.read().decode("utf-8"))
+    if not isinstance(st, str) or len(st) != len(AIU_ORDER):
+        raise ValueError(f"netikėtas atsakymas: {str(st)[:60]}")
+    return {iso: ch in "AP" for iso, ch in zip(AIU_ORDER, st)}
+
+
+def ua_ubilling() -> dict[str, bool]:
+    d = fetch_json("https://ubilling.net.ua/aerialalerts/")
+    cached = parse_dt((d.get("cachedat") or "").replace(" ", "T") + "+02:00")
+    # cachedat – kada agregatorius paskutinį kartą atnaujino; >3 h → nepatikima
+    if cached and NOW - cached > timedelta(hours=3):
+        raise RuntimeError(f"pasenę duomenys ({d.get('cachedat')})")
+    out = {}
+    for name, v in (d.get("states") or {}).items():
+        iso = ua_iso(name)
+        if iso:
+            out[iso] = bool(v.get("alertnow"))
+    if len(out) < 20:
+        raise ValueError(f"atpažinta tik {len(out)} sričių")
+    return out
+
+
+UA_SOURCES = [("ukrainealarm.com", ua_ukrainealarm, True), ("alerts.in.ua", ua_alertsinua, True),
+              ("ubilling.net.ua", ua_ubilling, False)]
+
+
+def ukraine(meta: dict) -> dict:
+    for name, fn, official in UA_SOURCES:
+        t0 = time.time()
+        try:
+            regions = fn()
+            meta["sources"][name] = {"ok": True, "n": sum(regions.values()), "ms": int((time.time() - t0) * 1000)}
+        except Exception as ex:  # noqa: BLE001
+            meta["sources"][name] = {"ok": False, "err": f"{type(ex).__name__}: {ex}"[:200]}
+            continue
+        on = sorted(k for k, v in regions.items() if v)
+        src = name + ("" if official else " (neoficialus)")
+        if on:
+            return {"level": "red", "kind": "air", "regions": {k: "red" for k in on},
+                    "text": f"Oro pavojus {len(on)} iš {len(regions)} sričių.", "time": NOW.isoformat(timespec="seconds"),
+                    "src": src, "url": "https://map.ukrainealarm.com/"}
+        return {"level": "white", "regions": {}, "text": "Oro pavojaus nėra nė vienoje srityje.",
+                "time": NOW.isoformat(timespec="seconds"), "src": src, "url": "https://map.ukrainealarm.com/"}
+    return {"level": "none", "text": "Šaltiniai šiuo metu nepasiekiami.", "time": NOW.isoformat(timespec="seconds")}
+
 # ---------------------------------------------------------------- sujungimas
 SOURCES = {
     "LTU": [("lt72", lt72)],
@@ -243,6 +345,7 @@ def collect() -> dict:
         else:
             result[cc] = {"level": "none", "text": "Šaltiniai šiuo metu nepasiekiami.",
                           "time": meta["checked"]}
+    result["UKR"] = ukraine(meta)
     result["_meta"] = meta
     return result
 

@@ -44,5 +44,14 @@ Ribojimas: gauni tik ten, kur fiziškai yra telefonas.
 | ORO PAVOJUS (GELTONA PO RAUDONOS) | `yellow` |
 | Pavojus atšauktas | `white` |
 
+## Ukraina (sričių lygiu)
+| Prioritetas | Šaltinis | Statusas | Raktas |
+|---|---|---|---|
+| 1 | **api.ukrainealarm.com**: oficiali „Повітряна тривога“ sistema (Mincifra + Ajax), ji valdo ir sirenas | oficialus | prašyti formoje api.ukrainealarm.com → GitHub Secret `UKRAINEALARM_KEY` |
+| 2 | **api.alerts.in.ua** `/v1/iot/active_air_raid_alerts_by_oblast.json` | plačiai naudojamas | rašyti api@alerts.in.ua → Secret `ALERTS_IN_UA_TOKEN` |
+| 3 | **ubilling.net.ua/aerialalerts/** | NEoficialus agregatorius, be rakto | `cachedat` > 3 h laikomas pasenusiu |
+
+Surinkėjas bando iš eilės ir rašo `UKR.regions = {"UA-63":"red", …}` (ISO 3166-2). Krymas (UA-43) ir Sevastopolis (UA-40) žemėlapyje priskirti Ukrainai.
+
 ## Be šaltinių
 Baltarusija, Rusija, Karaliaučius: viešų pavojaus sistemų nėra. UI jas paslepia.

@@ -92,6 +92,7 @@ const COUNTRIES = [
   {id:"EST", cc:"EE", nm:"Estija",       src:"kriis.ee (EE-ALARM) · ERR"},
   {id:"FIN", cc:"FI", nm:"Suomija",      src:"Yle Teksti-TV 112 · FMI"},
   {id:"POL", cc:"PL", nm:"Lenkija",      src:"gov.pl/rcb (Alert RCB)"},
+  {id:"UKR", cc:"UA", nm:"Ukraina",      src:"ukrainealarm.com · alerts.in.ua"},
   {id:"KGD", cc:"KG", nm:"Karaliaučius", hidden:true},
   {id:"BLR", cc:"BY", nm:"Baltarusija", hidden:true},
   {id:"RUS", cc:"RU", nm:"Rusija", hidden:true},
@@ -108,7 +109,8 @@ const DEMOS = [
    FIN:{level:"white",text:"Aktyvių vaaratiedote nėra."}, POL:{level:"yellow",kind:"air",text:"Alert RCB: Lenkijos aviacija ore, sekite pranešimus."}},
   {LTU:{level:"red",kind:"air",text:"ORO PAVOJUS (RAUDONA). Nedelsdami eikite į saugią vietą ar priedangą. Rekomendacijos: lt72.lt"},
    LVA:{level:"yellow",kind:"weather",text:"Oranžais brīdinājums: stiprs vējš, brāzmas līdz 25 m/s. Sekite 112.lv."}, EST:{level:"white",text:"Aktyvių perspėjimų nėra."},
-   FIN:{level:"yellow",kind:"air",text:"Vaaratiedote: ilmauhka, Kaakkois-Suomi. Mene sisätiloihin."}, POL:{level:"white",text:"Aktyvių perspėjimų nėra."}},
+   FIN:{level:"yellow",kind:"air",text:"Vaaratiedote: ilmauhka, Kaakkois-Suomi. Mene sisätiloihin."}, POL:{level:"white",text:"Aktyvių perspėjimų nėra."},
+   UKR:{level:"red",kind:"air",text:"Oro pavojus 6 iš 27 sričių.",regions:{"UA-63":"red","UA-59":"red","UA-14":"red","UA-23":"red","UA-12":"red","UA-74":"red"}}},
 ];
 
 /* ---------- žemėlapis ----------
@@ -140,6 +142,8 @@ const lakes = topojson.feature(TOPO,L.lk).features;
 const roads = topojson.feature(TOPO,L.rd).features;
 const rails = topojson.feature(TOPO,L.rl);
 const places = topojson.feature(TOPO,L.pl).features;
+const RSHAPES = {};   // sritys pagal ISO 3166-2 (kol kas naudoja Ukraina)
+for(const f of topojson.feature(TOPO,L.r).features) if(f.properties.iso_3166_2) RSHAPES[f.properties.iso_3166_2]=f;
 const land = topojson.merge(TOPO,L.c.geometries);
 const inner = topojson.mesh(TOPO,L.c,(a,b)=>a!==b);
 const regMesh = topojson.mesh(TOPO,L.r,(a,b)=>a!==b && a.properties.adm0_a3===b.properties.adm0_a3);
@@ -164,7 +168,7 @@ const gAlert=root.append("g"), gAlertEdge=root.append("g");
 // Path2D talpykla – suskaičiuojama tik pasikeitus ekrano dydžiui
 let P = null, LABELS = [];
 const SEA=[["BALTIJOS  JŪRA",[19.3,56.2],0],["RYGOS ĮL.",[23.4,57.6],0],["SUOMIJOS  ĮLANKA",[25.5,59.85],-6],["BOTNIJOS  ĮLANKA",[20.6,62.4],-62]];
-const LBL={LTU:[24.1,55.55],LVA:[26.4,56.55],EST:[25.9,58.75],FIN:[26.5,64],POL:[20.2,52.6],BLR:[28,53.6],RUS:[31.5,57.2],KGD:[21.4,54.42]};
+const LBL={UKR:[31.2,49.3],LTU:[24.1,55.55],LVA:[26.4,56.55],EST:[25.9,58.75],FIN:[26.5,64],POL:[20.2,52.6],BLR:[28,53.6],RUS:[31.5,57.2],KGD:[21.4,54.42]};
 function build(){
   const pad = Math.min(W(),H())*.04;
   const bottom = W()<900 ? 150 : 20, right = W()<900?0:340;
@@ -247,6 +251,19 @@ function renderAlerts(){
     const s=STATE[c.id], lv=s.level, d=path(SHAPES[c.id]);
     const hit = gAlert.append("path").attr("d",d).attr("fill","transparent").style("cursor","pointer").on("click",()=>select(c.id));
     if(lv==="none") return;
+    if(s.regions){            // sričių lygis: dažom tik sritis su pavojumi, šalį apvedam plonai
+      for(const [iso,rl] of Object.entries(s.regions)){ const f=RSHAPES[iso]; if(!f) continue; const rd=path(f);
+        gAlert.append("path").attr("d",rd).attr("fill",COLOR[rl]).attr("fill-opacity",.16).attr("pointer-events","none");
+        gAlert.append("path").attr("d",rd).attr("fill",`url(#h-${rl})`).attr("pointer-events","none");
+        gAlertEdge.append("path").attr("d",rd).attr("fill","none").attr("stroke",COLOR[rl]).attr("stroke-opacity",.2).attr("stroke-width",7)
+          .attr("pointer-events","none").attr("vector-effect","non-scaling-stroke");
+        gAlertEdge.append("path").attr("d",rd).attr("fill","none").attr("stroke",COLOR[rl]).attr("stroke-width",1.6)
+          .attr("pointer-events","none").attr("vector-effect","non-scaling-stroke");
+      }
+      gAlertEdge.append("path").attr("d",d).attr("fill","none").attr("stroke","#f2f0ea").attr("stroke-opacity",.5).attr("stroke-width",1.1)
+        .attr("pointer-events","none").attr("vector-effect","non-scaling-stroke");
+      return;
+    }
     gAlert.append("path").attr("d",d).attr("fill",COLOR[lv]).attr("fill-opacity",lv==="white"?.05:.16).attr("pointer-events","none");
     if(lv!=="white") gAlert.append("path").attr("d",d).attr("fill",`url(#h-${lv})`).attr("pointer-events","none");
     if(lv!=="white") gAlertEdge.append("path").attr("d",d).attr("fill","none").attr("stroke",COLOR[lv]).attr("stroke-opacity",.22)

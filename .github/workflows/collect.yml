@@ -23,6 +23,9 @@ jobs:
           python-version: "3.12"
       - name: Surinkti įspėjimus
         run: python3 collector/collector.py
+        env:   # nebūtina; be raktų Ukrainai naudojamas viešas agregatorius
+          UKRAINEALARM_KEY: ${{ secrets.UKRAINEALARM_KEY }}
+          ALERTS_IN_UA_TOKEN: ${{ secrets.ALERTS_IN_UA_TOKEN }}
       - name: Commit, jei pasikeitė (arba kas valandą gyvybės ženklas)
         run: |
           python3 - <<'PY'
