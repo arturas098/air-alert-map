@@ -290,8 +290,8 @@ def lv_nbs() -> list[Alert]:
         return [Alert(level="red" if red else "yellow", kind="air", event="Iespējams apdraudējums gaisa telpā",
                       area=title, text=title, time=when.isoformat(),
                       expires=(when + timedelta(hours=LV_MAX_H)).isoformat(), url=url, src="NBS · lvportals.lv")]
-    if not seen and "dienaskartiba" not in page:
-        raise ValueError("puslapio struktūra neatpažinta")
+    if not seen:   # NBS sąraše visada būna senesnių oro pranešimų – jei nerandam nė vieno, parseris neveikia
+        raise ValueError("NBS sąraše neatpažintas nė vienas oro pranešimas (pasikeitė puslapis?)")
     return []
 
 
@@ -536,12 +536,15 @@ def collect() -> dict:
     for cc in COUNTRIES:
         alerts: list[Alert] = []
         st = {"air": [], "weather": []}            # True/False kiekvienam šaltiniui
+        air_ok_names = []
         for name, fn, typ in SOURCES.get(cc, []):
             t0 = time.time()
             try:
                 got = fn()
                 alerts += got
                 st[typ].append(True)
+                if typ == "air":
+                    air_ok_names.append(name)
                 meta["sources"][name] = {"ok": True, "n": len(got), "ms": int((time.time() - t0) * 1000), "type": typ}
             except Exception as ex:  # noqa: BLE001
                 st[typ].append(False)
@@ -576,7 +579,10 @@ def collect() -> dict:
                 result[cc]["regions"] = regions
                 result[cc]["regionsOnly"] = all_matched
         elif air == "ok":
-            result[cc] = {**base, "level": "white", "text": "Aktyvių perspėjimų nėra.", "time": meta["checked"]}
+            txt = "Aktyvių perspėjimų nėra."
+            if False in st["air"]:   # dalis oro šaltinių neveikia – pasakom, kuo remiamės
+                txt += " Oro pavojus tikrinamas tik pagal: " + ", ".join(air_ok_names) + "."
+            result[cc] = {**base, "level": "white", "text": txt, "time": meta["checked"]}
         else:
             # oro pavojaus šaltinio nėra arba jis neveikia – NE „saugu“, o „nenustatyta“
             wtxt = " Orų įspėjimų nėra." if weather == "ok" else " Orų šaltinis irgi nepasiekiamas." if weather == "down" else ""
