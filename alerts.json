@@ -2,25 +2,22 @@
  "LTU": {
   "level": "white",
   "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T00:57:31+00:00"
+  "time": "2026-11-03T01:07:59+00:00"
  },
  "LVA": {
   "level": "white",
   "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T00:57:31+00:00"
+  "time": "2026-11-03T01:07:59+00:00"
  },
  "EST": {
-  "level": "yellow",
-  "kind": "weather",
-  "text": "Wind Level 1 — Lake Peipus  (+1 kiti įspėjimai)",
-  "time": "2026-11-03T12:00:00+00:00",
-  "url": "https://meteoalarm.org?polygon=94bebe6a-9f90-40e7-9a34-c0e4c802e5b5,0,0,0",
-  "src": "MeteoAlarm"
+  "level": "white",
+  "text": "Aktyvių perspėjimų nėra.",
+  "time": "2026-11-03T01:07:59+00:00"
  },
  "FIN": {
   "level": "white",
   "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T00:57:31+00:00"
+  "time": "2026-11-03T01:07:59+00:00"
  },
  "POL": {
   "level": "yellow",
@@ -28,7 +25,69 @@
   "text": "Yellow snow-ice warning — Dolnośląskie Province Jelenia Góra County  (+4 kiti įspėjimai)",
   "time": "2026-11-02T20:00:00+00:00",
   "url": "https://meteoalarm.org?geocode=EMMA_ID:PL0261",
-  "src": "MeteoAlarm"
+  "src": "MeteoAlarm",
+  "items": [
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow snow-ice warning — Dolnośląskie Province Jelenia Góra County",
+    "event": "Yellow snow-ice warning",
+    "area": "Dolnośląskie Province Jelenia Góra County",
+    "severity": "Moderate",
+    "expires": "2026-11-03T09:00:00+00:00",
+    "time": "2026-11-02T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL0261",
+    "src": "MeteoAlarm"
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow snow-ice warning — Dolnośląskie Province Wałbrzyski County",
+    "event": "Yellow snow-ice warning",
+    "area": "Dolnośląskie Province Wałbrzyski County",
+    "severity": "Moderate",
+    "expires": "2026-11-03T09:00:00+00:00",
+    "time": "2026-11-02T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL0221",
+    "src": "MeteoAlarm"
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow snow-ice warning — Dolnośląskie Province Lwówecki County",
+    "event": "Yellow snow-ice warning",
+    "area": "Dolnośląskie Province Lwówecki County",
+    "severity": "Moderate",
+    "expires": "2026-11-03T09:00:00+00:00",
+    "time": "2026-11-02T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL0212",
+    "src": "MeteoAlarm"
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow snow-ice warning — Dolnośląskie Province Kamiennogórski County",
+    "event": "Yellow snow-ice warning",
+    "area": "Dolnośląskie Province Kamiennogórski County",
+    "severity": "Moderate",
+    "expires": "2026-11-03T09:00:00+00:00",
+    "time": "2026-11-02T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL0207",
+    "src": "MeteoAlarm"
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow snow-ice warning — Dolnośląskie Province Karkonoski County",
+    "event": "Yellow snow-ice warning",
+    "area": "Dolnośląskie Province Karkonoski County",
+    "severity": "Moderate",
+    "expires": "2026-11-03T09:00:00+00:00",
+    "time": "2026-11-02T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL0206",
+    "src": "MeteoAlarm"
+   }
+  ]
  },
  "UKR": {
   "level": "red",
@@ -48,23 +107,25 @@
    "UA-40": "red",
    "UA-46": "red",
    "UA-48": "red",
+   "UA-51": "red",
    "UA-53": "red",
    "UA-56": "red",
    "UA-59": "red",
    "UA-61": "red",
    "UA-63": "red",
+   "UA-65": "red",
    "UA-68": "red",
    "UA-71": "red",
    "UA-74": "red",
    "UA-77": "red"
   },
-  "text": "Oro pavojus 23 iš 26 sričių.",
-  "time": "2026-11-03T00:57:31+00:00",
+  "text": "Oro pavojus 25 iš 26 sričių.",
+  "time": "2026-11-03T01:07:59+00:00",
   "src": "ubilling.net.ua (neoficialus)",
   "url": "https://map.ukrainealarm.com/"
  },
  "_meta": {
-  "checked": "2026-11-03T00:57:31+00:00",
+  "checked": "2026-11-03T01:07:59+00:00",
   "sources": {
    "lt72": {
     "ok": false,
@@ -73,37 +134,37 @@
    "meteoalarm-lithuania": {
     "ok": true,
     "n": 0,
-    "ms": 708
+    "ms": 878
    },
    "meteoalarm-latvia": {
     "ok": true,
     "n": 0,
-    "ms": 708
+    "ms": 719
    },
    "kriis": {
     "ok": true,
     "n": 0,
-    "ms": 729
+    "ms": 669
    },
    "meteoalarm-estonia": {
     "ok": true,
-    "n": 2,
-    "ms": 783
+    "n": 0,
+    "ms": 941
    },
    "meteoalarm-finland": {
     "ok": true,
     "n": 0,
-    "ms": 1295
+    "ms": 788
    },
    "rcb": {
     "ok": true,
     "n": 0,
-    "ms": 1074
+    "ms": 942
    },
    "meteoalarm-poland": {
     "ok": true,
     "n": 5,
-    "ms": 389
+    "ms": 865
    },
    "ukrainealarm.com": {
     "ok": false,
@@ -115,8 +176,8 @@
    },
    "ubilling.net.ua": {
     "ok": true,
-    "n": 23,
-    "ms": 1080
+    "n": 25,
+    "ms": 841
    }
   }
  }
