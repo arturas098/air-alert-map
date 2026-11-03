@@ -1,0 +1,64 @@
+{
+ "LTU": {
+  "level": "none",
+  "text": "Šaltiniai šiuo metu nepasiekiami.",
+  "time": "2026-11-03T00:23:28+00:00"
+ },
+ "LVA": {
+  "level": "none",
+  "text": "Šaltiniai šiuo metu nepasiekiami.",
+  "time": "2026-11-03T00:23:28+00:00"
+ },
+ "EST": {
+  "level": "none",
+  "text": "Šaltiniai šiuo metu nepasiekiami.",
+  "time": "2026-11-03T00:23:28+00:00"
+ },
+ "FIN": {
+  "level": "none",
+  "text": "Šaltiniai šiuo metu nepasiekiami.",
+  "time": "2026-11-03T00:23:28+00:00"
+ },
+ "POL": {
+  "level": "none",
+  "text": "Šaltiniai šiuo metu nepasiekiami.",
+  "time": "2026-11-03T00:23:28+00:00"
+ },
+ "_meta": {
+  "checked": "2026-11-03T00:23:28+00:00",
+  "sources": {
+   "lt72": {
+    "ok": false,
+    "err": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+   },
+   "meteoalarm-lithuania": {
+    "ok": false,
+    "err": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+   },
+   "meteoalarm-latvia": {
+    "ok": false,
+    "err": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+   },
+   "kriis": {
+    "ok": false,
+    "err": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+   },
+   "meteoalarm-estonia": {
+    "ok": false,
+    "err": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+   },
+   "meteoalarm-finland": {
+    "ok": false,
+    "err": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+   },
+   "rcb": {
+    "ok": false,
+    "err": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+   },
+   "meteoalarm-poland": {
+    "ok": false,
+    "err": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+   }
+  }
+ }
+}

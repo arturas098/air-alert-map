@@ -267,7 +267,7 @@ function renderCards(){
       <div class="row"><span class="cc">${c.cc}</span><span class="nm">${c.nm}</span></div>
       <div class="st">${(s.kind&&s.kind!=="air"&&LEVEL_ALT[s.level])||LEVEL_TXT[s.level]}</div>${s.kind?`<div class="kd">${KIND[s.kind]||KIND.other}</div>`:""}
       <div class="ds">${s.text}</div>
-      <div class="mt"><span>${c.src}</span><span>${t}</span></div></div>`;}).join("");
+      <div class="mt"><span>${s.url?`<a href="${s.url}" target="_blank" rel="noopener" style="color:inherit">${s.src||c.src}</a>`:(s.src||c.src)}</span><span>${t}</span></div></div>`;}).join("");
   box.querySelectorAll(".card").forEach(el=>el.onclick=()=>select(el.dataset.id,true));
 }
 function select(id,fromCard){
@@ -277,18 +277,25 @@ function select(id,fromCard){
 
 /* ---------- duomenys ---------- */
 // Vietinis serveris (Termux / APK) pateikia /alerts.json: {"LTU":{"level":"red","text":"…","time":"ISO"}, …}
+// 1) šalia esantis alerts.json (Termux / APK / Pages), 2) tiesiai iš GitHub (greitesnis nei Pages kešas)
+const DATA_URLS=["alerts.json","https://raw.githubusercontent.com/arturas098/air-alert-map/main/alerts.json"];
+let META=null;
 async function poll(){
   if(demoIdx>=0) return;
   try{
-    const r=await fetch("alerts.json?t="+Date.now(),{cache:"no-store"}); if(!r.ok) throw 0;
-    const j=await r.json(); STATE=structuredClone(BASE); for(const k in j) if(STATE[k]) STATE[k]={...STATE[k],...j[k]};
-    setLive(true); renderAlerts();
+    let j=null;
+    for(const u of DATA_URLS){ try{ const r=await fetch(u+"?t="+Date.now(),{cache:"no-store"}); if(r.ok){ j=await r.json(); break; } }catch(e){} }
+    if(!j) throw 0;
+    STATE=structuredClone(BASE); for(const k in j) if(STATE[k]) STATE[k]={...STATE[k],...j[k]};
+    META=j._meta||null; setLive(true); renderAlerts();
   }catch(e){ setLive(false); }
 }
 function setLive(on){
   document.getElementById("live").classList.toggle("live",on);
   document.getElementById("src").textContent=on?"live":"offline";
-  document.getElementById("upd").textContent=(on?"atnaujinta ":"nėra ryšio su serveriu · ")+new Date().toLocaleTimeString("lt-LT",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+  const t=on&&META&&META.checked?new Date(META.checked):new Date();
+  const ago=Math.round((Date.now()-t)/60000);
+  document.getElementById("upd").textContent=on?`tikrinta ${t.toLocaleTimeString("lt-LT",{hour:"2-digit",minute:"2-digit"})} · prieš ${ago} min`:"nėra ryšio su duomenimis";
 }
 document.getElementById("demo").onclick=e=>{
   demoIdx = demoIdx+1>=DEMOS.length?-1:demoIdx+1;
@@ -310,7 +317,7 @@ const zoom=d3.zoom().scaleExtent([.7,14]).on("zoom",ev=>{
 svg.call(zoom).on("dblclick.zoom",null);
 
 addEventListener("resize",()=>{clearTimeout(window._r);window._r=setTimeout(()=>{draw();svg.call(zoom.transform,d3.zoomIdentity)},150)});
-draw(); svg.call(zoom.transform,d3.zoomIdentity); poll(); setInterval(poll,20000);
+draw(); svg.call(zoom.transform,d3.zoomIdentity); poll(); setInterval(poll,60000);
 </script>
 </body>
 </html>
