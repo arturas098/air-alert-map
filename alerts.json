@@ -2,12 +2,12 @@
  "LTU": {
   "level": "white",
   "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T00:55:42+00:00"
+  "time": "2026-11-03T00:57:31+00:00"
  },
  "LVA": {
   "level": "white",
   "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T00:55:42+00:00"
+  "time": "2026-11-03T00:57:31+00:00"
  },
  "EST": {
   "level": "yellow",
@@ -20,7 +20,7 @@
  "FIN": {
   "level": "white",
   "text": "Aktyvių perspėjimų nėra.",
-  "time": "2026-11-03T00:55:42+00:00"
+  "time": "2026-11-03T00:57:31+00:00"
  },
  "POL": {
   "level": "yellow",
@@ -59,12 +59,12 @@
    "UA-77": "red"
   },
   "text": "Oro pavojus 23 iš 26 sričių.",
-  "time": "2026-11-03T00:55:42+00:00",
+  "time": "2026-11-03T00:57:31+00:00",
   "src": "ubilling.net.ua (neoficialus)",
   "url": "https://map.ukrainealarm.com/"
  },
  "_meta": {
-  "checked": "2026-11-03T00:55:42+00:00",
+  "checked": "2026-11-03T00:57:31+00:00",
   "sources": {
    "lt72": {
     "ok": false,
@@ -73,37 +73,37 @@
    "meteoalarm-lithuania": {
     "ok": true,
     "n": 0,
-    "ms": 675
+    "ms": 708
    },
    "meteoalarm-latvia": {
     "ok": true,
     "n": 0,
-    "ms": 770
+    "ms": 708
    },
    "kriis": {
     "ok": true,
     "n": 0,
-    "ms": 709
+    "ms": 729
    },
    "meteoalarm-estonia": {
     "ok": true,
     "n": 2,
-    "ms": 908
+    "ms": 783
    },
    "meteoalarm-finland": {
     "ok": true,
     "n": 0,
-    "ms": 896
+    "ms": 1295
    },
    "rcb": {
     "ok": true,
     "n": 0,
-    "ms": 1114
+    "ms": 1074
    },
    "meteoalarm-poland": {
     "ok": true,
     "n": 5,
-    "ms": 511
+    "ms": 389
    },
    "ukrainealarm.com": {
     "ok": false,
@@ -116,7 +116,7 @@
    "ubilling.net.ua": {
     "ok": true,
     "n": 23,
-    "ms": 986
+    "ms": 1080
    }
   }
  }
