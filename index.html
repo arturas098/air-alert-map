@@ -134,7 +134,7 @@ const TOPO = {"type":"Topology","arcs":[[[22688,12625],[44,5],[24,-5],[16,-17],[
 /* ---------- šalys ---------- */
 const COUNTRIES = [
   {id:"LTU", cc:"LT", nm:"Lietuva",      src:"lt72.lt (PAGD) · LRT"},
-  {id:"LVA", cc:"LV", nm:"Latvija",      src:"112.lv (VUGD) · LSM"},
+  {id:"LVA", cc:"LV", nm:"Latvija",      src:"NBS · lvportals.lv"},
   {id:"EST", cc:"EE", nm:"Estija",       src:"kriis.ee (EE-ALARM) · ERR"},
   {id:"FIN", cc:"FI", nm:"Suomija",      src:"Yle Teksti-TV 112 · FMI"},
   {id:"POL", cc:"PL", nm:"Lenkija",      src:"gov.pl/rcb (Alert RCB)"},
@@ -395,9 +395,9 @@ function focusView(){
 
 
 /* ---------- detalių langas ---------- */
-const SRC_KEYS = {LTU:["lt72","meteoalarm-lithuania"],LVA:["meteoalarm-latvia"],EST:["kriis","meteoalarm-estonia"],
+const SRC_KEYS = {LTU:["lt72","lrt","meteoalarm-lithuania"],LVA:["lv-nbs","meteoalarm-latvia"],EST:["kriis","meteoalarm-estonia"],
   FIN:["meteoalarm-finland"],POL:["rcb","meteoalarm-poland"],UKR:["ukrainealarm.com","alerts.in.ua","ubilling.net.ua"]};
-const SRC_NAME = {"lt72":"lt72.lt (PAGD)","kriis":"kriis.ee (EE-ALARM)","rcb":"gov.pl/rcb (Alert RCB)"};
+const SRC_NAME = {"lt72":"lt72.lt (PAGD)","lrt":"LRT (žiniasklaida)","lv-nbs":"NBS · lvportals.lv","kriis":"kriis.ee (EE-ALARM)","rcb":"gov.pl/rcb (Alert RCB)"};
 const safeUrl = u => /^https?:\/\//i.test(u||"");
 const esc = t => String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt = t => { if(!t) return ""; const d=new Date(t); if(isNaN(d)) return "";

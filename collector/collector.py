@@ -246,6 +246,88 @@ def lt72() -> list[Alert]:
     return out
 
 
+# ---------------------------------------------------------------- Latvija: NBS pranešimai (lvportals.lv)
+# Nacionālie bruņotie spēki kiekvieną „Iespējams apdraudējums Latvijas gaisa telpā … novados;
+# informācija D. mēneša plkst. HH.MM“ skelbia valstybiniame portale LV portāls (VSIA Latvijas Vēstnesis).
+LV_MONTHS = {"janvār": 1, "februār": 2, "mart": 3, "aprīl": 4, "maij": 5, "jūnij": 6, "jūlij": 7,
+             "august": 8, "septembr": 9, "oktobr": 10, "novembr": 11, "decembr": 12}
+LV_AIR = re.compile(r"apdraudējum\w*\s+latvijas\s+gaisa\s+telp", re.I)
+LV_END = re.compile(r"beidzies|beigas|atcelt|vairs nav|nav apdraudējuma", re.I)
+LV_MAX_H = 4
+
+
+def lv_when(title: str) -> datetime | None:
+    from zoneinfo import ZoneInfo
+    m = re.search(r"(\d{1,2})\.\s*([a-zāčēģīķļņšūž]+)\s+plkst\.?\s*(\d{1,2})[.:](\d{2})", title, re.I)
+    if not m:
+        return None
+    mon = next((v for k, v in LV_MONTHS.items() if m.group(2).lower().startswith(k)), None)
+    if not mon:
+        return None
+    riga = ZoneInfo("Europe/Riga")
+    yr = NOW.astimezone(riga).year
+    d = datetime(yr, mon, int(m.group(1)), int(m.group(3)), int(m.group(4)), tzinfo=riga)
+    if d > NOW + timedelta(days=1):
+        d = d.replace(year=yr - 1)
+    return d.astimezone(timezone.utc)
+
+
+def lv_nbs() -> list[Alert]:
+    page = fetch("https://lvportals.lv/dienaskartiba/visas-preses-relizes/autors:4462")
+    seen = 0
+    for m in re.finditer(r'href="(/dienaskartiba/\d+[^"]*)"[^>]*>(.*?)</a>', page, re.S):
+        title = strip_tags(m.group(2))
+        if not LV_AIR.search(title) and not (LV_END.search(title) and "gaisa" in title.lower()):
+            continue
+        seen += 1
+        when = lv_when(title)
+        if not when or NOW - when > timedelta(hours=LV_MAX_H):
+            return []                        # naujausias pranešimas senas → aktyvaus pavojaus nėra
+        if LV_END.search(title):
+            return []                        # naujausias – pabaiga
+        red = re.search(r"konstatēts|tūlītēj|patver|oranž", title, re.I)
+        url = "https://lvportals.lv" + m.group(1)
+        return [Alert(level="red" if red else "yellow", kind="air", event="Iespējams apdraudējums gaisa telpā",
+                      area=title, text=title, time=when.isoformat(),
+                      expires=(when + timedelta(hours=LV_MAX_H)).isoformat(), url=url, src="NBS · lvportals.lv")]
+    if not seen and "dienaskartiba" not in page:
+        raise ValueError("puslapio struktūra neatpažinta")
+    return []
+
+
+# ---------------------------------------------------------------- Lietuva: LRT (žiniasklaida, papildomas)
+LRT_FEEDS = ["https://www.lrt.lt/?rss", "https://www.lrt.lt/naujienos/lietuvoje?rss", "https://www.lrt.lt/rss"]
+LRT_END = re.compile(r"atšauk|atsauk|baigėsi|nebėra", re.I)
+
+
+def lrt() -> list[Alert]:
+    last_err = None
+    for u in LRT_FEEDS:
+        try:
+            root = ET.fromstring(fetch(u))
+            break
+        except Exception as ex:  # noqa: BLE001
+            last_err = ex
+    else:
+        raise RuntimeError(f"LRT RSS nepasiekiamas: {last_err}")
+    for it in root.iter("item"):
+        title = child_text(it, "title")
+        desc = strip_tags(child_text(it, "description"))
+        d = parse_dt(child_text(it, "pubDate"))
+        blob = f"{title} {desc}"
+        if not re.search(r"oro pavoj", blob, re.I):
+            continue
+        if not d or NOW - d > timedelta(hours=3):
+            return []
+        if LRT_END.search(title):
+            return []
+        lv = "red" if LT_RED.search(blob) or re.search(r"raudon|eikite į priedang", blob, re.I) else "yellow"
+        return [Alert(level=lv, kind="air", event="Oro pavojus (pagal LRT)", area=title, text=title,
+                      time=d.isoformat(), expires=(d + timedelta(hours=3)).isoformat(),
+                      url=child_text(it, "link"), src="LRT (žiniasklaida)")]
+    return []
+
+
 # ---------------------------------------------------------------- Estija: kriis.ee RSS
 EE_HIT = re.compile(r"EE-ALARM|ohuteav|public warning|threat alert|varju|shelter", re.I)
 EE_SKIP = re.compile(r"\btest|katseta|exercise|õppus", re.I)
@@ -436,7 +518,8 @@ def tone(a: dict) -> str:
 # ---------------------------------------------------------------- sujungimas
 # (pavadinimas, funkcija, tipas) – tipas „air“ = karinio oro pavojaus šaltinis, „weather“ = orai
 SOURCES = {
-    "LTU": [("lt72", lt72, "air")],
+    "LTU": [("lt72", lt72, "air"), ("lrt", lrt, "air")],
+    "LVA": [("lv-nbs", lv_nbs, "air")],
     "EST": [("kriis", kriis, "air")],
     "POL": [("rcb", rcb, "air")],
 }
