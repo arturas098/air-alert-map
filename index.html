@@ -57,8 +57,18 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
   .cards{left:auto;top:64px;width:340px;flex-direction:column;overflow-y:auto;overflow-x:hidden;background:none;padding:8px 16px 16px}
   .card{flex:0 0 auto}
 }
+/* sluoksniai, garsas */
+.tools{position:fixed;right:12px;top:calc(46px + env(safe-area-inset-top));display:flex;gap:6px;align-items:center;z-index:5}
+.seg{display:flex;border:1px solid var(--ink3);border-radius:999px;overflow:hidden;background:rgba(10,10,11,.7)}
+.seg button{font:inherit;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);background:none;border:0;padding:6px 9px;cursor:pointer}
+.seg button.on{background:var(--ink);color:var(--bg)}
+#bell{font-size:12px;padding:4px 9px;letter-spacing:.06em}
+#bell.on{color:var(--bg);background:var(--ink);border-color:var(--ink)}
+/* pasenę duomenys – viskas išblukinama */
+body.stale #map g, body.stale .card{filter:grayscale(.85);opacity:.55}
+body.stale .card{animation:none!important}
 /* legend */
-.legend{position:fixed;left:14px;top:calc(62px + env(safe-area-inset-top));font-size:9.5px;letter-spacing:.1em;color:var(--ink2);
+.legend{position:fixed;left:14px;top:calc(84px + env(safe-area-inset-top));font-size:9.5px;letter-spacing:.1em;color:var(--ink2);
   display:flex;flex-direction:column;gap:4px;pointer-events:none;text-transform:uppercase;background:rgba(10,10,11,.7);padding:7px 9px;border-radius:10px;border:1px solid #2a2927}
 .legend i{display:inline-block;width:14px;height:8px;border-radius:3px;margin-right:6px;vertical-align:0;border:1.5px solid}
 /* detalių langas */
@@ -79,7 +89,7 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
 #detail .src{font-size:11px;line-height:1.7;color:var(--ink)}
 #detail .src a{color:var(--ink)}
 #detail .ok{color:#3ddc84}#detail .bad{color:#ff8a80}
-@media (max-width:899px),(orientation:portrait){#detail{left:10px;right:10px;width:auto;top:calc(196px + env(safe-area-inset-top));transform:none;max-height:36vh}}
+@media (max-width:899px),(orientation:portrait){#detail{left:10px;right:10px;width:auto;top:calc(218px + env(safe-area-inset-top));transform:none;max-height:34vh}}
 </style>
 </head>
 <body>
@@ -92,6 +102,13 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
   <div class="sp"></div>
   <button class="chip" id="demo">Demo</button>
   <span class="chip" style="pointer-events:none"><span class="dot" id="live"></span><span id="src">offline</span></span>
+</div>
+
+<div class="tools">
+  <div class="seg" id="layers" role="group" aria-label="Sluoksnis">
+    <button data-l="all">Visi</button><button data-l="air">✈ Kariniai</button><button data-l="weather">☂ Orai</button>
+  </div>
+  <button class="chip" id="bell" title="Garsas ir pranešimas, kai atsiranda naujas oro pavojus">🔕</button>
 </div>
 
 <div class="legend">
@@ -282,7 +299,7 @@ let STATE = structuredClone(BASE), demoIdx=-1, selected=null;
 function renderAlerts(){
   gAlert.selectAll("*").remove(); gAlertEdge.selectAll("*").remove();
   COUNTRIES.filter(c=>!c.hidden).forEach(c=>{
-    const s=STATE[c.id], lv=s.level, d=path(SHAPES[c.id]);
+    const s=V(c.id), lv=s.level, d=path(SHAPES[c.id]);
     const hit = gAlert.append("path").attr("d",d).attr("fill","transparent").style("cursor","pointer").on("click",()=>select(c.id));
     if(lv==="none") return;
     const hasReg = s.regions && Object.keys(s.regions).length;
@@ -316,17 +333,40 @@ function renderAlerts(){
   renderCards();
 }
 const ORDER={red:0,yellow:1,white:2,none:3};
+const RANKL={none:0,white:1,yellow:2,red:3};
+/* ---------- sluoksniai: visi / kariniai / orai ---------- */
+let LAYER="all";
+try{ LAYER=localStorage.getItem("layer")||"all"; }catch(e){}
+function V(id){
+  const s=STATE[id]; if(!s || LAYER==="all") return s;
+  const all = s.items || ((s.level==="red"||s.level==="yellow") ? [{...s, regions:Object.keys(s.regions||{})}] : []);
+  const sel = all.filter(a => LAYER==="air" ? (a.kind||"air")==="air" : (a.kind||"air")!=="air");
+  if(!sel.length){
+    const ok = LAYER==="air" ? s.air==="ok" || (id==="UKR"&&s.level!=="none") || (demoIdx>=0)
+                             : s.weather==="ok" || (demoIdx>=0&&id!=="UKR");
+    return {...s, level: ok?"white":"none", kind:"", items:[], regions:null, regionsOnly:null, dateOnly:false,
+      text: LAYER==="air" ? (ok?"Oro pavojaus nėra.":"Oro pavojaus būsena nenustatyta.")
+                          : (ok?"Orų įspėjimų nėra.":(id==="UKR"?"Ukrainos orų įspėjimų nerenkame.":"Orų duomenų nėra."))};
+  }
+  sel.sort((a,b)=>RANKL[b.level]-RANKL[a.level]);
+  const top=sel[0], regions={};
+  for(const a of sel) for(const r of (a.regions||[])){ const t=(a.kind||"air")==="air"?a.level:"teal";
+    const rk={teal:1,yellow:2,red:3}; if((rk[t]||0)>(rk[regions[r]]||0)) regions[r]=t; }
+  return {...s, level:top.level, kind:top.kind||"air", text:(top.text||[top.event,top.area].filter(Boolean).join(" — "))+(sel.length>1?`  (+${sel.length-1} kiti)`:""),
+    time:top.time, url:top.url||s.url, src:top.src||s.src, dateOnly:!!top.dateOnly, items:s.items?sel:null,
+    regions:Object.keys(regions).length?regions:null, regionsOnly:sel.every(a=>a.regions&&a.regions.length)};
+}
 function renderCards(){
   const box=document.getElementById("cards");
-  const list=COUNTRIES.filter(c=>!c.hidden).sort((a,b)=>ORDER[STATE[a.id].level]-ORDER[STATE[b.id].level]);
-  box.innerHTML=list.map(c=>{const s=STATE[c.id];
+  const list=COUNTRIES.filter(c=>!c.hidden).sort((a,b)=>ORDER[V(a.id).level]-ORDER[V(b.id).level]);
+  box.innerHTML=list.map(c=>{const s=V(c.id);
     const t=!s.time?"—":s.dateOnly?new Date(s.time).toLocaleDateString("lt-LT",{month:"2-digit",day:"2-digit"})+" (laikas nenurodytas)"
       :new Date(s.time).toLocaleTimeString("lt-LT",{hour:"2-digit",minute:"2-digit"});
     return `<div class="card${selected===c.id?" sel":""}" data-l="${s.level}" data-k="${s.kind||""}" data-id="${c.id}">
       <div class="row"><span class="cc">${c.cc}</span><span class="nm">${c.nm}</span></div>
       <div class="st">${(s.kind&&s.kind!=="air"&&LEVEL_ALT[s.level])||LEVEL_TXT[s.level]}</div>${s.kind?`<div class="kd">${KIND[s.kind]||KIND.other}</div>`:""}
-      <div class="ds">${s.text}</div>
-      <div class="mt"><span>${s.url?`<a href="${s.url}" target="_blank" rel="noopener" style="color:inherit">${s.src||c.src}</a>`:(s.src||c.src)}</span><span>${t}</span></div></div>`;}).join("");
+      <div class="ds">${esc(s.text)}</div>
+      <div class="mt"><span>${safeUrl(s.url)?`<a href="${esc(s.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(s.src||c.src)}</a>`:esc(s.src||c.src)}</span><span>${esc(t)}</span></div></div>`;}).join("");
   box.querySelectorAll(".card").forEach(el=>el.onclick=()=>select(el.dataset.id,true));
 }
 function select(id,fromCard){
@@ -358,13 +398,14 @@ function focusView(){
 const SRC_KEYS = {LTU:["lt72","meteoalarm-lithuania"],LVA:["meteoalarm-latvia"],EST:["kriis","meteoalarm-estonia"],
   FIN:["meteoalarm-finland"],POL:["rcb","meteoalarm-poland"],UKR:["ukrainealarm.com","alerts.in.ua","ubilling.net.ua"]};
 const SRC_NAME = {"lt72":"lt72.lt (PAGD)","kriis":"kriis.ee (EE-ALARM)","rcb":"gov.pl/rcb (Alert RCB)"};
-const esc = t => String(t??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const safeUrl = u => /^https?:\/\//i.test(u||"");
+const esc = t => String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt = t => { if(!t) return ""; const d=new Date(t); if(isNaN(d)) return "";
   return d.toLocaleString("lt-LT",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}); };
 function renderDetail(){
   const box=document.getElementById("detail");
   if(!selected){box.classList.remove("open");return;}
-  const c=COUNTRIES.find(x=>x.id===selected), s=STATE[selected], tn=tone(s);
+  const c=COUNTRIES.find(x=>x.id===selected), s=V(selected), tn=tone(s);
   box.style.setProperty("--c",`var(--${tn==="none"?"grey":tn})`);
   const status=(!isAir(s)&&LEVEL_ALT[s.level])||LEVEL_TXT[s.level];
   let items="";
@@ -380,7 +421,7 @@ function renderDetail(){
         a.expires?"iki "+fmt(a.expires):""].filter(Boolean).join(" – ");
       return `<div class="it" style="--ic:${ic}"><b>${esc(a.event||(a.kind==="air"?"Oro pavojus":"Įspėjimas"))}</b>`+
         `<span>${esc(a.area||a.text)}</span>`+
-        `<i>${esc(KIND[a.kind]||"")}${a.severity?" · "+esc(a.severity):""}${when?" · "+when:""} · ${a.url?`<a href="${esc(a.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(a.src)}</a>`:esc(a.src)}</i></div>`;}).join("");
+        `<i>${esc(KIND[a.kind]||"")}${a.severity?" · "+esc(a.severity):""}${when?" · "+when:""} · ${safeUrl(a.url)?`<a href="${esc(a.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(a.src)}</a>`:esc(a.src)}</i></div>`;}).join("");
   }
   const keys=SRC_KEYS[selected]||[], ms=(META&&META.sources)||{};
   const srcs=keys.map(k=>{const m=ms[k], nm=SRC_NAME[k]||k.replace("meteoalarm-","MeteoAlarm · ");
@@ -393,7 +434,7 @@ function renderDetail(){
     <div class="src" style="margin-top:8px">${esc(s.text)}</div>
     ${items}
     <div class="sec">Šaltiniai</div>
-    <div class="src">${s.url?`Pagrindinis: <a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.src||c.src)}</a>`:`Pagrindinis: ${esc(s.src||c.src)}`}${srcs}
+    <div class="src">${safeUrl(s.url)?`Pagrindinis: <a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.src||c.src)}</a>`:`Pagrindinis: ${esc(s.src||c.src)}`}${srcs}
     <div style="color:var(--ink2);margin-top:4px">Tikrinta: ${META&&META.checked?fmt(META.checked):"—"}</div></div>`;
   box.querySelector(".x").onclick=()=>select(selected);
   box.classList.add("open"); box.scrollTop=0;
@@ -412,7 +453,7 @@ async function poll(){
     for(const u of DATA_URLS){ try{ const r=await fetch(u+"?t="+Date.now(),{cache:"no-store"}); if(r.ok){ j=await r.json(); break; } }catch(e){} }
     if(!j) throw 0;
     STATE=structuredClone(BASE); for(const k in j) if(STATE[k]) STATE[k]={...STATE[k],...j[k]};
-    META=j._meta||null; setLive(true); renderAlerts(); renderDetail();
+    META=j._meta||null; setLive(true); renderAlerts(); renderDetail(); checkRise();
   }catch(e){ setLive(false); }
 }
 function setLive(on){
@@ -422,6 +463,7 @@ function setLive(on){
   document.getElementById("live").classList.toggle("stale",stale);
   document.getElementById("src").textContent=!on?"offline":stale?"pasenę":"live";
   document.getElementById("upd").classList.toggle("warn",stale);
+  document.body.classList.toggle("stale",on&&ago>30);
   document.getElementById("upd").textContent=on?`${stale?"⚠ duomenys pasenę · ":""}tikrinta ${t.toLocaleTimeString("lt-LT",{hour:"2-digit",minute:"2-digit"})} · prieš ${ago} min`:"nėra ryšio su duomenimis";
 }
 document.getElementById("demo").onclick=e=>{
@@ -434,6 +476,39 @@ document.getElementById("demo").onclick=e=>{
   renderAlerts(); renderDetail();
 };
 
+/* ---------- sluoksnių jungiklis ---------- */
+function setLayer(l){ LAYER=l; try{localStorage.setItem("layer",l);}catch(e){}
+  document.querySelectorAll("#layers button").forEach(b=>b.classList.toggle("on",b.dataset.l===l));
+  renderAlerts(); renderDetail(); }
+document.querySelectorAll("#layers button").forEach(b=>b.onclick=()=>setLayer(b.dataset.l));
+
+/* ---------- garsas / pranešimas apie naują oro pavojų ---------- */
+// 🔕 → 🔔 LT → 🔔 visos (be Ukrainos, kur pavojus beveik nuolatinis) → 🔕
+const BELL_MODES=["off","LTU","all"]; let BELL="off", PREV={}, actx=null;
+try{ BELL=localStorage.getItem("bell")||"off"; }catch(e){}
+function bellLabel(){ const b=document.getElementById("bell");
+  b.textContent=BELL==="off"?"🔕":BELL==="LTU"?"🔔 LT":"🔔 visos"; b.classList.toggle("on",BELL!=="off"); }
+function beep(){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+  [0,0.35].forEach(dt=>{const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=880;o.type="sine";
+    g.gain.setValueAtTime(.0001,actx.currentTime+dt);g.gain.exponentialRampToValueAtTime(.3,actx.currentTime+dt+.02);
+    g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+dt+.3);o.connect(g).connect(actx.destination);o.start(actx.currentTime+dt);o.stop(actx.currentTime+dt+.32);});
+  }catch(e){} }
+document.getElementById("bell").onclick=()=>{
+  BELL=BELL_MODES[(BELL_MODES.indexOf(BELL)+1)%BELL_MODES.length]; try{localStorage.setItem("bell",BELL);}catch(e){}
+  bellLabel(); if(BELL!=="off"){ beep(); try{ if(window.Notification&&Notification.permission==="default") Notification.requestPermission(); }catch(e){} }
+};
+// kviečiama po kiekvieno duomenų atnaujinimo: ar kurios nors šalies ORO PAVOJUS pakilo?
+function checkRise(){
+  if(demoIdx>=0) return;
+  const air=id=>{ const s=STATE[id]; const its=s.items||((s.level==="red"||s.level==="yellow")&&(s.kind||"air")==="air"?[s]:[]);
+    return its.filter(a=>(a.kind||"air")==="air").reduce((m,a)=>Math.max(m,RANKL[a.level]||0),0); };
+  const watch = BELL==="LTU" ? ["LTU"] : COUNTRIES.filter(c=>!c.hidden&&c.id!=="UKR").map(c=>c.id);
+  const first = !Object.keys(PREV).length; const rose=[];
+  for(const c of COUNTRIES){ const v=air(c.id); if(!first && BELL!=="off" && watch.includes(c.id) && v>=2 && v>(PREV[c.id]||0)) rose.push(c); PREV[c.id]=v; }
+  if(rose.length){ beep(); const msg=rose.map(c=>`${c.nm}: ${LEVEL_TXT[V(c.id).level]||""}`).join(", ");
+    try{ if(window.Notification&&Notification.permission==="granted") new Notification("Oro pavojus · Baltija",{body:msg}); }catch(e){} }
+}
+
 /* ---------- zoom ---------- */
 const zoom=d3.zoom().scaleExtent([.7,14]).on("zoom",ev=>onZoom(ev.transform));
 // neleidžiam nuvažiuoti už duomenų ribų (ten tik tuščias juodas fonas)
@@ -442,6 +517,7 @@ function limitZoom(){ const [[x0,y0],[x1,y1]]=path.bounds(land);
   zoom.translateExtent([[x0,y0],[x1,y1]]).scaleExtent([Math.min(1,kmin),14]); }
 svg.call(zoom).on("dblclick.zoom",null);
 addEventListener("resize",()=>{clearTimeout(window._r);window._r=setTimeout(()=>{draw();svg.call(zoom.transform,d3.zoomIdentity);renderBase(d3.zoomIdentity);},150)});
+setLayer(LAYER); bellLabel();
 draw(); svg.call(zoom.transform,d3.zoomIdentity); renderBase(d3.zoomIdentity); poll(); setInterval(poll,60000);
 </script>
 </body>

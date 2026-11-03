@@ -45,7 +45,16 @@ Formatas, raktai `LTU LVA EST FIN POL UKR` (UKR turi papildomą `regions: {"UA-6
 Šaltiniai: [docs/SOURCES.md](docs/SOURCES.md). Architektūra ir planas: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Statusas
-- [x] Žemėlapis, stilius, langeliai, demo režimas
-- [ ] Surinkėjas (Termux / Python), kuris pildo `alerts.json`
-- [ ] Android APK: WebView + fono tikrinimas + notifikacijos
-- [ ] Regionai (apskritys / novadai / maakonnad / województwa) vietoj visos šalies
+- [x] Žemėlapis (Canvas + SVG), eskizo stilius, kortelės, detalių langas, Demo
+- [x] Surinkėjas `collector/` + GitHub Actions (ciklas kas 90 s, duomenys šakoje `data`)
+- [x] Sritys: LT apskritys, LV savivaldybės, EE maakond, FI maakunta, PL vaivadijos, UA sritys
+- [x] Sluoksniai: Visi / ✈ Kariniai / ☂ Orai
+- [x] Garsas ir naršyklės pranešimas, kai pakyla oro pavojus (🔕 → 🔔 LT → 🔔 visos)
+- [x] Neveikiantis ar neegzistuojantis oro pavojaus šaltinis → „Oro pavojaus būsena nenustatyta“ (ne „saugu“)
+- [x] Pasenę duomenys (>20 min) – įspėjimas, (>30 min) – žemėlapis ir kortelės išblukinami
+- [ ] Ukraina: oficialus API raktas (laukiama), dalinis pavojus
+- [ ] Lietuva: veikiantis oro pavojaus šaltinis (lt72.lt blokuoja GitHub, 403)
+- [ ] Latvija, Suomija: viešo mašininio oro pavojaus šaltinio nėra
+- [ ] Android APK (cell broadcast / 112 programėlių pranešimai)
+
+Svarbu: tai nėra oficiali perspėjimo sistema ir negali jos pakeisti. Visada vadovaukitės oficialiais pranešimais (cell broadcast, sirenos, LRT / ERR / LSM / Yle).

@@ -434,13 +434,17 @@ def tone(a: dict) -> str:
 
 
 # ---------------------------------------------------------------- sujungimas
+# (pavadinimas, funkcija, tipas) – tipas „air“ = karinio oro pavojaus šaltinis, „weather“ = orai
 SOURCES = {
-    "LTU": [("lt72", lt72)],
-    "EST": [("kriis", kriis)],
-    "POL": [("rcb", rcb)],
+    "LTU": [("lt72", lt72, "air")],
+    "EST": [("kriis", kriis, "air")],
+    "POL": [("rcb", rcb, "air")],
 }
 for cc, slug in METEOALARM.items():
-    SOURCES.setdefault(cc, []).append((f"meteoalarm-{slug}", lambda s=slug: meteoalarm(s)))
+    SOURCES.setdefault(cc, []).append((f"meteoalarm-{slug}", lambda s=slug: meteoalarm(s), "weather"))
+
+AIR_NOTE = {"none": "Viešo oro pavojaus šaltinio šiai šaliai neturime.",
+            "down": "Oro pavojaus šaltinis šiuo metu neveikia."}
 
 
 def collect() -> dict:
@@ -448,46 +452,55 @@ def collect() -> dict:
     meta = {"checked": NOW.isoformat(timespec="seconds"), "sources": {}}
     for cc in COUNTRIES:
         alerts: list[Alert] = []
-        ok = 0
-        for name, fn in SOURCES.get(cc, []):
+        st = {"air": [], "weather": []}            # True/False kiekvienam šaltiniui
+        for name, fn, typ in SOURCES.get(cc, []):
             t0 = time.time()
             try:
                 got = fn()
                 alerts += got
-                ok += 1
-                meta["sources"][name] = {"ok": True, "n": len(got), "ms": int((time.time() - t0) * 1000)}
+                st[typ].append(True)
+                meta["sources"][name] = {"ok": True, "n": len(got), "ms": int((time.time() - t0) * 1000), "type": typ}
             except Exception as ex:  # noqa: BLE001
-                meta["sources"][name] = {"ok": False, "err": f"{type(ex).__name__}: {ex}"[:200]}
+                st[typ].append(False)
+                meta["sources"][name] = {"ok": False, "err": f"{type(ex).__name__}: {ex}"[:200], "type": typ}
+        air = "ok" if any(st["air"]) else "down" if st["air"] else "none"
+        weather = "ok" if any(st["weather"]) else "down" if st["weather"] else "none"
+        base = {"air": air, "weather": weather}
+        for a in alerts:   # kiekvienam įspėjimui – jo sritys (sluoksnių filtrui naršyklėje)
+            a["regions"] = sorted(set(a.get("regionsHint") or []) or match_regions(cc, a.get("area") or a.get("text", "")))
+            a.pop("regionsHint", None)
         if alerts:
             # karas pirmiau už orus esant tam pačiam lygiui
             alerts.sort(key=lambda a: (RANK[a["level"]], a.get("kind") == "air"), reverse=True)
             top = alerts[0]
             extra = len(alerts) - 1
             text = top["text"] + (f"  (+{extra} kiti įspėjimai)" if extra else "")
-            result[cc] = {"level": top["level"], "kind": top["kind"], "text": text,
+            if air != "ok" and not any(a.get("kind") == "air" for a in alerts):
+                text += " · Oro pavojaus būsena nenustatyta."
+            result[cc] = {**base, "level": top["level"], "kind": top["kind"], "text": text,
                           "time": top["time"], "url": top.get("url", ""), "src": top["src"],
                           "dateOnly": bool(top.get("dateOnly")),
                           "items": [dict(a) for a in alerts[:15]]}
-            # sritys: jei įspėjimą pavyksta pririšti prie apskrities / maakond / województwo / maakunta
             regions: dict[str, str] = {}
             all_matched = True
             for a in alerts:
-                isos = set(a.get("regionsHint") or []) or match_regions(cc, a.get("area") or a.get("text", ""))
-                if not isos:
+                if not a["regions"]:
                     all_matched = False
-                for iso in isos:
+                for iso in a["regions"]:
                     if TONE_RANK[tone(a)] > TONE_RANK.get(regions.get(iso, ""), 0):
                         regions[iso] = tone(a)
             if regions:
                 result[cc]["regions"] = regions
                 result[cc]["regionsOnly"] = all_matched
-        elif ok:
-            result[cc] = {"level": "white", "text": "Aktyvių perspėjimų nėra.",
-                          "time": meta["checked"]}
+        elif air == "ok":
+            result[cc] = {**base, "level": "white", "text": "Aktyvių perspėjimų nėra.", "time": meta["checked"]}
         else:
-            result[cc] = {"level": "none", "text": "Šaltiniai šiuo metu nepasiekiami.",
+            # oro pavojaus šaltinio nėra arba jis neveikia – NE „saugu“, o „nenustatyta“
+            wtxt = " Orų įspėjimų nėra." if weather == "ok" else " Orų šaltinis irgi nepasiekiamas." if weather == "down" else ""
+            result[cc] = {**base, "level": "none", "text": "Oro pavojaus būsena nenustatyta. " + AIR_NOTE[air] + wtxt,
                           "time": meta["checked"]}
     result["UKR"] = ukraine(meta)
+    result["UKR"]["air"] = "ok" if result["UKR"]["level"] != "none" else "down"
     result["_meta"] = meta
     return result
 
