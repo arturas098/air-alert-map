@@ -316,11 +316,17 @@ def ukraine(meta: dict) -> dict:
         except Exception as ex:  # noqa: BLE001
             meta["sources"][name] = {"ok": False, "err": f"{type(ex).__name__}: {ex}"[:200]}
             continue
+        note = ""
+        # Krymas (okupuota teritorija) oficialiame žemėlapyje nuolat raudonas; jei šaltinis jo
+        # nepateikia – rodom nuolatinį statusą ir aiškiai pažymim, kad tai ne gyvas duomuo
+        if "UA-43" not in regions:
+            regions["UA-43"] = True
+            note = " Krymas – nuolatinis pavojus (okupuota teritorija; šaltinis jo nepateikia)."
         on = sorted(k for k, v in regions.items() if v)
         src = name + ("" if official else " (neoficialus)")
         if on:
             return {"level": "red", "kind": "air", "regions": {k: "red" for k in on}, "regionsOnly": True,
-                    "text": f"Oro pavojus {len(on)} iš {len(regions)} sričių.", "time": NOW.isoformat(timespec="seconds"),
+                    "text": f"Oro pavojus {len(on)} iš {len(regions)} sričių.{note}", "time": NOW.isoformat(timespec="seconds"),
                     "src": src, "url": "https://map.ukrainealarm.com/"}
         return {"level": "white", "regions": {}, "text": "Oro pavojaus nėra nė vienoje srityje.",
                 "time": NOW.isoformat(timespec="seconds"), "src": src, "url": "https://map.ukrainealarm.com/"}
