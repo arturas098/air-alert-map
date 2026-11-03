@@ -112,8 +112,10 @@ def meteoalarm(country_slug: str) -> list[Alert]:
         for c in e:
             if local(c.tag) == "link" and c.get("href"):
                 link = c.get("href"); break
+        expires_s = expires.isoformat() if expires else ""
         out.append(Alert(level=level, kind="weather",
-                         text=f"{event} — {area}".strip(" —"),
+                         text=f"{event} — {area}".strip(" —"), event=event, area=area,
+                         severity=child_text(e, "severity"), expires=expires_s,
                          time=(onset or NOW).isoformat(), url=link, src="MeteoAlarm"))
     return out
 
@@ -344,7 +346,8 @@ def collect() -> dict:
             extra = len(alerts) - 1
             text = top["text"] + (f"  (+{extra} kiti įspėjimai)" if extra else "")
             result[cc] = {"level": top["level"], "kind": top["kind"], "text": text,
-                          "time": top["time"], "url": top.get("url", ""), "src": top["src"]}
+                          "time": top["time"], "url": top.get("url", ""), "src": top["src"],
+                          "items": [dict(a) for a in alerts[:15]]}
         elif ok:
             result[cc] = {"level": "white", "text": "Aktyvių perspėjimų nėra.",
                           "time": meta["checked"]}

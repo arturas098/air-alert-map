@@ -8,7 +8,7 @@
 <style>
 :root{
   --bg:#0a0a0b; --ink:#e9e6df; --ink2:#a9a59c; --ink3:#5d5a55; --ink4:#2a2927;
-  --white:#f2f0ea; --yellow:#ffd23f; --red:#ff3b30; --grey:#7c7a75;
+  --white:#f2f0ea; --teal:#22D3C5; --yellow:#ffd23f; --red:#ff3b30; --grey:#7c7a75;
   --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -41,6 +41,8 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
 .card[data-l="yellow"]{--c:var(--yellow)}
 .card[data-l="white"]{--c:var(--white)}
 .card[data-l="none"]{--c:var(--grey)}
+.card[data-k="weather"],.card[data-k="chem"],.card[data-k="other"]{--c:var(--teal);animation:none}
+.card[data-k="weather"][data-l="red"]{animation:pulse 3s ease-in-out infinite}
 @keyframes pulse{50%{box-shadow:0 0 0 1px rgba(0,0,0,.6),0 0 30px 2px color-mix(in srgb,var(--c) 75%,transparent)}}
 .card .row{display:flex;align-items:baseline;gap:8px}
 .card .cc{font-size:10px;letter-spacing:.2em;color:var(--c);border:1px solid var(--c);border-radius:6px;padding:1px 5px}
@@ -57,6 +59,25 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
 .legend{position:fixed;left:14px;top:calc(62px + env(safe-area-inset-top));font-size:9.5px;letter-spacing:.1em;color:var(--ink2);
   display:flex;flex-direction:column;gap:4px;pointer-events:none;text-transform:uppercase;background:rgba(10,10,11,.7);padding:7px 9px;border-radius:10px;border:1px solid #2a2927}
 .legend i{display:inline-block;width:14px;height:8px;border-radius:3px;margin-right:6px;vertical-align:0;border:1.5px solid}
+/* detalių langas */
+#detail{--c:var(--grey);position:fixed;z-index:20;left:14px;top:calc(60px + env(safe-area-inset-top));width:min(380px,calc(100vw - 28px));
+  max-height:min(440px,calc(100vh - 230px));overflow:auto;border-radius:18px;border:2px solid var(--c);
+  background:color-mix(in srgb,var(--c) 10%,rgba(10,10,11,.9));backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  box-shadow:0 0 0 1px #000,0 0 26px -6px color-mix(in srgb,var(--c) 70%,transparent);padding:16px 16px 14px;display:none}
+#detail.open{display:block}
+#detail .x{position:absolute;right:10px;top:8px;background:none;border:0;color:var(--ink2);font:inherit;font-size:20px;cursor:pointer;padding:4px 8px}
+#detail h2{font-size:15px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;display:flex;gap:8px;align-items:baseline}
+#detail .st{margin-top:10px;font-size:18px;font-weight:700;color:var(--c);text-transform:uppercase;letter-spacing:.04em}
+#detail .kd{display:inline-block;margin-top:6px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--c);border:1px dashed var(--c);border-radius:6px;padding:2px 7px}
+#detail .sec{margin-top:14px;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2);border-top:1px solid #2a2927;padding-top:10px}
+#detail .it{margin-top:8px;padding:8px 10px;border-radius:10px;border:1px solid color-mix(in srgb,var(--ic) 55%,transparent);background:color-mix(in srgb,var(--ic) 8%,transparent)}
+#detail .it b{display:block;font-size:12.5px;color:var(--ic)}
+#detail .it span{display:block;font-size:11px;line-height:1.45;color:var(--ink);opacity:.9;margin-top:2px}
+#detail .it i{display:block;font-style:normal;font-size:10px;color:var(--ink2);margin-top:3px}
+#detail .src{font-size:11px;line-height:1.7;color:var(--ink)}
+#detail .src a{color:var(--ink)}
+#detail .ok{color:#3ddc84}#detail .bad{color:#ff8a80}
+@media (max-width:899px){#detail{left:10px;right:10px;width:auto;max-height:calc(100vh - 260px)}}
 </style>
 </head>
 <body>
@@ -76,9 +97,11 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
   <div><i style="border-color:var(--yellow);background:rgba(255,210,63,.2)"></i>Tikėtinas pavojus</div>
   <div><i style="border-color:var(--white);background:rgba(255,255,255,.12)"></i>Pavojaus nėra</div>
   <div><i style="border-color:var(--grey)"></i>Nenustatyta</div>
+  <div><i style="border-color:var(--teal);background:rgba(34,211,197,.18)"></i>Stichija / orai</div>
 </div>
 
 <div class="cards" id="cards"></div>
+<div id="detail" role="dialog" aria-label="Pavojaus detalės"></div>
 
 <script>/*D3*/</script>
 <script>/*TOPOJSON*/</script>
@@ -100,7 +123,10 @@ const COUNTRIES = [
 const LEVEL_TXT = {red:"Oro pavojus", yellow:"Tikėtinas oro pavojus", white:"Pavojaus nėra", none:"Nenustatyta"};
 const LEVEL_ALT = {red:"Pavojus", yellow:"Įspėjimas"};
 const KIND = {air:"✈ Oro grėsmė", weather:"☂ Stichija", chem:"☣ Tarša / avarija", other:"! Kita"};
-const COLOR = {red:"#ff3b30", yellow:"#ffd23f", white:"#f2f0ea", none:"#7c7a75"};
+const COLOR = {red:"#ff3b30", yellow:"#ffd23f", white:"#f2f0ea", none:"#7c7a75", teal:"#22D3C5"};
+// oro pavojus – valstybinis kodas (balta/geltona/raudona); stichija ir kita – žydra
+const isAir = s => !s.kind || s.kind==="air";
+const tone = s => (s.level==="red"||s.level==="yellow") && !isAir(s) ? "teal" : s.level;
 
 const BASE = Object.fromEntries(COUNTRIES.map(c=>[c.id,{level:"none",text:"Duomenų nėra arba šaltinis nepasiekiamas.",time:null}]));
 const DEMOS = [
@@ -128,7 +154,7 @@ function hatch(id,color,gap,w,op,ang){
     .attr("patternTransform",`rotate(${ang})`)
     .append("line").attr("x1",0).attr("y1",0).attr("x2",0).attr("y2",gap).attr("stroke",color).attr("stroke-width",w).attr("stroke-opacity",op);
 }
-for(const k of ["red","yellow","white"]) hatch("h-"+k,COLOR[k],6,1.2,.55,45);
+for(const k of ["red","yellow","white","teal"]) hatch("h-"+k,COLOR[k],6,1.2,.55,45);
 
 // popieriaus grūdas – maža triukšmo plytelė kaip CSS fonas (be SVG filtrų)
 (()=>{const c=document.createElement("canvas");c.width=c.height=128;const x=c.getContext("2d");const d=x.createImageData(128,128);
@@ -264,14 +290,15 @@ function renderAlerts(){
         .attr("pointer-events","none").attr("vector-effect","non-scaling-stroke");
       return;
     }
-    gAlert.append("path").attr("d",d).attr("fill",COLOR[lv]).attr("fill-opacity",lv==="white"?.05:.16).attr("pointer-events","none");
-    if(lv!=="white") gAlert.append("path").attr("d",d).attr("fill",`url(#h-${lv})`).attr("pointer-events","none");
-    if(lv!=="white") gAlertEdge.append("path").attr("d",d).attr("fill","none").attr("stroke",COLOR[lv]).attr("stroke-opacity",.22)
+    const tn=tone(s), col=COLOR[tn];
+    gAlert.append("path").attr("d",d).attr("fill",col).attr("fill-opacity",lv==="white"?.05:(tn==="teal"&&lv==="yellow"?.10:.16)).attr("pointer-events","none");
+    if(lv!=="white") gAlert.append("path").attr("d",d).attr("fill",`url(#h-${tn})`).attr("fill-opacity",tn==="teal"&&lv==="yellow"?.6:1).attr("pointer-events","none");
+    if(lv!=="white") gAlertEdge.append("path").attr("d",d).attr("fill","none").attr("stroke",col).attr("stroke-opacity",.22)
       .attr("stroke-width",9).attr("stroke-linejoin","round").attr("pointer-events","none").attr("vector-effect","non-scaling-stroke");
-    const e=gAlertEdge.append("path").attr("d",d).attr("fill","none").attr("stroke",COLOR[lv])
+    const e=gAlertEdge.append("path").attr("d",d).attr("fill","none").attr("stroke",col)
       .attr("stroke-width",lv==="white"?1.2:2.4).attr("stroke-opacity",lv==="white"?.55:1).attr("stroke-linejoin","round")
       .attr("pointer-events","none").attr("vector-effect","non-scaling-stroke");
-    if(lv==="red") e.append("animate").attr("attributeName","stroke-opacity").attr("values","1;.35;1").attr("dur","1.6s").attr("repeatCount","indefinite");
+    if(lv==="red") e.append("animate").attr("attributeName","stroke-opacity").attr("values","1;.35;1").attr("dur",tn==="teal"?"3s":"1.6s").attr("repeatCount","indefinite");
   });
   if(selected){gAlertEdge.append("path").attr("d",path(SHAPES[selected])).attr("fill","none").attr("stroke","#fff")
     .attr("stroke-width",1).attr("stroke-dasharray","4 3").attr("vector-effect","non-scaling-stroke").attr("pointer-events","none");}
@@ -283,7 +310,7 @@ function renderCards(){
   const list=COUNTRIES.filter(c=>!c.hidden).sort((a,b)=>ORDER[STATE[a.id].level]-ORDER[STATE[b.id].level]);
   box.innerHTML=list.map(c=>{const s=STATE[c.id];
     const t=s.time?new Date(s.time).toLocaleTimeString("lt-LT",{hour:"2-digit",minute:"2-digit"}):"—";
-    return `<div class="card${selected===c.id?" sel":""}" data-l="${s.level}" data-id="${c.id}">
+    return `<div class="card${selected===c.id?" sel":""}" data-l="${s.level}" data-k="${s.kind||""}" data-id="${c.id}">
       <div class="row"><span class="cc">${c.cc}</span><span class="nm">${c.nm}</span></div>
       <div class="st">${(s.kind&&s.kind!=="air"&&LEVEL_ALT[s.level])||LEVEL_TXT[s.level]}</div>${s.kind?`<div class="kd">${KIND[s.kind]||KIND.other}</div>`:""}
       <div class="ds">${s.text}</div>
@@ -291,14 +318,61 @@ function renderCards(){
   box.querySelectorAll(".card").forEach(el=>el.onclick=()=>select(el.dataset.id,true));
 }
 function select(id,fromCard){
-  selected = selected===id?null:id; renderAlerts();
+  selected = selected===id?null:id; renderAlerts(); renderDetail();
   if(!fromCard){const el=document.querySelector(`.card[data-id="${id}"]`); el&&el.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});}
+}
+
+
+/* ---------- detalių langas ---------- */
+const SRC_KEYS = {LTU:["lt72","meteoalarm-lithuania"],LVA:["meteoalarm-latvia"],EST:["kriis","meteoalarm-estonia"],
+  FIN:["meteoalarm-finland"],POL:["rcb","meteoalarm-poland"],UKR:["ukrainealarm.com","alerts.in.ua","ubilling.net.ua"]};
+const SRC_NAME = {"lt72":"lt72.lt (PAGD)","kriis":"kriis.ee (EE-ALARM)","rcb":"gov.pl/rcb (Alert RCB)"};
+const esc = t => String(t??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = t => { if(!t) return ""; const d=new Date(t); if(isNaN(d)) return "";
+  return d.toLocaleString("lt-LT",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}); };
+function renderDetail(){
+  const box=document.getElementById("detail");
+  if(!selected){box.classList.remove("open");return;}
+  const c=COUNTRIES.find(x=>x.id===selected), s=STATE[selected], tn=tone(s);
+  box.style.setProperty("--c",`var(--${tn==="none"?"grey":tn})`);
+  const status=(!isAir(s)&&LEVEL_ALT[s.level])||LEVEL_TXT[s.level];
+  let items="";
+  if(s.regions && Object.keys(s.regions).length){
+    const names=Object.keys(s.regions).map(i=>RSHAPES[i]?RSHAPES[i].properties.name:i).sort();
+    items=`<div class="sec">Sritys su pavojumi · ${names.length}</div>`+
+      `<div class="it" style="--ic:${COLOR.red}"><span>${names.map(esc).join(" · ")}</span></div>`;
+  } else if(s.items && s.items.length){
+    items=`<div class="sec">Aktyvūs įspėjimai · ${s.items.length}</div>`+s.items.map(a=>{
+      const ic=COLOR[tone(a)]||COLOR.white;
+      const when=[fmt(a.time), a.expires?"iki "+fmt(a.expires):""].filter(Boolean).join(" – ");
+      return `<div class="it" style="--ic:${ic}"><b>${esc(a.event||(a.kind==="air"?"Oro pavojus":"Įspėjimas"))}</b>`+
+        `<span>${esc(a.area||a.text)}</span>`+
+        `<i>${esc(KIND[a.kind]||"")}${a.severity?" · "+esc(a.severity):""}${when?" · "+when:""} · ${a.url?`<a href="${esc(a.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(a.src)}</a>`:esc(a.src)}</i></div>`;}).join("");
+  } else {
+    items=`<div class="sec">Aprašymas</div><div class="src">${esc(s.text)}</div>`;
+  }
+  const keys=SRC_KEYS[selected]||[], ms=(META&&META.sources)||{};
+  const srcs=keys.map(k=>{const m=ms[k], nm=SRC_NAME[k]||k.replace("meteoalarm-","MeteoAlarm · ");
+    if(!m) return `<div>· ${esc(nm)} <span style="color:var(--ink2)">— dar netikrinta</span></div>`;
+    return m.ok?`<div><span class="ok">✓</span> ${esc(nm)} <span style="color:var(--ink2)">· įspėjimų: ${m.n}</span></div>`
+               :`<div><span class="bad">✗</span> ${esc(nm)} <span style="color:var(--ink2)">· ${/nėra [A-Z_]+(KEY|TOKEN)/.test(m.err)?"laukiama API rakto":/403/.test(m.err)?"svetainė blokuoja (403)":esc(String(m.err).slice(0,70))}</span></div>`;}).join("");
+  box.innerHTML=`<button class="x" aria-label="Uždaryti">✕</button>
+    <h2><span class="cc" style="font-size:10px;letter-spacing:.2em;color:var(--c);border:1px solid var(--c);border-radius:6px;padding:1px 5px">${c.cc}</span>${esc(c.nm)}</h2>
+    <div class="st">${status}</div>${s.kind?`<div class="kd">${KIND[s.kind]||KIND.other}</div>`:""}
+    <div class="src" style="margin-top:8px">${esc(s.text)}</div>
+    ${items}
+    <div class="sec">Šaltiniai</div>
+    <div class="src">${s.url?`Pagrindinis: <a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.src||c.src)}</a>`:`Pagrindinis: ${esc(s.src||c.src)}`}${srcs}
+    <div style="color:var(--ink2);margin-top:4px">Tikrinta: ${META&&META.checked?fmt(META.checked):"—"}</div></div>`;
+  box.querySelector(".x").onclick=()=>select(selected);
+  box.classList.add("open"); box.scrollTop=0;
 }
 
 /* ---------- duomenys ---------- */
 // Vietinis serveris (Termux / APK) pateikia /alerts.json: {"LTU":{"level":"red","text":"…","time":"ISO"}, …}
 // 1) šalia esantis alerts.json (Termux / APK / Pages), 2) tiesiai iš GitHub (greitesnis nei Pages kešas)
-const DATA_URLS=["alerts.json","https://raw.githubusercontent.com/arturas098/air-alert-map/main/alerts.json"];
+const RAW="https://raw.githubusercontent.com/arturas098/air-alert-map/main/alerts.json";
+const DATA_URLS = location.hostname.endsWith("github.io") ? [RAW,"alerts.json"] : ["alerts.json",RAW];
 let META=null;
 async function poll(){
   if(demoIdx>=0) return;
@@ -307,7 +381,7 @@ async function poll(){
     for(const u of DATA_URLS){ try{ const r=await fetch(u+"?t="+Date.now(),{cache:"no-store"}); if(r.ok){ j=await r.json(); break; } }catch(e){} }
     if(!j) throw 0;
     STATE=structuredClone(BASE); for(const k in j) if(STATE[k]) STATE[k]={...STATE[k],...j[k]};
-    META=j._meta||null; setLive(true); renderAlerts();
+    META=j._meta||null; setLive(true); renderAlerts(); renderDetail();
   }catch(e){ setLive(false); }
 }
 function setLive(on){
@@ -324,7 +398,7 @@ document.getElementById("demo").onclick=e=>{
   if(demoIdx>=0){const now=new Date().toISOString();for(const k in DEMOS[demoIdx])STATE[k]={...DEMOS[demoIdx][k],time:now};
     document.getElementById("upd").textContent="demonstraciniai duomenys";}
   else poll();
-  renderAlerts();
+  renderAlerts(); renderDetail();
 };
 
 /* ---------- zoom ---------- */
