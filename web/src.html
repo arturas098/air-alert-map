@@ -67,6 +67,10 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
 #tl.hist .h b{color:#c9c0ff}
 #tl .h .sp{flex:1}
 #tl button{font:inherit;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);background:none;border:1px solid var(--ink3);border-radius:999px;padding:3px 9px;cursor:pointer}
+#flash{position:fixed;left:50%;top:42%;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;z-index:7;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;background:rgba(10,10,11,.55);border:1px solid rgba(201,192,255,.6);
+  opacity:0;transform:scale(.8);transition:opacity .5s,transform .5s}
+#flash.show{opacity:1;transform:scale(1);transition:none}
 #tl-play{width:30px;padding:3px 0!important;font-size:11px!important}
 #tl-play.on{color:var(--bg)!important;background:#c9c0ff!important;border-color:#c9c0ff!important}
 #tl.hist #tl-now{color:var(--bg);background:var(--ink);border-color:var(--ink)}
@@ -147,6 +151,7 @@ body.stale .card{animation:none!important}
 </div>
 
 <div class="cards" id="cards"></div>
+<div id="flash" aria-hidden="true"></div>
 <div id="tl" class="collapsed" aria-label="Laiko juosta, 48 val.">
   <button id="tl-tog" aria-label="Atidaryti laiko juostą">◀</button>
   <div class="h"><span id="tl-close" style="cursor:pointer;font-size:14px;padding:0 4px" title="Suskleisti">»</span><button id="tl-play" aria-label="Groti istoriją iki dabar" title="Groti iki dabar (48 val. ≈ 8 s)">▶</button><b id="tl-label">Dabar</b><span class="sp"></span><span id="tl-info"></span><button id="tl-now">Dabar</button></div>
@@ -329,7 +334,7 @@ function renderAlerts(){
   gAlert.selectAll("*").remove(); gAlertEdge.selectAll("*").remove();
   COUNTRIES.filter(c=>!c.hidden).forEach(c=>{
     const s=V(c.id), lv=s.level, d=path(SHAPES[c.id]);
-    const hit = gAlert.append("path").attr("d",d).attr("fill","transparent").style("cursor","pointer").on("click",()=>select(c.id));
+    const hit = gAlert.append("path").attr("d",d).attr("fill","transparent").style("cursor","pointer").on("click",ev=>{ if(playerMode()){ ev.stopPropagation(); screenToggle(); return; } select(c.id); });
     if(lv==="none") return;
     const hasReg = s.regions && Object.keys(s.regions).length;
     if(hasReg){               // sričių lygis: dažom sritis su pavojumi
@@ -610,6 +615,11 @@ function playStart(){
   playRaf=requestAnimationFrame(step);
 }
 document.getElementById("tl-play").onclick=e=>{ e.stopPropagation(); playing?playStop():playStart(); };
+// telefone: kai laiko juosta atidaryta (arba groja), bakstelėjimas į žemėlapį – ▶/❚❚ kaip vaizdo įraše
+function playerMode(){ return !isWide() && (playing || !document.getElementById("tl").classList.contains("collapsed")); }
+function screenToggle(){ playing?playStop():playStart(); const f=document.getElementById("flash");
+  f.textContent=playing?"▶":"❚❚"; f.classList.add("show"); requestAnimationFrame(()=>requestAnimationFrame(()=>f.classList.remove("show"))); }
+svg.on("click.player",ev=>{ if(playerMode()) screenToggle(); });
 document.getElementById("tl-range").addEventListener("pointerdown",()=>{ if(playing) playStop(); });
 // suskleidžiama į kubelį su rodykle; išskleista – 5 s be veiksmų ir vėl susiskleidžia
 let tlTimer=0;
