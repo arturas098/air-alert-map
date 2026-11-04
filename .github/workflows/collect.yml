@@ -2,7 +2,9 @@ name: collect-alerts
 
 # GitHub „schedule“ paleidžia nereguliariai, todėl vienas darbas veikia ~55 min ir tikrina
 # šaltinius kas 90 s (collector/loop.py). Grafikas tik vėl įjungia darbą, jei ankstesnis baigėsi.
-# alerts.json publikuojamas į šaką `data` (force-push, be istorijos).
+# alerts.json ir history.json publikuojami į šaką `data` (force-push, be istorijos).
+# GitHub „schedule“ realiai paleidžia retai (kartais kas kelias valandas), todėl ciklas pasibaigęs
+# pats paleidžia kitą per workflow_dispatch (GITHUB_TOKEN tai leidžia). Grafikas lieka kaip atsarga.
 on:
   schedule:
     - cron: "*/10 * * * *"
@@ -13,6 +15,7 @@ on:
 
 permissions:
   contents: write
+  actions: write      # kad ciklas pasibaigęs galėtų paleisti kitą
 
 concurrency:
   group: collect-alerts
@@ -35,3 +38,8 @@ jobs:
           DURATION: "3300"
           UKRAINEALARM_KEY: ${{ secrets.UKRAINEALARM_KEY }}
           ALERTS_IN_UA_TOKEN: ${{ secrets.ALERTS_IN_UA_TOKEN }}
+      - name: Paleisti kitą ciklą
+        if: ${{ !cancelled() }}   # ne atšauktas (naujas push pats tęs grandinę)
+        run: gh workflow run collect.yml --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}
