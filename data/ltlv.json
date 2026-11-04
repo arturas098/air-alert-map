@@ -1,0 +1,630 @@
+{
+"LT": {
+"munis": {
+"LT-50": {
+"name": "Tauragės r.",
+"stem": "taurages",
+"type": "r"
+},
+"LT-36": {
+"name": "Prienų r.",
+"stem": "prienu",
+"type": "r"
+},
+"LT-09": {
+"name": "Ignalinos r.",
+"stem": "ignalinos",
+"type": "r"
+},
+"LT-08": {
+"name": "Elektrėnų",
+"stem": "elektrenu",
+"type": "s"
+},
+"LT-19": {
+"name": "Kelmės r.",
+"stem": "kelmes",
+"type": "r"
+},
+"LT-26": {
+"name": "Mažeikių r.",
+"stem": "mazeikiu",
+"type": "r"
+},
+"LT-28": {
+"name": "Neringos",
+"stem": "neringos",
+"type": "s"
+},
+"LT-04": {
+"name": "Anykščių r.",
+"stem": "anyksciu",
+"type": "r"
+},
+"LT-38": {
+"name": "Raseinių r.",
+"stem": "raseiniu",
+"type": "r"
+},
+"LT-41": {
+"name": "Šakių r.",
+"stem": "sakiu",
+"type": "r"
+},
+"LT-15": {
+"name": "Kauno m.",
+"stem": "kauno",
+"type": "m"
+},
+"LT-23": {
+"name": "Kupiškio r.",
+"stem": "kupiskio",
+"type": "r"
+},
+"LT-49": {
+"name": "Švenčionių r.",
+"stem": "svencioniu",
+"type": "r"
+},
+"LT-05": {
+"name": "Birštono",
+"stem": "birstono",
+"type": "s"
+},
+"LT-12": {
+"name": "Jurbarko r.",
+"stem": "jurbarko",
+"type": "r"
+},
+"LT-14": {
+"name": "Kalvarijos",
+"stem": "kalvarijos",
+"type": "s"
+},
+"LT-20": {
+"name": "Klaipėdos m.",
+"stem": "klaipedos",
+"type": "m"
+},
+"LT-31": {
+"name": "Palangos m.",
+"stem": "palangos",
+"type": "m"
+},
+"LT-32": {
+"name": "Panevėžio m.",
+"stem": "panevezio",
+"type": "m"
+},
+"LT-37": {
+"name": "Radviliškio r.",
+"stem": "radviliskio",
+"type": "r"
+},
+"LT-43": {
+"name": "Šiaulių m.",
+"stem": "siauliu",
+"type": "m"
+},
+"LT-51": {
+"name": "Telšių r.",
+"stem": "telsiu",
+"type": "r"
+},
+"LT-59": {
+"name": "Visagino",
+"stem": "visagino",
+"type": "s"
+},
+"LT-35": {
+"name": "Plungės r.",
+"stem": "plunges",
+"type": "r"
+},
+"LT-02": {
+"name": "Alytaus m.",
+"stem": "alytaus",
+"type": "m"
+},
+"LT-52": {
+"name": "Trakų r.",
+"stem": "traku",
+"type": "r"
+},
+"LT-45": {
+"name": "Šilalės r.",
+"stem": "silales",
+"type": "r"
+},
+"LT-60": {
+"name": "Zarasų r.",
+"stem": "zarasu",
+"type": "r"
+},
+"LT-55": {
+"name": "Varėnos r.",
+"stem": "varenos",
+"type": "r"
+},
+"LT-29": {
+"name": "Pagėgių",
+"stem": "pagegiu",
+"type": "s"
+},
+"LT-58": {
+"name": "Vilniaus r.",
+"stem": "vilniaus",
+"type": "r"
+},
+"LT-47": {
+"name": "Širvintų r.",
+"stem": "sirvintu",
+"type": "r"
+},
+"LT-16": {
+"name": "Kauno r.",
+"stem": "kauno",
+"type": "r"
+},
+"LT-21": {
+"name": "Klaipėdos r.",
+"stem": "klaipedos",
+"type": "r"
+},
+"LT-03": {
+"name": "Alytaus r.",
+"stem": "alytaus",
+"type": "r"
+},
+"LT-06": {
+"name": "Biržų r.",
+"stem": "birzu",
+"type": "r"
+},
+"LT-44": {
+"name": "Šiaulių r.",
+"stem": "siauliu",
+"type": "r"
+},
+"LT-34": {
+"name": "Pasvalio r.",
+"stem": "pasvalio",
+"type": "r"
+},
+"LT-30": {
+"name": "Pakruojo r.",
+"stem": "pakruojo",
+"type": "r"
+},
+"LT-42": {
+"name": "Šalčininkų r.",
+"stem": "salcininku",
+"type": "r"
+},
+"LT-39": {
+"name": "Rietavo",
+"stem": "rietavo",
+"type": "s"
+},
+"LT-24": {
+"name": "Lazdijų r.",
+"stem": "lazdiju",
+"type": "r"
+},
+"LT-25": {
+"name": "Marijampolės",
+"stem": "marijampoles",
+"type": "s"
+},
+"LT-57": {
+"name": "Vilniaus m.",
+"stem": "vilniaus",
+"type": "m"
+},
+"LT-56": {
+"name": "Vilkaviškio r.",
+"stem": "vilkaviskio",
+"type": "r"
+},
+"LT-33": {
+"name": "Panevėžio r.",
+"stem": "panevezio",
+"type": "r"
+},
+"LT-53": {
+"name": "Ukmergės r.",
+"stem": "ukmerges",
+"type": "r"
+},
+"LT-54": {
+"name": "Utenos r.",
+"stem": "utenos",
+"type": "r"
+},
+"LT-40": {
+"name": "Rokiškio r.",
+"stem": "rokiskio",
+"type": "r"
+},
+"LT-27": {
+"name": "Molėtų r.",
+"stem": "moletu",
+"type": "r"
+},
+"LT-07": {
+"name": "Druskininkų",
+"stem": "druskininku",
+"type": "s"
+},
+"LT-10": {
+"name": "Jonavos r.",
+"stem": "jonavos",
+"type": "r"
+},
+"LT-11": {
+"name": "Joniškio r.",
+"stem": "joniskio",
+"type": "r"
+},
+"LT-01": {
+"name": "Akmenės r.",
+"stem": "akmenes",
+"type": "r"
+},
+"LT-18": {
+"name": "Kėdainių r.",
+"stem": "kedainiu",
+"type": "r"
+},
+"LT-22": {
+"name": "Kretingos r.",
+"stem": "kretingos",
+"type": "r"
+},
+"LT-17": {
+"name": "Kazlų Rūdos",
+"stem": "kazlu rudos",
+"type": "s"
+},
+"LT-48": {
+"name": "Skuodo r.",
+"stem": "skuodo",
+"type": "r"
+},
+"LT-13": {
+"name": "Kaišiadorių r.",
+"stem": "kaisiadoriu",
+"type": "r"
+},
+"LT-46": {
+"name": "Šilutės r.",
+"stem": "silutes",
+"type": "r"
+}
+},
+"counties": {
+"alytaus": [
+"LT-02",
+"LT-03",
+"LT-07",
+"LT-24",
+"LT-55"
+],
+"kauno": [
+"LT-05",
+"LT-10",
+"LT-13",
+"LT-15",
+"LT-16",
+"LT-18",
+"LT-36",
+"LT-38"
+],
+"klaipedos": [
+"LT-20",
+"LT-21",
+"LT-22",
+"LT-28",
+"LT-31",
+"LT-46",
+"LT-48"
+],
+"marijampoles": [
+"LT-14",
+"LT-17",
+"LT-25",
+"LT-41",
+"LT-56"
+],
+"panevezio": [
+"LT-06",
+"LT-23",
+"LT-32",
+"LT-33",
+"LT-34",
+"LT-40"
+],
+"siauliu": [
+"LT-01",
+"LT-11",
+"LT-19",
+"LT-30",
+"LT-37",
+"LT-43",
+"LT-44"
+],
+"taurages": [
+"LT-12",
+"LT-29",
+"LT-45",
+"LT-50"
+],
+"telsiu": [
+"LT-26",
+"LT-35",
+"LT-39",
+"LT-51"
+],
+"utenos": [
+"LT-04",
+"LT-09",
+"LT-27",
+"LT-54",
+"LT-59",
+"LT-60"
+],
+"vilniaus": [
+"LT-08",
+"LT-42",
+"LT-47",
+"LT-49",
+"LT-52",
+"LT-53",
+"LT-57",
+"LT-58"
+]
+}
+},
+"LV": {
+"units": {
+"LV-007": {
+"name": "Alūksnes novads",
+"stem": "aluksnes",
+"type": "novads"
+},
+"LV-056": {
+"name": "Līvānu novads",
+"stem": "livanu",
+"type": "novads"
+},
+"LV-033": {
+"name": "Gulbenes novads",
+"stem": "gulbenes",
+"type": "novads"
+},
+"LV-106": {
+"name": "Ventspils novads",
+"stem": "ventspils",
+"type": "novads"
+},
+"LV-101": {
+"name": "Valkas novads",
+"stem": "valkas",
+"type": "novads"
+},
+"LV-087": {
+"name": "Salaspils novads",
+"stem": "salaspils",
+"type": "novads"
+},
+"LV-JEL": {
+"name": "Jelgavas (valstspilsēta)",
+"stem": "jelgavas",
+"type": "city",
+"nom": [
+"jelgava"
+]
+},
+"LV-REZ": {
+"name": "Rēzeknes (valstspilsēta)",
+"stem": "rezeknes",
+"type": "city",
+"nom": [
+"rezekne"
+]
+},
+"LV-JUR": {
+"name": "Jūrmalas (valstspilsēta)",
+"stem": "jurmalas",
+"type": "city",
+"nom": [
+"jurmala"
+]
+},
+"LV-VEN": {
+"name": "Ventspils (valstspilsēta)",
+"stem": "ventspils",
+"type": "city",
+"nom": [
+"ventspils"
+]
+},
+"LV-RIX": {
+"name": "Rīga",
+"stem": "riga",
+"type": "city",
+"nom": [
+"riga",
+"riga s",
+"rigas"
+]
+},
+"LV-LPX": {
+"name": "Liepājas (valstspilsēta)",
+"stem": "liepajas",
+"type": "city",
+"nom": [
+"liepaja"
+]
+},
+"LV-112": {
+"name": "Dienvidkurzemes novads",
+"stem": "dienvidkurzemes",
+"type": "novads"
+},
+"LV-050": {
+"name": "Kuldīgas novads",
+"stem": "kuldigas",
+"type": "novads"
+},
+"LV-088": {
+"name": "Saldus novads",
+"stem": "saldus",
+"type": "novads"
+},
+"LV-097": {
+"name": "Talsu novads",
+"stem": "talsu",
+"type": "novads"
+},
+"LV-099": {
+"name": "Tukuma novads",
+"stem": "tukuma",
+"type": "novads"
+},
+"LV-026": {
+"name": "Dobeles novads",
+"stem": "dobeles",
+"type": "novads"
+},
+"LV-041": {
+"name": "Jelgavas novads",
+"stem": "jelgavas",
+"type": "novads"
+},
+"LV-062": {
+"name": "Mārupes novads",
+"stem": "marupes",
+"type": "novads"
+},
+"LV-016": {
+"name": "Bauskas novads",
+"stem": "bauskas",
+"type": "novads"
+},
+"LV-067": {
+"name": "Ogres novads",
+"stem": "ogres",
+"type": "novads"
+},
+"LV-002": {
+"name": "Aizkraukles novads",
+"stem": "aizkraukles",
+"type": "novads"
+},
+"LV-042": {
+"name": "Jēkabpils novads",
+"stem": "jekabpils",
+"type": "novads"
+},
+"LV-058": {
+"name": "Ludzas novads",
+"stem": "ludzas",
+"type": "novads"
+},
+"LV-073": {
+"name": "Rēzeknes novads",
+"stem": "rezeknes",
+"type": "novads"
+},
+"LV-015": {
+"name": "Balvu novads",
+"stem": "balvu",
+"type": "novads"
+},
+"LV-059": {
+"name": "Madonas novads",
+"stem": "madonas",
+"type": "novads"
+},
+"LV-094": {
+"name": "Smiltenes novads",
+"stem": "smiltenes",
+"type": "novads"
+},
+"LV-022": {
+"name": "Cēsu novads",
+"stem": "cesu",
+"type": "novads"
+},
+"LV-113": {
+"name": "Valmieras novads",
+"stem": "valmieras",
+"type": "novads"
+},
+"LV-011": {
+"name": "Ādažu novads",
+"stem": "adazu",
+"type": "novads"
+},
+"LV-080": {
+"name": "Ropažu novads",
+"stem": "ropazu",
+"type": "novads"
+},
+"LV-091": {
+"name": "Siguldas novads",
+"stem": "siguldas",
+"type": "novads"
+},
+"LV-075": {
+"name": "Preiļu novads",
+"stem": "preilu",
+"type": "novads"
+},
+"LV-047": {
+"name": "Krāslavas novads",
+"stem": "kraslavas",
+"type": "novads"
+},
+"LV-DGV": {
+"name": "Daugavpils (valstspilsēta)",
+"stem": "daugavpils",
+"type": "city",
+"nom": [
+"daugavpils"
+]
+},
+"LV-052": {
+"name": "Ķekavas novads",
+"stem": "kekavas",
+"type": "novads"
+},
+"LV-068": {
+"name": "Olaines novads",
+"stem": "olaines",
+"type": "novads"
+},
+"LV-089": {
+"name": "Saulkrastu novads",
+"stem": "saulkrastu",
+"type": "novads"
+},
+"LV-054": {
+"name": "Limbažu novads",
+"stem": "limbazu",
+"type": "novads"
+},
+"LV-111": {
+"name": "Augšdaugavas novads",
+"stem": "augsdaugavas",
+"type": "novads"
+},
+"LV-102": {
+"name": "Varakļānu novads",
+"stem": "varaklanu",
+"type": "novads"
+}
+}
+}
+}

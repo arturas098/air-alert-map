@@ -498,7 +498,80 @@ for _v in _ALIASES.values():
     _v.sort(key=lambda x: -len(x[0]))   # ilgiausi pirmi: „pohjois pohjanmaa“ prieš „pohjanmaa“
 
 
+# ---- Lietuva (60 savivaldybių) ir Latvija (43 novadai / valstybiniai miestai)
+LTLV = json.loads((Path(__file__).resolve().parent.parent / "data/ltlv.json").read_text(encoding="utf-8"))
+_LT_STEM: dict[str, dict[str, str]] = {}            # stem → {"m": iso, "r": iso, "s": iso}
+for _iso, _m in LTLV["LT"]["munis"].items():
+    _LT_STEM.setdefault(_m["stem"], {})[_m["type"]] = _iso
+_LT_COUNTY = LTLV["LT"]["counties"]
+_LV_NOV = {u["stem"]: iso for iso, u in LTLV["LV"]["units"].items() if u["type"] == "novads"}
+_LV_CITY = {n: iso for iso, u in LTLV["LV"]["units"].items() if u["type"] == "city" for n in u["nom"]}
+
+
+def _tokens(text: str) -> list[str]:
+    return norm(text).split()
+
+
+def match_lt(text: str) -> set[str]:
+    """„Vilniaus, Utenos apskrityse“ → visos tų apskričių savivaldybės;
+    „Vilniaus miesto, Šalčininkų rajono savivaldybėse“ → konkrečios savivaldybės."""
+    toks, out, pend = _tokens(text), set(), []
+    i = 0
+    while i < len(toks):
+        t = toks[i]
+        two = f"{t} {toks[i+1]}" if i + 1 < len(toks) else ""
+        if two in _LT_STEM or two in _LT_COUNTY:
+            pend.append(two); i += 2; continue
+        if t in _LT_STEM or t in _LT_COUNTY:
+            pend.append(t); i += 1; continue
+        if t in ("ir", "bei", "ar"):
+            i += 1; continue
+        kind = ("c" if t.startswith("apskrit") else "m" if t.startswith("miest") or t == "m" else
+                "r" if t.startswith("rajon") or t == "r" else "s" if t.startswith("savivald") else None)
+        if kind and pend:
+            for st in pend:
+                if kind == "c" and st in _LT_COUNTY:
+                    out.update(_LT_COUNTY[st])
+                elif kind in ("m", "r"):
+                    v = _LT_STEM.get(st, {})
+                    iso = v.get(kind) or v.get("s")
+                    if iso: out.add(iso)
+                elif kind == "s":
+                    out.update(_LT_STEM.get(st, {}).values())
+            pend = []
+        elif not kind:
+            pend = []
+        i += 1
+    return out
+
+
+def match_lv(text: str) -> set[str]:
+    """„Rēzeknes, Balvu un Ludzas novados“ → novadai; „Rīgā“, „Daugavpilī“ → valstybiniai miestai."""
+    toks, out, pend = _tokens(text), set(), []
+    for t in toks:
+        if t in _LV_NOV:
+            pend.append(t); continue
+        if t in ("un", "ka", "ari"):
+            continue
+        if t.startswith("novad"):
+            out.update(_LV_NOV[st] for st in pend); pend = []; continue
+        if t.startswith("valstspils"):
+            for st in pend:
+                iso = next((i for n, i in _LV_CITY.items() if n.startswith(st[:5])), None)
+                if iso: out.add(iso)
+            pend = []; continue
+        pend = []
+        for n, iso in _LV_CITY.items():
+            if t == n or (len(t) >= 5 and t.startswith(n[:-1]) and len(t) - len(n) <= 2 and n not in ("ventspils",)):
+                out.add(iso)
+    return out
+
+
 def match_regions(cc: str, text: str) -> set[str]:
+    if cc == "LTU":
+        return match_lt(text)
+    if cc == "LVA":
+        return match_lv(text)
     t = " " + norm(text) + " "
     found = set()
     for k, iso in _ALIASES.get(cc, []):

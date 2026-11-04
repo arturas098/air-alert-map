@@ -231,7 +231,8 @@ const RSHAPES = {};   // sritys pagal ISO 3166-2 (kol kas naudoja Ukraina)
 for(const f of topojson.feature(TOPO,L.r).features) if(f.properties.iso_3166_2) RSHAPES[f.properties.iso_3166_2]=f;
 const land = topojson.merge(TOPO,L.c.geometries);
 const inner = topojson.mesh(TOPO,L.c,(a,b)=>a!==b);
-const regMesh = topojson.mesh(TOPO,L.r,(a,b)=>a!==b && a.properties.adm0_a3===b.properties.adm0_a3);
+// LT/LV ribos (geoBoundaries) neturi bendrų lankų su kaimynais, todėl joms piešiam visas sričių ribas
+const regMesh = topojson.mesh(TOPO,L.r,(a,b)=> a!==b ? a.properties.adm0_a3===b.properties.adm0_a3 : ["LTU","LVA"].includes(a.properties.adm0_a3));
 
 // Karaliaučių atskiriam nuo Rusijos
 const rus = countries.find(f=>f.properties.ADM0_A3==="RUS");
@@ -292,7 +293,7 @@ function renderBase(t){
   ctx.fillStyle="#0f0f10"; ctx.fill(P.land);
   const m=new DOMMatrix().scale(px); PAT_LAND.setTransform(m); PAT_LAKE.setTransform(m);
   ctx.fillStyle=PAT_LAND; ctx.fill(P.land);
-  S(P.reg,.16,.5,[2,2.5]);
+  S(P.reg,.30,.6,[2.5,2.5]);
   S(P.roadsMin,.11,.45); S(P.roadsMaj,.22,.7);
   S(P.rails,.2,.5); S(P.rails,.22,2.2,[.5,5]); ctx.setLineDash([]);
   for(const [r,p2] of P.rivers){ctx.strokeStyle="rgba(207,216,220,.35)";ctx.lineWidth=Math.max(.4,1.3-r*.1)*px;ctx.stroke(p2);}

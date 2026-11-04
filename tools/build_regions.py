@@ -10,7 +10,7 @@ for f in d["features"]:
     p = f["properties"]; a = p["adm0_a3"]; iso = p["iso_3166_2"]
     if iso in ("UA-43", "UA-40"):
         a = "UKR"          # Krymas, Sevastopolis
-    if a not in ("LTU", "LVA", "EST", "FIN", "POL", "UKR"):
+    if a not in ("EST", "FIN", "POL", "UKR"):   # LT ir LV – data/ltlv.json (geoBoundaries)
         continue
     names = set()
     for k in ("name", "name_local", "name_en", "name_pl", "name_uk", "name_ru", "name_de", "name_alt", "woe_name", "gn_name"):

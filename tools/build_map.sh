@@ -19,3 +19,10 @@ mapshaper ne_10m_rivers_lake_centerlines.geojson -clip bbox=$BB -dissolve scaler
 mapshaper ne_10m_lakes.geojson -clip bbox=$BB -filter-fields scalerank -rename-layers lk -o lk.json format=geojson force
 mapshaper ne_10m_populated_places_simple.geojson -clip bbox=$BB -filter 'scalerank<=7 && ["Kaliningrad","Malmö","Hammerfest"].indexOf(name)<0' -filter-fields name,scalerank,adm0_a3,featurecla -rename-layers pl -o pl.json format=geojson force
 mapshaper -i c.json r.json rv.json lk.json rd.json rl.json pl.json combine-files -simplify interval=600 keep-shapes -o ../data/map.topo.json format=topojson quantization=4e4 force
+
+# --- Lietuvos (60 savivaldybių) ir Latvijos (43 novadai) ribos – geoBoundaries gbOpen (CC BY 4.0)
+# GB=https://media.githubusercontent.com/media/wmgeolab/geoBoundaries/main/releaseData/gbOpen
+# curl -fL -o LTU-ADM2.geojson $GB/LTU/ADM2/geoBoundaries-LTU-ADM2_simplified.geojson
+# curl -fL -o LVA-ADM1.geojson $GB/LVA/ADM1/geoBoundaries-LVA-ADM1_simplified.geojson
+# Toliau: sluoksnyje r pakeisti LTU/LVA Natural Earth sritis šiomis (adm0_a3, iso_3166_2, name),
+# pavadinimai ir apskričių sąrašas – data/ltlv.json. Žr. git istoriją (2026-11-05) dėl tikslių komandų.

@@ -59,9 +59,9 @@ Baltarusija, Rusija, Karaliaučius: viešų pavojaus sistemų nėra. UI jas pasl
 ## Šalių suskirstymas (kaip rodomos dalys)
 | Šalis | Administracinis lygis žemėlapyje | Kaip skelbia oficialūs įspėjimai | Pastabos |
 |---|---|---|---|
-| 🇱🇹 LT | 10 apskričių | PAGD: apskritimis arba savivaldybėmis (60) | savivaldybės → apskritis kol kas neperskaičiuojama |
-| 🇱🇻 LV | 119 senų savivaldybių (Natural Earth) | VUGD/LV-ALERT: novadais (nuo 2021 m. 43) | NE dar turi seną skirstymą, tikslu tik iš dalies |
-| 🇪🇪 EE | 15 maakond | EE-ALARM: poligonais / maakond | |
+| 🇱🇹 LT | **60 savivaldybių** (geoBoundaries, CC BY 4.0) | PAGD: apskritimis arba savivaldybėmis | „… apskrityse“ → visos apskrities savivaldybės; „X miesto / rajono savivaldybėse“ → konkrečios |
+| 🇱🇻 LV | **43 novadai ir valstybiniai miestai** (2021 reforma, geoBoundaries) | NBS / VUGD: novadais | „Rēzeknes, Balvu un Ludzas novados“ → tie novadai; „Rīgā“ → Ryga |
+| 🇪🇪 EE | 15 maakond | EE-ALARM: poligonais / maakond | 79 savivaldybių atviros ribos tik senos (214 valsčių iki 2017), todėl lieka maakond |
 | 🇫🇮 FI | 18 maakunta | vaaratiedote: kunta / maakunta; FMI: maakunta + jūros zonos | Ahvenanmaa NE gali trūkti |
 | 🇵🇱 PL | 16 województw | RCB: powiat / województwo; MeteoAlarm: powiat („X Province Y County“) | powiat → województwo |
 | 🇺🇦 UA | 27 sritys (įsk. Kijevo m., Krymą, Sevastopolį) | oblast / raion / hromada | raionai – kai bus oficialus API raktas |
