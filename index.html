@@ -59,7 +59,7 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
   body #tl{left:14px;right:370px;bottom:14px}
 }
 /* laiko juosta */
-#tl{position:fixed;left:10px;right:10px;bottom:calc(158px + env(safe-area-inset-bottom));z-index:6;
+#tl{position:fixed;left:10px;right:10px;bottom:calc(158px + env(safe-area-inset-bottom));z-index:6;transition:left .25s,width .25s;
   background:rgba(10,10,11,.82);border:1px solid #2a2927;border-radius:14px;padding:7px 10px 6px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 #tl.hist{border-color:#9b8cff;box-shadow:0 0 16px -6px #9b8cff}
 #tl .h{display:flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
@@ -75,6 +75,11 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
 #tl input::-moz-range-track{height:28px;background:transparent}
 #tl input::-webkit-slider-thumb{-webkit-appearance:none;width:4px;height:28px;background:#fff;border-radius:2px;box-shadow:0 0 6px #fff}
 #tl input::-moz-range-thumb{width:4px;height:28px;background:#fff;border:0;border-radius:2px}
+#tl-tog{position:absolute;right:6px;top:6px;width:34px;height:34px;padding:0!important;border-radius:10px!important;font-size:14px!important;display:none}
+#tl.collapsed{left:auto;width:46px;height:46px;padding:0}
+#tl.collapsed .h,#tl.collapsed .tr{display:none}
+#tl.collapsed #tl-tog{display:block}
+#tl.collapsed.hist #tl-tog{color:#c9c0ff;border-color:#9b8cff}
 #tl .tk{position:absolute;left:0;right:0;bottom:-2px;display:flex;justify-content:space-between;font-size:8.5px;color:var(--ink3);letter-spacing:.06em}
 body.histmode #map g{filter:saturate(.9)}
 /* sluoksniai, garsas */
@@ -140,8 +145,9 @@ body.stale .card{animation:none!important}
 </div>
 
 <div class="cards" id="cards"></div>
-<div id="tl" aria-label="Laiko juosta, 48 val.">
-  <div class="h"><span>⏱</span><b id="tl-label">Dabar</b><span class="sp"></span><span id="tl-info"></span><button id="tl-now">Dabar</button></div>
+<div id="tl" class="collapsed" aria-label="Laiko juosta, 48 val.">
+  <button id="tl-tog" aria-label="Atidaryti laiko juostą">◀</button>
+  <div class="h"><span id="tl-close" style="cursor:pointer" title="Suskleisti">▶</span><span>⏱</span><b id="tl-label">Dabar</b><span class="sp"></span><span id="tl-info"></span><button id="tl-now">Dabar</button></div>
   <div class="tr"><canvas id="tl-bars"></canvas><input type="range" id="tl-range" min="-2880" max="0" step="5" value="0" aria-label="Laikas atgal (min)">
     <div class="tk"><span>−48 h</span><span>−36</span><span>−24</span><span>−12</span><span>dabar</span></div></div>
 </div>
@@ -247,7 +253,7 @@ const SEA=[["BALTIJOS  JŪRA",[19.3,56.2],0],["RYGOS ĮL.",[23.4,57.6],0],["SUOM
 const LBL={UKR:[31.2,49.3],LTU:[24.1,55.55],LVA:[26.4,56.55],EST:[25.9,58.75],FIN:[26.5,64],POL:[20.2,52.6],BLR:[28,53.6],RUS:[31.5,57.2],KGD:[21.4,54.42]};
 function build(){
   const pad = Math.min(W(),H())*.04;
-  const bottom = isWide() ? 90 : 220, right = isWide() ? 340 : 0;
+  const bottom = isWide() ? 30 : 170, right = isWide() ? 340 : 0;
   proj.fitExtent([[pad,60],[W()-pad-right,H()-bottom]],fitTo);
   const P2 = g=>new Path2D(path(g)||"");
   P = {
@@ -404,7 +410,7 @@ function freeRect(){
   const w=W(), h=H(), wide=isWide();
   const det=document.getElementById("detail").getBoundingClientRect();
   const cards=document.getElementById("cards").getBoundingClientRect();
-  const tl=document.getElementById("tl").getBoundingClientRect();
+  const tlEl=document.getElementById("tl"), tl=tlEl.classList.contains("collapsed")?{top:(wide?h:document.getElementById("cards").getBoundingClientRect().top)}:tlEl.getBoundingClientRect();
   if(wide) return {x0:(selected?det.right:0)+24, y0:70, x1:cards.left-16, y1:tl.top-12};
   const top=selected?det.bottom+12:70;
   return {x0:12, y0:top, x1:w-12, y1:tl.top-8};
@@ -587,8 +593,22 @@ function setHistory(min){
   document.getElementById("src").textContent="istorija"; document.getElementById("live").className="dot";
   renderAlerts(); renderDetail();
 }
-document.getElementById("tl-range").oninput=e=>setHistory(+e.target.value);
-document.getElementById("tl-now").onclick=()=>setHistory(0);
+document.getElementById("tl-range").oninput=e=>{ setHistory(+e.target.value); tlTouch(); };
+// suskleidžiama į kubelį su rodykle; išskleista – 5 s be veiksmų ir vėl susiskleidžia
+let tlTimer=0;
+function tlOpen(){ const t=document.getElementById("tl"); t.classList.remove("collapsed"); tlPlace(); setTimeout(drawBars,60); tlTouch(); }
+function tlClose(){ const t=document.getElementById("tl"); t.classList.add("collapsed"); clearTimeout(tlTimer);
+  document.getElementById("tl-tog").textContent = HIST_T!==null ? "⏪" : "◀"; }
+function tlTouch(){ clearTimeout(tlTimer); tlTimer=setTimeout(tlClose,5000); }
+document.getElementById("tl-tog").onclick=tlOpen;
+document.getElementById("tl-close").onclick=tlClose;
+["pointerdown","pointermove","touchstart","keydown"].forEach(ev=>document.getElementById("tl").addEventListener(ev,()=>{ if(!document.getElementById("tl").classList.contains("collapsed")) tlTouch(); },{passive:true}));
+// telefone – visada virš kortelių
+function tlPlace(){ const t=document.getElementById("tl");
+  if(isWide()){ t.style.bottom=""; return; }
+  const c=document.getElementById("cards").getBoundingClientRect(); t.style.bottom=(innerHeight-c.top+6)+"px"; }
+new ResizeObserver(tlPlace).observe(document.getElementById("cards")); addEventListener("resize",tlPlace);
+document.getElementById("tl-now").onclick=()=>{ setHistory(0); tlTouch(); };
 addEventListener("resize",()=>setTimeout(drawBars,200));
 
 /* ---------- zoom ---------- */
