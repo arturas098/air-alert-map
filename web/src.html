@@ -505,15 +505,91 @@ function setLive(on){
   document.body.classList.toggle("stale",on&&ago>30);
   document.getElementById("upd").textContent=on?`${stale?"⚠ duomenys pasenę · ":""}tikrinta ${t.toLocaleTimeString("lt-LT",{hour:"2-digit",minute:"2-digit"})} · prieš ${ago} min`:"nėra ryšio su duomenimis";
 }
+/* ---------- DEMO: 2 scenarijai kaip 48 val. istorija, grojami laiko juostoje ---------- */
+const DEMO_N=2;
+function regionPts(cc){ return Object.values(RSHAPES).filter(f=>f.properties.adm0_a3===cc)
+  .map(f=>{const [lon,lat]=d3.geoCentroid(f); return {iso:f.properties.iso_3166_2, lat, lon, name:f.properties.name};}); }
+const DEMO_CC=["FIN","EST","LVA","LTU","POL","UKR"];
+const TR={teal:1,yellow:2,red:3};
+// iš sričių būsenų {cc:{iso:{tone,text,kind}}} → snapshot'o d
+function demoD(map, notes={}){
+  const d={};
+  for(const cc of DEMO_CC){ const m=map[cc]||{}, regions={}, items=[]; let top=null;
+    const groups={};
+    for(const [iso,v] of Object.entries(m)){ regions[iso]=v.tone; (groups[v.key]=groups[v.key]||{...v,regions:[]}).regions.push(iso); }
+    for(const g of Object.values(groups)){ const air=g.tone!=="teal";
+      const it={level:g.tone==="teal"?(g.severe?"red":"yellow"):g.tone, kind:air?"air":"weather", event:g.event, area:g.area||`${g.regions.length} sritys`,
+        regions:g.regions, src:"DEMO scenarijus"}; items.push(it);
+      if(!top || RANKL[it.level]>RANKL[top.level] || (it.level===top.level && it.kind==="air")) top=it; }
+    if(!top){ d[cc]={level:"white",air:"ok",weather:"ok",text:notes[cc]||"Aktyvių perspėjimų nėra.",src:"DEMO scenarijus"}; continue; }
+    items.sort((a,b)=>RANKL[b.level]-RANKL[a.level]);
+    d[cc]={level:top.level,kind:top.kind,air:"ok",weather:"ok",text:`${top.event}${items.length>1?`  (+${items.length-1} kiti)`:""}`,
+      regions,regionsOnly:true,items,src:"DEMO scenarijus"};
+  }
+  return d;
+}
+// 1/2 – „girlianda“: banga iš šiaurės į pietus per visas sritis: žydra → geltona → raudona
+function genDemo1(){
+  const pts=DEMO_CC.flatMap(cc=>regionPts(cc).map(p=>({...p,cc}))), maxL=Math.max(...pts.map(p=>p.lat)), minL=Math.min(...pts.map(p=>p.lat));
+  const steps=150, now=Date.now(), t0=now-48*3600e3, band=3.2, snaps=[];
+  const PH=[["teal","Stichija (demo banga)"],["yellow","Tikėtinas oro pavojus (demo banga)"],["red","Oro pavojus (demo banga)"]];
+  for(let i=0;i<=steps;i++){
+    const ph=Math.min(2,Math.floor(i/(steps/3))), f=(i%(steps/3))/(steps/3), front=maxL+band-(maxL-minL+2*band)*f;
+    const map={}; const [tone,ev]=PH[ph];
+    for(const p of pts) if(p.lat<=front && p.lat>front-band) (map[p.cc]=map[p.cc]||{})[p.iso]={tone,key:ev,event:ev,area:"Demo banga"};
+    snaps.push({t:new Date(t0+i*(48*3600e3/steps)).toISOString(), d:demoD(map)});
+  }
+  snaps.push({t:new Date(now-1000).toISOString(), d:demoD({})});
+  return snaps;
+}
+// 2/2 – scenarijus: žiemos audra → tikėtinas oro pavojus → raudonas oro pavojus → atšaukimas
+function genDemo2(){
+  const R={}; for(const cc of DEMO_CC) R[cc]=regionPts(cc);
+  const pick=(cc,fn)=>R[cc].filter(fn||(()=>true)).map(p=>p.iso);
+  const storm = {FIN:pick("FIN",p=>p.lat<64.5), EST:pick("EST"), LVA:pick("LVA"), LTU:pick("LTU"),
+                 POL:pick("POL",p=>p.lat>51.2||p.lon>21.5), UKR:pick("UKR",p=>["UA-07","UA-46","UA-21","UA-56"].includes(p.iso))};
+  const airY = {FIN:pick("FIN",p=>p.lat<62.5&&p.lon>24.5), EST:pick("EST"), LVA:pick("LVA"), LTU:pick("LTU"), POL:pick("POL",p=>p.lon>20.5)};
+  const airR = {EST:pick("EST"), LVA:pick("LVA"), LTU:pick("LTU"), POL:pick("POL",p=>p.lon>21.5), UKR:pick("UKR")};
+  const now=Date.now(), H=h=>new Date(now-(48-h)*3600e3).toISOString();
+  const S=(layers)=>{ const map={}; for(const L of layers) for(const [cc,isos] of Object.entries(L.r)) for(const iso of isos){
+      const cur=(map[cc]=map[cc]||{})[iso]; if(!cur || TR[L.tone]>TR[cur.tone]) map[cc][iso]={tone:L.tone,key:L.event,event:L.event,area:L.area,severe:L.severe}; }
+    return demoD(map); };
+  const W1={r:storm,tone:"teal",event:"Žiemos audra: stiprus vėjas, pūga",area:"Suomijos pietūs, Baltijos šalys, Lenkijos šiaurė ir rytai, Vakarų Ukraina"};
+  const W2={...W1,event:"STIPRI žiemos audra: pūga, gūsiai iki 30 m/s",severe:true};
+  const AY={r:airY,tone:"yellow",event:"TIKĖTINAS ORO PAVOJUS (GELTONA)",area:"Baltijos šalys, Rytų Lenkija, Pietryčių Suomija"};
+  const AR={r:airR,tone:"red",event:"ORO PAVOJUS (RAUDONA)",area:"Lietuva, Latvija, Estija, Rytų Lenkija, visa Ukraina"};
+  const AYafter={r:{EST:airR.EST,LVA:airR.LVA,LTU:airR.LTU,POL:airR.POL},tone:"yellow",event:"ORO PAVOJUS (GELTONA PO RAUDONOS)",area:"Likite priedangoje"};
+  const UApart={r:{UKR:pick("UKR",p=>p.lon>31)},tone:"red",event:"Oro pavojus",area:"Rytų Ukraina"};
+  return [
+    {t:H(0),  d:S([])},
+    {t:H(6),  d:S([W1])},
+    {t:H(12), d:S([W2])},
+    {t:H(16), d:S([W2,{...AY,r:{POL:airY.POL}}])},
+    {t:H(18), d:S([W2,AY])},
+    {t:H(22), d:S([W2,AY,AR])},
+    {t:H(28), d:S([W1,AY,AR])},
+    {t:H(32), d:S([W1,{...AY,r:{FIN:airY.FIN}},AYafter,UApart])},
+    {t:H(38), d:S([{...W1,r:{FIN:storm.FIN,EST:storm.EST}},UApart])},
+    {t:H(44), d:S([UApart])},
+  ];
+}
 document.getElementById("demo").onclick=e=>{
-  if(HIST_T!==null) setHistory(0);
-  demoIdx = demoIdx+1>=DEMOS.length?-1:demoIdx+1;
-  e.target.classList.toggle("on",demoIdx>=0); e.target.textContent=demoIdx>=0?`Demo ${demoIdx+1}/${DEMOS.length}`:"Demo";
-  STATE=structuredClone(BASE);
-  if(demoIdx>=0){const now=new Date().toISOString();for(const k in DEMOS[demoIdx])STATE[k]={...DEMOS[demoIdx][k],time:now};
-    document.getElementById("upd").textContent="demonstraciniai duomenys";}
-  else poll();
-  renderAlerts(); renderDetail();
+  if(playing) playStop();
+  demoIdx = demoIdx+1>=DEMO_N?-1:demoIdx+1;
+  e.target.classList.toggle("on",demoIdx>=0); e.target.textContent=demoIdx>=0?`Demo ${demoIdx+1}/${DEMO_N}`:"Demo";
+  if(demoIdx>=0){
+    if(HIST_REAL===null) HIST_REAL=HIST;
+    HIST=(demoIdx===0?genDemo1():genDemo2()).map(x=>({...x,ms:Date.parse(x.t)}));
+    LAST_SNAP=undefined; HIST_ON=false; drawBars();
+    document.getElementById("tl-info").textContent=demoIdx===0?"demo: banga":"demo: audra → oro pavojus";
+    tlOpen(); const r=document.getElementById("tl-range"); r.value=r.min; setHistory(+r.min);
+    document.getElementById("upd").textContent="demonstraciniai duomenys – išgalvoti";
+    setTimeout(playStart,400);
+  } else {
+    HIST=HIST_REAL||[]; HIST_REAL=null; LAST_SNAP=undefined; drawBars();
+    document.getElementById("tl-info").textContent=HIST.length?`${HIST.length} pokyčiai`:"istorijos dar nėra";
+    setHistory(0); poll();
+  }
 };
 
 /* ---------- sluoksnių jungiklis ---------- */
@@ -553,11 +629,13 @@ function checkRise(){
 /* ---------- laiko juosta (48 val.) ---------- */
 const HIST_RAW="https://raw.githubusercontent.com/arturas098/air-alert-map/data/history.json";
 const HIST_URLS = location.hostname.endsWith("github.io") ? [HIST_RAW] : ["history.json",HIST_RAW];
-let HIST=[];                                    // [{t, d:{LTU:{...}}}]
+let HIST=[], HIST_REAL=null;                                    // [{t, d:{LTU:{...}}}]
 async function loadHistory(){
   try{ let j=null;
     for(const u of HIST_URLS){ try{ const r=await fetch(u+"?t="+Date.now(),{cache:"no-store"}); if(r.ok){ j=await r.json(); break; } }catch(e){} }
-    if(!j) return; HIST=(j.snaps||[]).map(x=>({...x,ms:Date.parse(x.t)})).sort((a,b)=>a.ms-b.ms); drawBars();
+    if(!j) return; const h=(j.snaps||[]).map(x=>({...x,ms:Date.parse(x.t)})).sort((a,b)=>a.ms-b.ms);
+    if(demoIdx>=0){ HIST_REAL=h; return; }            // demo metu tikros istorijos neliečiam
+    HIST=h; drawBars();
     document.getElementById("tl-info").textContent=HIST.length?`${HIST.length} pokyčiai`:"istorijos dar nėra";
   }catch(e){}
 }
@@ -587,8 +665,9 @@ function drawBars(){
 }
 let LAST_SNAP=undefined, HIST_ON=false;
 function setHistory(min){
+  if(demoIdx>=0 && min>=0) min=-0.001;                // demo – „dabar“ = paskutinis scenarijaus momentas
   const tl=document.getElementById("tl"), lab=document.getElementById("tl-label");
-  if(min>=0 || demoIdx>=0){ HIST_T=null; HIST_ON=false; LAST_SNAP=undefined; tl.classList.remove("hist"); document.body.classList.remove("histmode"); lab.textContent="Dabar";
+  if(min>=0){ HIST_T=null; HIST_ON=false; LAST_SNAP=undefined; tl.classList.remove("hist"); document.body.classList.remove("histmode"); lab.textContent="Dabar";
     document.getElementById("tl-range").value=0; if(LIVE_J){ applyData(LIVE_J); META=LIVE_J._meta||null; setLive(true); } renderAlerts(); renderDetail(); return; }
   HIST_T=Date.now()+min*60e3; const sn=snapAt(HIST_T);
   tl.classList.add("hist"); document.body.classList.add("histmode"); document.body.classList.remove("stale");
