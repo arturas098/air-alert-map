@@ -1,0 +1,27 @@
+laikas: 2026-11-06T21:59:18Z
+runner IP: 172.182.243.55
+rakto ilgis: 41, formatas: xxxxxxxx:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+===== laukiu 70 s…
+===== 22:00:28 /api/v3/alerts/status
+HTTP/2 200 
+content-type: application/json; charset=utf-8
+api-supported-versions: 3.0
+
+{"lastActionIndex":639295992293096727}
+
+===== laukiu 70 s…
+===== 22:01:39 /api/v3/alerts/status
+HTTP/2 200 
+content-type: application/json; charset=utf-8
+api-supported-versions: 3.0
+
+{"lastActionIndex":639295992999122890}
+
+===== laukiu 70 s…
+===== 22:02:50 /api/v3/alerts
+HTTP/2 200 
+content-type: application/json; charset=utf-8
+api-supported-versions: 3.0
+
+[{"regionId":"9999","regionType":"State","regionName":"Автономна Республіка Крим","regionEngName":"","lastUpdate":"2022-12-10T22:22:00Z","activeAlerts":[{"regionId":"9999","regionType":"State","type":"AIR","lastUpdate":"2022-12-10T22:22:00Z","activeAlertLevels":[{"alertLevel":"Red","reason":"","createdAt":"2022-12-10T22:22:00Z"}]}]},{"regionId":"1313","regionType":"Community","regionName":"Вовчанська територіальна громада","regionEngName":"Vovchanska community","lastUpdate":"2025-08-01T22:52:43Z","activeAlerts":[{"regionId":"1313","regionType":"Commu
