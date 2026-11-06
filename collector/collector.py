@@ -18,6 +18,7 @@ import json
 import re
 import sys
 import time
+import urllib.error
 import urllib.request
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
@@ -399,9 +400,31 @@ UA_ALERT_TYPES = {"AIR": "oro pavojus", "ARTILLERY": "artilerijos grėsmė", "UR
 _UA_TREE: dict[str, str] = {}      # bet kurio regiono id → srities (State) ISO
 
 
+UA_CACHE = Path(os.environ.get("UA_CACHE_DIR", "/tmp")) / "ukrainealarm-cache.json"
+
+
+def _ua_cache() -> dict:
+    try:
+        return json.loads(UA_CACHE.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        return {}
+
+
+def _ua_save(c: dict) -> None:
+    try:
+        UA_CACHE.write_text(json.dumps(c, ensure_ascii=False), encoding="utf-8")
+    except Exception:  # noqa: BLE001
+        pass
+
+
 def _ua_tree(key: str) -> dict[str, str]:
-    """/api/v3/regions: sritys → rajonai → bendruomenės. Kiekvienam id – jo srities ISO."""
+    """/api/v3/regions: sritys → rajonai → bendruomenės. Kiekvienam id – jo srities ISO.
+    Sąrašas beveik nekinta – laikomas talpykloje 24 val. (API turi užklausų limitą)."""
     if _UA_TREE:
+        return _UA_TREE
+    c = _ua_cache()
+    if c.get("tree") and time.time() - c.get("tree_ts", 0) < 86400:
+        _UA_TREE.update(c["tree"])
         return _UA_TREE
     data = fetch_json("https://api.ukrainealarm.com/api/v3/regions", {"Authorization": key})
     states = data.get("states", data) if isinstance(data, dict) else data
@@ -414,6 +437,7 @@ def _ua_tree(key: str) -> dict[str, str]:
         iso = ua_iso(st.get("regionName", ""))
         if iso:
             walk(st, iso)
+    c.update(tree=dict(_UA_TREE), tree_ts=time.time()); _ua_save(c)
     return _UA_TREE
 
 
@@ -424,7 +448,29 @@ def ua_ukrainealarm() -> dict:
     if not key:
         raise RuntimeError("nėra UKRAINEALARM_KEY")
     tree = _ua_tree(key)
-    data = fetch_json("https://api.ukrainealarm.com/api/v3/alerts", {"Authorization": key})
+    c = _ua_cache()
+    # pigus patikrinimas: /alerts/status grąžina lastActionIndex – jei nepasikeitė, naudojam paskutinį sąrašą
+    data = None
+    try:
+        st = fetch_json("https://api.ukrainealarm.com/api/v3/alerts/status", {"Authorization": key})
+        idx = st.get("lastActionIndex") if isinstance(st, dict) else None
+        if idx is not None and idx == c.get("idx") and c.get("alerts") is not None and time.time() - c.get("alerts_ts", 0) < 900:
+            data = c["alerts"]
+    except urllib.error.HTTPError as ex:
+        if ex.code == 429 and c.get("alerts") is not None and time.time() - c.get("alerts_ts", 0) < 600:
+            data = c["alerts"]          # limitas – iki 10 min naudojam paskutinį gautą
+        idx = None
+    except Exception:  # noqa: BLE001
+        idx = None
+    if data is None:
+        try:
+            data = fetch_json("https://api.ukrainealarm.com/api/v3/alerts", {"Authorization": key})
+            c.update(alerts=data, alerts_ts=time.time(), idx=idx); _ua_save(c)
+        except urllib.error.HTTPError as ex:
+            if ex.code == 429 and c.get("alerts") is not None and time.time() - c.get("alerts_ts", 0) < 600:
+                data = c["alerts"]
+            else:
+                raise
     out = {iso: False for iso in set(tree.values())}
     parts: dict[str, list] = {}
     for r in data:
