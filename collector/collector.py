@@ -377,6 +377,11 @@ AIU_ORDER = ["UA-43","UA-07","UA-05","UA-12","UA-14","UA-18","UA-21","UA-23","UA
 
 
 UA_UNMATCHED: list[str] = []
+UA_STEMS = [("вінниц", "UA-05"), ("волин", "UA-07"), ("дніпр", "UA-12"), ("донец", "UA-14"), ("житомир", "UA-18"),
+            ("ужгород", "UA-21"), ("запоріж", "UA-23"), ("івано-франк", "UA-26"), ("кропивниц", "UA-35"),
+            ("луган", "UA-09"), ("львів", "UA-46"), ("миколаїв", "UA-48"), ("одес", "UA-51"), ("полтав", "UA-53"),
+            ("рівн", "UA-56"), ("сум", "UA-59"), ("терноп", "UA-61"), ("харків", "UA-63"), ("херсон", "UA-65"),
+            ("хмельниц", "UA-68"), ("черкас", "UA-71"), ("чернівц", "UA-77"), ("чернігів", "UA-74")]
 
 
 def ua_iso(name: str) -> str | None:
@@ -384,6 +389,10 @@ def ua_iso(name: str) -> str | None:
     n = n.replace("м.", "м. ").replace("  ", " ")
     iso = UA_ISO.get(n) or UA_ISO.get(n.replace("м. ", "")) or (
         "UA-43" if "крим" in n else "UA-40" if "севастоп" in n else None)
+    if not iso:   # miestų bendruomenės („м. Харків та Харківська територіальна громада“) – pagal šaknį
+        for stem, i in UA_STEMS:
+            if stem in n:
+                iso = i; break
     if not iso and name and name not in UA_UNMATCHED:
         UA_UNMATCHED.append(name)
     return iso
