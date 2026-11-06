@@ -88,6 +88,18 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
 #tl.collapsed.hist #tl-tog{color:#c9c0ff;border-color:#9b8cff}
 #tl .tk{position:absolute;left:0;right:0;bottom:-2px;display:flex;justify-content:space-between;font-size:8.5px;color:var(--ink3);letter-spacing:.06em}
 body.histmode #map g{filter:saturate(.9)}
+/* nustatymai */
+#gear{font-size:12px;padding:4px 9px}
+#settings{position:fixed;z-index:30;left:50%;top:50%;transform:translate(-50%,-50%);width:min(420px,calc(100vw - 24px));display:none;
+  background:rgba(14,14,15,.97);border:1.5px solid var(--ink3);border-radius:16px;padding:16px;font-size:12px;line-height:1.5}
+#settings.open{display:block}
+#settings h3{font-size:12px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px}
+#settings p{color:var(--ink2);font-size:11px}
+#settings input{width:100%;margin-top:10px;font:inherit;font-size:13px;color:var(--ink);background:#0a0a0b;border:1px solid var(--ink3);border-radius:10px;padding:9px 10px}
+#settings .row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+#settings .row button{font:inherit;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);background:none;border:1px solid var(--ink3);border-radius:999px;padding:6px 10px;cursor:pointer}
+#settings pre{margin-top:10px;white-space:pre-wrap;font:inherit;font-size:11px;color:var(--ink2);min-height:1.5em}
+#settings .x{position:absolute;right:8px;top:6px;background:none;border:0;color:var(--ink2);font-size:18px;cursor:pointer}
 /* sluoksniai, garsas */
 .tools{position:fixed;right:12px;top:calc(46px + env(safe-area-inset-top));display:flex;gap:6px;align-items:center;z-index:5}
 .seg{display:flex;border:1px solid var(--ink3);border-radius:999px;overflow:hidden;background:rgba(10,10,11,.7)}
@@ -140,6 +152,7 @@ body.stale .card{animation:none!important}
     <button data-l="all">Visi</button><button data-l="air">✈ Kariniai</button><button data-l="weather">☂ Orai</button>
   </div>
   <button class="chip" id="bell" title="Garsas ir pranešimas, kai atsiranda naujas oro pavojus">🔕</button>
+  <button class="chip" id="gear" title="Nustatymai" aria-label="Nustatymai">⚙</button>
 </div>
 
 <div class="legend">
@@ -152,6 +165,14 @@ body.stale .card{animation:none!important}
 
 <div class="cards" id="cards"></div>
 <div id="flash" aria-hidden="true"></div>
+<div id="settings" role="dialog" aria-label="Nustatymai">
+  <button class="x" id="set-x" aria-label="Uždaryti">✕</button>
+  <h3>Ukrainos oficialus API</h3>
+  <p>ukrainealarm.com raktas saugomas <b>tik šioje naršyklėje</b> – jis niekur kitur nesiunčiamas, tik į api.ukrainealarm.com.</p>
+  <input id="ua-key" type="password" autocomplete="off" spellcheck="false" placeholder="raktas, pvz. 1a2b3c4d:…">
+  <div class="row"><button id="ua-test">Tikrinti</button><button id="ua-save">Naudoti šiame įrenginyje</button><button id="ua-del">Ištrinti</button></div>
+  <pre id="ua-out"></pre>
+</div>
 <div id="tl" class="collapsed" aria-label="Laiko juosta, 48 val.">
   <button id="tl-tog" aria-label="Atidaryti laiko juostą">◀</button>
   <div class="h"><span id="tl-close" style="cursor:pointer;font-size:14px;padding:0 4px" title="Suskleisti">»</span><button id="tl-play" aria-label="Groti istoriją iki dabar" title="Groti iki dabar (48 val. ≈ 8 s)">▶</button><b id="tl-label">Dabar</b><span class="sp"></span><span id="tl-info"></span><button id="tl-now">Dabar</button></div>
@@ -721,6 +742,72 @@ function tlPlace(){ const t=document.getElementById("tl");
 new ResizeObserver(tlPlace).observe(document.getElementById("cards")); addEventListener("resize",tlPlace);
 document.getElementById("tl-now").onclick=()=>{ if(playing) playStop(); setHistory(0); tlTouch(); };
 addEventListener("resize",()=>setTimeout(drawBars,200));
+
+/* ---------- Ukraina tiesiai iš ukrainealarm API šiame įrenginyje (raktas – tik localStorage) ---------- */
+const UA_API="https://api.ukrainealarm.com/api/v3";
+let UA_KEY=null, UA_LIVE=null, UA_TREE=null;
+try{ UA_KEY=localStorage.getItem("uaKey"); }catch(e){}
+const uaOut=t=>{ document.getElementById("ua-out").textContent=t; };
+async function uaGet(path,key){ const r=await fetch(UA_API+path,{headers:{Authorization:key},cache:"no-store"}); return r; }
+function uaIso(name){ const n=(name||"").toLowerCase().replace(/\s+/g," ");
+  for(const f of Object.values(RSHAPES)){ const p=f.properties; if(p.adm0_a3!=="UKR") continue;
+    if(n.includes("крим")) return "UA-43"; if(n.includes("севастоп")) return "UA-40";
+    if(n.startsWith("м. київ")||n==="київ"||n==="м.київ") return "UA-30"; }
+  const M={"вінниц":"UA-05","волин":"UA-07","дніпропетр":"UA-12","донец":"UA-14","житомир":"UA-18","закарпат":"UA-21","запоріз":"UA-23",
+    "івано-франк":"UA-26","київська":"UA-32","кіровоград":"UA-35","луган":"UA-09","львів":"UA-46","миколаїв":"UA-48","одес":"UA-51",
+    "полтав":"UA-53","рівнен":"UA-56","сум":"UA-59","терноп":"UA-61","харків":"UA-63","херсон":"UA-65","хмельниц":"UA-68",
+    "черкас":"UA-71","чернівец":"UA-77","чернігів":"UA-74"};
+  for(const [k,v] of Object.entries(M)) if(n.includes(k)) return v; return null; }
+async function uaTree(key){
+  if(UA_TREE) return UA_TREE;
+  try{ const c=JSON.parse(localStorage.getItem("uaTree")||"null"); if(c&&Date.now()-c.ts<864e5){ UA_TREE=c.tree; return UA_TREE; } }catch(e){}
+  const r=await uaGet("/regions",key); if(!r.ok) throw new Error("regions HTTP "+r.status);
+  const j=await r.json(), states=j.states||j, tree={};
+  const walk=(n,iso)=>{ tree[String(n.regionId)]=iso; (n.regionChildIds||[]).forEach(c=>walk(c,iso)); };
+  for(const st of states){ const iso=uaIso(st.regionName); if(iso) walk(st,iso); }
+  UA_TREE=tree; try{ localStorage.setItem("uaTree",JSON.stringify({ts:Date.now(),tree})); }catch(e){}
+  return tree;
+}
+async function uaPoll(){
+  if(!UA_KEY) return;
+  try{
+    const tree=await uaTree(UA_KEY);
+    const r=await uaGet("/alerts",UA_KEY); if(!r.ok) throw new Error("alerts HTTP "+r.status);
+    const data=await r.json(), tones={}, parts={};
+    for(const x of data){ const acts=(x.activeAlerts||[]).filter(a=>(a.type||"AIR").toUpperCase()!=="INFO"); if(!acts.length) continue;
+      const iso=tree[String(x.regionId)]||uaIso(x.regionName); if(!iso) continue;
+      if(x.regionType==="State") tones[iso]="red"; else { if(tones[iso]!=="red") tones[iso]="yellow"; (parts[iso]=parts[iso]||[]).push(x.regionName); } }
+    const nm=i=>RSHAPES[i]?RSHAPES[i].properties.name:i, now=new Date().toISOString();
+    const full=Object.keys(tones).filter(k=>tones[k]==="red"), part=Object.keys(tones).filter(k=>tones[k]==="yellow");
+    const items=[]; if(full.length) items.push({level:"red",kind:"air",event:"Oro pavojus visoje srityje",area:full.map(nm).join(", "),regions:full,time:now,src:"ukrainealarm.com (šis įrenginys)"});
+    if(part.length) items.push({level:"yellow",kind:"air",event:"Pavojus dalyje srities",area:part.map(i=>`${nm(i)}: ${(parts[i]||[]).slice(0,4).join(", ")}`).join("; "),regions:part,time:now,src:"ukrainealarm.com (šis įrenginys)"});
+    UA_LIVE = full.length||part.length
+      ? {level:full.length?"red":"yellow",kind:"air",air:"ok",regions:tones,regionsOnly:true,items,time:now,url:"https://map.ukrainealarm.com/",
+         src:"ukrainealarm.com (šis įrenginys)",text:`Oro pavojus: visoje srityje – ${full.length}, dalyje srities – ${part.length}.`}
+      : {level:"white",air:"ok",regions:{},text:"Oro pavojaus nėra nė vienoje srityje.",time:now,src:"ukrainealarm.com (šis įrenginys)"};
+    if(HIST_T===null && demoIdx<0){ STATE.UKR={...STATE.UKR,...UA_LIVE}; renderAlerts(); renderDetail(); }
+  }catch(e){ UA_LIVE=null; console.log("ukrainealarm:",e.message); }
+}
+// tikri duomenys iš serverio perrašo STATE – jei turim įrenginio duomenis, uždedam juos ant viršaus
+const _applyData=applyData;
+applyData=function(j){ _applyData(j); if(UA_LIVE && HIST_T===null && demoIdx<0) STATE.UKR={...STATE.UKR,...UA_LIVE}; };
+document.getElementById("gear").onclick=()=>{ document.getElementById("settings").classList.add("open");
+  document.getElementById("ua-key").value=UA_KEY||""; uaOut(UA_KEY?"Raktas išsaugotas – Ukraina rodoma iš oficialaus API šiame įrenginyje.":""); };
+document.getElementById("set-x").onclick=()=>document.getElementById("settings").classList.remove("open");
+document.getElementById("ua-test").onclick=async()=>{
+  const k=document.getElementById("ua-key").value.trim(); if(!k){ uaOut("Įklijuok raktą."); return; }
+  uaOut("Tikrinama…");
+  try{ const r=await uaGet("/alerts/status",k); const t=await r.text();
+    uaOut(r.ok?`✓ HTTP ${r.status} – raktas veikia iš šio įrenginio.\nPaspausk „Naudoti šiame įrenginyje“.`
+      : r.status===429?`✗ HTTP 429 – per daug užklausų / limitas. Raktas atpažintas, bet užklausos ribojamos.\n${t.slice(0,160)}`
+      : r.status===401||r.status===403?`✗ HTTP ${r.status} – raktas neteisingas arba neaktyvuotas.\n${t.slice(0,160)}`
+      : `✗ HTTP ${r.status}\n${t.slice(0,160)}`);
+  }catch(e){ uaOut("✗ Užklausa neįvyko: "+e.message+"\n(Greičiausiai API neleidžia kreiptis iš naršyklės – CORS.)"); }
+};
+document.getElementById("ua-save").onclick=()=>{ const k=document.getElementById("ua-key").value.trim(); if(!k){ uaOut("Įklijuok raktą."); return; }
+  UA_KEY=k; try{ localStorage.setItem("uaKey",k); }catch(e){} uaOut("Išsaugota. Kraunama…"); uaPoll().then(()=>uaOut(UA_LIVE?"✓ Ukraina rodoma iš oficialaus API šiame įrenginyje.":"✗ Nepavyko gauti duomenų – paspausk „Tikrinti“.")); };
+document.getElementById("ua-del").onclick=()=>{ UA_KEY=null; UA_LIVE=null; try{ localStorage.removeItem("uaKey"); }catch(e){} uaOut("Raktas ištrintas."); poll(); };
+setInterval(uaPoll,60e3); uaPoll();
 
 /* ---------- zoom ---------- */
 const zoom=d3.zoom().scaleExtent([.7,14]).on("zoom",ev=>onZoom(ev.transform));
