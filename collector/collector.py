@@ -352,7 +352,7 @@ def kriis() -> list[Alert]:
 
 
 # ---------------------------------------------------------------- Ukraina (sričių lygiu)
-# Oficialūs: api.ukrainealarm.com (Mincifra + Ajax, „Повітряна тривога“), alerts.in.ua.
+# Oficialūs: api.ukrainealarm.com (Mincifra + Ajax, „Повітряна тривога“) – naudojamas, kai yra Secret; alerts.in.ua.
 # Abiem reikia nemokamo rakto → GitHub Secrets UKRAINEALARM_KEY / ALERTS_IN_UA_TOKEN.
 # Be rakto: ubilling.net.ua/aerialalerts (viešas agregatorius, NEoficialus).
 import os
