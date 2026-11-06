@@ -447,7 +447,15 @@ def ua_ukrainealarm() -> dict:
     key = os.environ.get("UKRAINEALARM_KEY")
     if not key:
         raise RuntimeError("nėra UKRAINEALARM_KEY")
-    tree = _ua_tree(key)
+    c0 = _ua_cache()
+    if time.time() < c0.get("backoff_until", 0):
+        raise RuntimeError(f"API limitas (429) – pertrauka iki {datetime.fromtimestamp(c0['backoff_until'], timezone.utc):%H:%M} UTC")
+    try:
+        tree = _ua_tree(key)
+    except urllib.error.HTTPError as ex:
+        if ex.code == 429:
+            c0["backoff_until"] = time.time() + 900; _ua_save(c0)
+        raise
     c = _ua_cache()
     # pigus patikrinimas: /alerts/status grąžina lastActionIndex – jei nepasikeitė, naudojam paskutinį sąrašą
     data = None
@@ -470,6 +478,8 @@ def ua_ukrainealarm() -> dict:
             if ex.code == 429 and c.get("alerts") is not None and time.time() - c.get("alerts_ts", 0) < 600:
                 data = c["alerts"]
             else:
+                if ex.code == 429:
+                    c["backoff_until"] = time.time() + 900; _ua_save(c)
                 raise
     out = {iso: False for iso in set(tree.values())}
     parts: dict[str, list] = {}
