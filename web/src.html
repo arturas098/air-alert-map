@@ -803,7 +803,7 @@ document.getElementById("ua-test").onclick=async()=>{
 document.getElementById("ua-save").onclick=()=>{ const k=document.getElementById("ua-key").value.trim(); if(!k){ uaOut("Įklijuok raktą."); return; }
   UA_KEY=k; try{ localStorage.setItem("uaKey",k); }catch(e){} uaOut("Išsaugota. Kraunama…"); uaPoll().then(()=>uaOut(UA_LIVE?"✓ Ukraina rodoma iš oficialaus API šiame įrenginyje.":"✗ Nepavyko gauti duomenų – paspausk „Tikrinti“.")); };
 document.getElementById("ua-del").onclick=()=>{ UA_KEY=null; UA_LIVE=null; try{ localStorage.removeItem("uaKey"); }catch(e){} uaOut("Raktas ištrintas."); poll(); };
-setInterval(uaPoll,60e3); uaPoll();
+setInterval(uaPoll,180e3); uaPoll();   // limitas ~1 užklausa/min raktui – dalijamės su serveriu
 
 /* ---------- zoom ---------- */
 const zoom=d3.zoom().scaleExtent([.7,14]).on("zoom",ev=>onZoom(ev.transform));

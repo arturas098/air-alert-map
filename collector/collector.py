@@ -441,47 +441,59 @@ def _ua_tree(key: str) -> dict[str, str]:
     return _UA_TREE
 
 
+UA_MIN_GAP = 65          # API limitas ~1 užklausa per minutę šiam raktui (patikrinta 2026-11-06)
+UA_LVL = {"red": "red", "orange": "red", "yellow": "yellow"}
+
+
+def _ua_call(path: str, key: str, c: dict):
+    """Viena užklausa, ne dažniau kaip kas UA_MIN_GAP s (bendra visiems endpoint'ams)."""
+    if time.time() - c.get("last_call", 0) < UA_MIN_GAP:
+        return None
+    c["last_call"] = time.time(); _ua_save(c)
+    try:
+        return fetch_json(f"https://api.ukrainealarm.com/api/v3/{path}", {"Authorization": key})
+    except urllib.error.HTTPError as ex:
+        if ex.code == 429:
+            ra = int(ex.headers.get("Retry-After") or 60)
+            c["last_call"] = time.time() + ra - UA_MIN_GAP; _ua_save(c)
+        raise
+
+
 def ua_ukrainealarm() -> dict:
-    """Oficialus API. Grąžina {ISO: "red" | "yellow" | False}:
-    red – pavojus paskelbtas visai sričiai (State), yellow – tik jos rajonuose / bendruomenėse."""
+    """Oficialus API. {ISO: "red" | "yellow" | False}.
+    Spalva – iš oficialaus activeAlertLevels[].alertLevel (Red / Yellow); jei jo nėra:
+    pavojus visai sričiai → red, tik rajonuose / bendruomenėse → yellow."""
     key = os.environ.get("UKRAINEALARM_KEY")
     if not key:
         raise RuntimeError("nėra UKRAINEALARM_KEY")
-    c0 = _ua_cache()
-    if time.time() < c0.get("backoff_until", 0):
-        raise RuntimeError(f"API limitas (429) – pertrauka iki {datetime.fromtimestamp(c0['backoff_until'], timezone.utc):%H:%M} UTC")
-    try:
-        tree = _ua_tree(key)
-    except urllib.error.HTTPError as ex:
-        if ex.code == 429:
-            c0["backoff_until"] = time.time() + 900; _ua_save(c0)
-        raise
     c = _ua_cache()
-    # pigus patikrinimas: /alerts/status grąžina lastActionIndex – jei nepasikeitė, naudojam paskutinį sąrašą
-    data = None
-    try:
-        st = fetch_json("https://api.ukrainealarm.com/api/v3/alerts/status", {"Authorization": key})
-        idx = st.get("lastActionIndex") if isinstance(st, dict) else None
-        if idx is not None and idx == c.get("idx") and c.get("alerts") is not None and time.time() - c.get("alerts_ts", 0) < 900:
+    if not (c.get("tree") and time.time() - c.get("tree_ts", 0) < 86400):
+        data = _ua_call("regions", key, c)
+        if data is None:
+            raise RuntimeError("laukiama API limito (regionų sąrašas)")
+        states = data.get("states", data) if isinstance(data, dict) else data
+        tree: dict[str, str] = {}
+
+        def walk(node, iso):
+            tree[str(node.get("regionId"))] = iso
+            for ch in node.get("regionChildIds") or []:
+                walk(ch, iso)
+        for st in states:
+            iso = ua_iso(st.get("regionName", ""))
+            if iso:
+                walk(st, iso)
+        c.update(tree=tree, tree_ts=time.time()); _ua_save(c)
+    tree = c["tree"]
+    data = _ua_call("alerts", key, c)
+    if data is None:                                   # dar negalima kviesti – paskutinis gautas (≤ 5 min)
+        if c.get("alerts") is not None and time.time() - c.get("alerts_ts", 0) < 300:
             data = c["alerts"]
-    except urllib.error.HTTPError as ex:
-        if ex.code == 429 and c.get("alerts") is not None and time.time() - c.get("alerts_ts", 0) < 600:
-            data = c["alerts"]          # limitas – iki 10 min naudojam paskutinį gautą
-        idx = None
-    except Exception:  # noqa: BLE001
-        idx = None
-    if data is None:
-        try:
-            data = fetch_json("https://api.ukrainealarm.com/api/v3/alerts", {"Authorization": key})
-            c.update(alerts=data, alerts_ts=time.time(), idx=idx); _ua_save(c)
-        except urllib.error.HTTPError as ex:
-            if ex.code == 429 and c.get("alerts") is not None and time.time() - c.get("alerts_ts", 0) < 600:
-                data = c["alerts"]
-            else:
-                if ex.code == 429:
-                    c["backoff_until"] = time.time() + 900; _ua_save(c)
-                raise
-    out = {iso: False for iso in set(tree.values())}
+        else:
+            raise RuntimeError("laukiama API limito")
+    else:
+        c.update(alerts=data, alerts_ts=time.time()); _ua_save(c)
+    out: dict = {iso: False for iso in set(tree.values())}
+    state_lvl: dict[str, str] = {}
     parts: dict[str, list] = {}
     for r in data:
         acts = [a for a in r.get("activeAlerts") or [] if (a.get("type") or "AIR").upper() != "INFO"]
@@ -490,12 +502,19 @@ def ua_ukrainealarm() -> dict:
         iso = tree.get(str(r.get("regionId"))) or ua_iso(r.get("regionName", ""))
         if not iso:
             continue
+        lv = None
+        for a in acts:
+            for L in a.get("activeAlertLevels") or []:
+                t = UA_LVL.get((L.get("alertLevel") or "").lower())
+                if t and (lv is None or t == "red"):
+                    lv = t
         if r.get("regionType") == "State":
-            out[iso] = "red"
+            state_lvl[iso] = "red" if "red" in (lv, state_lvl.get(iso)) else (lv or "red")
         else:
-            if out.get(iso) != "red":
-                out[iso] = "yellow"
             parts.setdefault(iso, []).append(r.get("regionName", ""))
+    for iso in parts:
+        out[iso] = "yellow"
+    out.update(state_lvl)
     UA_PARTS.clear(); UA_PARTS.update(parts)
     return out
 
