@@ -394,19 +394,57 @@ def fetch_json(url: str, headers: dict | None = None):
         return json.loads(r.read().decode("utf-8"))
 
 
-def ua_ukrainealarm() -> dict[str, bool]:
+UA_ALERT_TYPES = {"AIR": "oro pavojus", "ARTILLERY": "artilerijos grėsmė", "URBAN_FIGHTS": "gatvių kovos",
+                  "CHEMICAL": "cheminė grėsmė", "NUCLEAR": "branduolinė grėsmė", "INFO": "informacija"}
+_UA_TREE: dict[str, str] = {}      # bet kurio regiono id → srities (State) ISO
+
+
+def _ua_tree(key: str) -> dict[str, str]:
+    """/api/v3/regions: sritys → rajonai → bendruomenės. Kiekvienam id – jo srities ISO."""
+    if _UA_TREE:
+        return _UA_TREE
+    data = fetch_json("https://api.ukrainealarm.com/api/v3/regions", {"Authorization": key})
+    states = data.get("states", data) if isinstance(data, dict) else data
+
+    def walk(node, iso):
+        _UA_TREE[str(node.get("regionId"))] = iso
+        for ch in node.get("regionChildIds") or []:
+            walk(ch, iso)
+    for st in states:
+        iso = ua_iso(st.get("regionName", ""))
+        if iso:
+            walk(st, iso)
+    return _UA_TREE
+
+
+def ua_ukrainealarm() -> dict:
+    """Oficialus API. Grąžina {ISO: "red" | "yellow" | False}:
+    red – pavojus paskelbtas visai sričiai (State), yellow – tik jos rajonuose / bendruomenėse."""
     key = os.environ.get("UKRAINEALARM_KEY")
     if not key:
         raise RuntimeError("nėra UKRAINEALARM_KEY")
+    tree = _ua_tree(key)
     data = fetch_json("https://api.ukrainealarm.com/api/v3/alerts", {"Authorization": key})
-    out = {}
+    out = {iso: False for iso in set(tree.values())}
+    parts: dict[str, list] = {}
     for r in data:
-        if r.get("regionType") != "State":
+        acts = [a for a in r.get("activeAlerts") or [] if (a.get("type") or "AIR").upper() != "INFO"]
+        if not acts:
             continue
-        iso = ua_iso(r.get("regionName", ""))
-        if iso:
-            out[iso] = any((a.get("type") or "").upper() == "AIR" for a in r.get("activeAlerts", [])) or bool(r.get("activeAlerts"))
+        iso = tree.get(str(r.get("regionId"))) or ua_iso(r.get("regionName", ""))
+        if not iso:
+            continue
+        if r.get("regionType") == "State":
+            out[iso] = "red"
+        else:
+            if out.get(iso) != "red":
+                out[iso] = "yellow"
+            parts.setdefault(iso, []).append(r.get("regionName", ""))
+    UA_PARTS.clear(); UA_PARTS.update(parts)
     return out
+
+
+UA_PARTS: dict[str, list] = {}
 
 
 def ua_alertsinua() -> dict[str, bool]:
@@ -447,7 +485,7 @@ def ukraine(meta: dict) -> dict:
         t0 = time.time()
         try:
             regions = fn()
-            meta["sources"][name] = {"ok": True, "n": sum(regions.values()), "of": len(regions),
+            meta["sources"][name] = {"ok": True, "n": sum(1 for v in regions.values() if v), "of": len(regions),
                                      "ms": int((time.time() - t0) * 1000)}
             if UA_UNMATCHED:
                 meta["sources"][name]["unmatched"] = UA_UNMATCHED[:10]
@@ -460,15 +498,29 @@ def ukraine(meta: dict) -> dict:
         if "UA-43" not in regions:
             regions["UA-43"] = True
             note = " Krymas – nuolatinis pavojus (okupuota teritorija; šaltinis jo nepateikia)."
-        on = sorted(k for k, v in regions.items() if v)
+        tones = {k: ("red" if v is True else v) for k, v in regions.items() if v}
+        full = sorted(k for k, v in tones.items() if v == "red")
+        part = sorted(k for k, v in tones.items() if v == "yellow")
         src = name + ("" if official else " (neoficialus)")
-        if on:
-            return {"level": "red", "kind": "air", "regions": {k: "red" for k in on}, "regionsOnly": True,
-                    "text": f"Oro pavojus {len(on)} iš {len(regions)} sričių.{note}", "time": NOW.isoformat(timespec="seconds"),
-                    "src": src, "url": "https://map.ukrainealarm.com/"}
+        url = "https://map.ukrainealarm.com/"
+        now = NOW.isoformat(timespec="seconds")
+        if tones:
+            names = {r["iso"]: r["name"] for r in REGIONS if r["cc"] == "UKR"}
+            items = []
+            if full:
+                items.append({"level": "red", "kind": "air", "event": "Oro pavojus visoje srityje",
+                              "area": ", ".join(names.get(i, i) for i in full), "regions": full, "time": now, "src": src, "url": url})
+            if part:
+                items.append({"level": "yellow", "kind": "air", "event": "Pavojus dalyje srities (rajonuose / bendruomenėse)",
+                              "area": "; ".join(f"{names.get(i, i)}: {', '.join(UA_PARTS.get(i, [])[:4])}".rstrip(": ")
+                                                for i in part), "regions": part, "time": now, "src": src, "url": url})
+            txt = f"Oro pavojus: visoje srityje – {len(full)}, dalyje srities – {len(part)} (iš {len(regions)}).{note}"
+            return {"level": "red" if full else "yellow", "kind": "air", "regions": tones, "regionsOnly": True,
+                    "items": items, "text": txt, "time": now, "src": src, "url": url}
         return {"level": "white", "regions": {}, "text": "Oro pavojaus nėra nė vienoje srityje.",
-                "time": NOW.isoformat(timespec="seconds"), "src": src, "url": "https://map.ukrainealarm.com/"}
+                "time": now, "src": src, "url": url}
     return {"level": "none", "text": "Šaltiniai šiuo metu nepasiekiami.", "time": NOW.isoformat(timespec="seconds")}
+
 
 # ---------------------------------------------------------------- sritys (admin-1)
 import unicodedata
