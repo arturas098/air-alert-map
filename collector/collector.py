@@ -495,7 +495,7 @@ def ua_ukrainealarm() -> dict:
     tree = c["tree"]
     data = _ua_call("alerts", key, c)
     if data is None:                                   # dar negalima kviesti – paskutinis gautas (≤ 5 min)
-        if c.get("alerts") is not None and time.time() - c.get("alerts_ts", 0) < 300:
+        if c.get("alerts") is not None and time.time() - c.get("alerts_ts", 0) < 420:
             data = c["alerts"]
         else:
             raise RuntimeError("laukiama API limito")

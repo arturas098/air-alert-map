@@ -58,6 +58,11 @@ def load_history() -> list:
             g = lambda *a: subprocess.run(["git", *a], cwd=d, check=True, capture_output=True, timeout=60)
             g("init", "-q")
             g("fetch", "-q", "--depth", "1", f"https://x-access-token:{token}@github.com/{repo}.git", BRANCH)
+            # ukrainealarm talpykla (regionų medis, paskutinis atsakymas, limito laikas) – kad naujas ciklas
+            # nelauktų minutės ir nerodytų atsarginio šaltinio
+            uc = subprocess.run(["git", "show", "FETCH_HEAD:ua-cache.json"], cwd=d, capture_output=True, timeout=30)
+            if uc.returncode == 0:
+                Path(os.environ.get("UA_CACHE_DIR", "/tmp"), "ukrainealarm-cache.json").write_bytes(uc.stdout)
             raw = subprocess.run(["git", "show", "FETCH_HEAD:history.json"], cwd=d, capture_output=True, timeout=30)
             return json.loads(raw.stdout.decode("utf-8")).get("snaps", []) if raw.returncode == 0 else []
         except Exception as ex:  # noqa: BLE001
@@ -94,6 +99,9 @@ def publish(data: dict, hist: list | None = None) -> None:
     with tempfile.TemporaryDirectory() as d:
         Path(d, "alerts.json").write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
         files = ["alerts.json"]
+        uc = Path(os.environ.get("UA_CACHE_DIR", "/tmp"), "ukrainealarm-cache.json")
+        if uc.exists():
+            Path(d, "ua-cache.json").write_bytes(uc.read_bytes()); files.append("ua-cache.json")
         if hist is not None:
             Path(d, "history.json").write_text(json.dumps({"hours": HISTORY_H, "snaps": hist}, ensure_ascii=False,
                                                           separators=(",", ":")), encoding="utf-8")
