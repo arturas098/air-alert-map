@@ -1,0 +1,746 @@
+{
+ "LTU": {
+  "air": "ok",
+  "weather": "ok",
+  "level": "white",
+  "text": "Aktyvių perspėjimų nėra. Oro pavojus tikrinamas tik pagal: lrt.",
+  "time": "2026-11-07T19:10:47+00:00"
+ },
+ "LVA": {
+  "air": "ok",
+  "weather": "ok",
+  "level": "white",
+  "text": "Aktyvių perspėjimų nėra.",
+  "time": "2026-11-07T19:10:47+00:00"
+ },
+ "EST": {
+  "air": "ok",
+  "weather": "ok",
+  "level": "white",
+  "text": "Aktyvių perspėjimų nėra.",
+  "time": "2026-11-07T19:10:47+00:00"
+ },
+ "FIN": {
+  "air": "none",
+  "weather": "ok",
+  "level": "yellow",
+  "kind": "weather",
+  "text": "Traffic weather warning — Enontekiö  (+9 kiti įspėjimai) · Oro pavojaus būsena nenustatyta.",
+  "time": "2026-11-07T18:06:13+00:00",
+  "url": "https://meteoalarm.org?geocode=EMMA_ID:FI004",
+  "src": "MeteoAlarm",
+  "dateOnly": false,
+  "items": [
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Enontekiö",
+    "event": "Traffic weather warning",
+    "area": "Enontekiö",
+    "severity": "Moderate",
+    "expires": "2026-11-08T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T18:06:13+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI004",
+    "src": "MeteoAlarm",
+    "regions": []
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "event": "Traffic weather warning",
+    "area": "Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "severity": "Moderate",
+    "expires": "2026-11-08T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T22:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI028",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-06",
+     "FI-07",
+     "FI-08",
+     "FI-11",
+     "FI-12",
+     "FI-17",
+     "FI-18",
+     "FI-19"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "event": "Traffic weather warning",
+    "area": "Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "severity": "Moderate",
+    "expires": "2026-11-08T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T22:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI029",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-06",
+     "FI-07",
+     "FI-08",
+     "FI-11",
+     "FI-12",
+     "FI-17",
+     "FI-18",
+     "FI-19"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "event": "Traffic weather warning",
+    "area": "Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "severity": "Moderate",
+    "expires": "2026-11-08T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T22:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI030",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-06",
+     "FI-07",
+     "FI-08",
+     "FI-11",
+     "FI-12",
+     "FI-17",
+     "FI-18",
+     "FI-19"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "event": "Traffic weather warning",
+    "area": "Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "severity": "Moderate",
+    "expires": "2026-11-08T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T22:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI039",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-06",
+     "FI-07",
+     "FI-08",
+     "FI-11",
+     "FI-12",
+     "FI-17",
+     "FI-18",
+     "FI-19"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "event": "Traffic weather warning",
+    "area": "Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "severity": "Moderate",
+    "expires": "2026-11-08T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T22:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI038",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-06",
+     "FI-07",
+     "FI-08",
+     "FI-11",
+     "FI-12",
+     "FI-17",
+     "FI-18",
+     "FI-19"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "event": "Traffic weather warning",
+    "area": "Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "severity": "Moderate",
+    "expires": "2026-11-08T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T22:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI033",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-06",
+     "FI-07",
+     "FI-08",
+     "FI-11",
+     "FI-12",
+     "FI-17",
+     "FI-18",
+     "FI-19"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "event": "Traffic weather warning",
+    "area": "Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "severity": "Moderate",
+    "expires": "2026-11-08T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T22:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI034",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-06",
+     "FI-07",
+     "FI-08",
+     "FI-11",
+     "FI-12",
+     "FI-17",
+     "FI-18",
+     "FI-19"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "event": "Traffic weather warning",
+    "area": "Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "severity": "Moderate",
+    "expires": "2026-11-08T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T22:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI031",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-06",
+     "FI-07",
+     "FI-08",
+     "FI-11",
+     "FI-12",
+     "FI-17",
+     "FI-18",
+     "FI-19"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "event": "Traffic weather warning",
+    "area": "Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Pirkanmaa, Keski-Suomi, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa",
+    "severity": "Moderate",
+    "expires": "2026-11-08T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T22:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI032",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-06",
+     "FI-07",
+     "FI-08",
+     "FI-11",
+     "FI-12",
+     "FI-17",
+     "FI-18",
+     "FI-19"
+    ]
+   }
+  ],
+  "regions": {
+   "FI-03": "teal",
+   "FI-06": "teal",
+   "FI-07": "teal",
+   "FI-08": "teal",
+   "FI-11": "teal",
+   "FI-12": "teal",
+   "FI-17": "teal",
+   "FI-18": "teal",
+   "FI-19": "teal"
+  },
+  "regionsOnly": false,
+  "layers": {
+   "weather": {
+    "regions": {
+     "FI-03": "yellow",
+     "FI-06": "yellow",
+     "FI-07": "yellow",
+     "FI-08": "yellow",
+     "FI-11": "yellow",
+     "FI-12": "yellow",
+     "FI-17": "yellow",
+     "FI-18": "yellow",
+     "FI-19": "yellow"
+    },
+    "only": false,
+    "n": 10
+   }
+  }
+ },
+ "POL": {
+  "air": "ok",
+  "weather": "ok",
+  "level": "yellow",
+  "kind": "weather",
+  "text": "Yellow Fog warning — Wielkopolskie Province Poznań County  (+254 kiti įspėjimai)",
+  "time": "2026-11-07T17:00:00+00:00",
+  "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3064",
+  "src": "MeteoAlarm",
+  "dateOnly": false,
+  "items": [
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Poznań County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Poznań County",
+    "severity": "Moderate",
+    "expires": "2026-11-08T10:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3064",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Leszno County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Leszno County",
+    "severity": "Moderate",
+    "expires": "2026-11-08T10:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3063",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Kalisz County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Kalisz County",
+    "severity": "Moderate",
+    "expires": "2026-11-08T10:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3061",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Wrzesiński County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Wrzesiński County",
+    "severity": "Moderate",
+    "expires": "2026-11-08T10:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3030",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Wągrowiecki County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Wągrowiecki County",
+    "severity": "Moderate",
+    "expires": "2026-11-08T10:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3028",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Konin County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Konin County",
+    "severity": "Moderate",
+    "expires": "2026-11-08T10:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3062",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Złotowski County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Złotowski County",
+    "severity": "Moderate",
+    "expires": "2026-11-08T10:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3031",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Turecki County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Turecki County",
+    "severity": "Moderate",
+    "expires": "2026-11-08T10:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3027",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Wolsztyński County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Wolsztyński County",
+    "severity": "Moderate",
+    "expires": "2026-11-08T10:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3029",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Śremski County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Śremski County",
+    "severity": "Moderate",
+    "expires": "2026-11-08T10:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3026",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Średzki County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Średzki County",
+    "severity": "Moderate",
+    "expires": "2026-11-08T10:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3025",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Szamotulski County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Szamotulski County",
+    "severity": "Moderate",
+    "expires": "2026-11-08T10:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3024",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Rawicki County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Rawicki County",
+    "severity": "Moderate",
+    "expires": "2026-11-08T10:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3022",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Pleszewski County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Pleszewski County",
+    "severity": "Moderate",
+    "expires": "2026-11-08T10:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3020",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Ostrzeszowski County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Ostrzeszowski County",
+    "severity": "Moderate",
+    "expires": "2026-11-08T10:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-07T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3018",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   }
+  ],
+  "regions": {
+   "PL-WP": "teal",
+   "PL-SK": "teal",
+   "PL-SL": "teal",
+   "PL-LU": "teal",
+   "PL-PK": "teal",
+   "PL-OP": "teal",
+   "PL-MZ": "teal",
+   "PL-MA": "teal",
+   "PL-LD": "teal",
+   "PL-LB": "teal",
+   "PL-PD": "teal",
+   "PL-DS": "teal"
+  },
+  "regionsOnly": true,
+  "layers": {
+   "weather": {
+    "regions": {
+     "PL-WP": "yellow",
+     "PL-SK": "yellow",
+     "PL-SL": "yellow",
+     "PL-LU": "yellow",
+     "PL-PK": "yellow",
+     "PL-OP": "yellow",
+     "PL-MZ": "yellow",
+     "PL-MA": "yellow",
+     "PL-LD": "yellow",
+     "PL-LB": "yellow",
+     "PL-PD": "yellow",
+     "PL-DS": "yellow"
+    },
+    "only": true,
+    "n": 255
+   }
+  }
+ },
+ "UKR": {
+  "level": "red",
+  "kind": "air",
+  "regions": {
+   "UA-53": "yellow",
+   "UA-05": "yellow",
+   "UA-18": "yellow",
+   "UA-23": "red",
+   "UA-32": "yellow",
+   "UA-63": "yellow",
+   "UA-59": "yellow",
+   "UA-43": "red",
+   "UA-71": "yellow",
+   "UA-35": "yellow",
+   "UA-74": "yellow",
+   "UA-14": "yellow",
+   "UA-68": "yellow",
+   "UA-56": "yellow",
+   "UA-09": "red",
+   "UA-12": "yellow"
+  },
+  "regionsOnly": true,
+  "items": [
+   {
+    "level": "red",
+    "kind": "air",
+    "event": "Oro pavojus visoje srityje",
+    "area": "Luhans'k, Zaporizhzhya, Crimea",
+    "regions": [
+     "UA-09",
+     "UA-23",
+     "UA-43"
+    ],
+    "time": "2026-11-07T19:10:47+00:00",
+    "src": "ukrainealarm.com",
+    "url": "https://map.ukrainealarm.com/"
+   },
+   {
+    "level": "yellow",
+    "kind": "air",
+    "event": "Pavojus dalyje srities (rajonuose / bendruomenėse)",
+    "area": "Vinnytsya: Гайсинський район, Вінницький район, Тульчинський район, Жмеринський район; Dnipropetrovs'k: Покровська територіальна громада, Червоногригорівська територіальна громада, м. Марганець та Марганецька територіальна громада, Синельниківський район; Donets'k: Волноваський район, Кальміуський район, Горлівський район, Покровський район; Zhytomyr: Коростенський район, Житомирський район, Звягельський район; Kiev: Вишгородський район, Бучанський район, Броварський район, Бориспільський район; Kirovohrad: Олександрійський район; Poltava: Полтавський район, Кременчуцький район, Лубенський район, Миргородський район; Rivne: Сарненський район, Рівненський район; Sumy: Сумський район, Роменський район, Шосткинський район, Конотопський район; Kharkiv: Вовчанська територіальна громада, Липецька територіальна громада, Харківський район, Ізюмський район; Khmel'nyts'kyy: Хмельницький район, Шепетівський район, Кам’янець-Подільський район; Cherkasy: Черкаський район, Золотоніський район, Звенигородський район, Уманський район; Chernihiv: Чернігівський район, Новгород-Сіверський район, Корюківський район, Ніжинський район",
+    "regions": [
+     "UA-05",
+     "UA-12",
+     "UA-14",
+     "UA-18",
+     "UA-32",
+     "UA-35",
+     "UA-53",
+     "UA-56",
+     "UA-59",
+     "UA-63",
+     "UA-68",
+     "UA-71",
+     "UA-74"
+    ],
+    "time": "2026-11-07T19:10:47+00:00",
+    "src": "ukrainealarm.com",
+    "url": "https://map.ukrainealarm.com/"
+   }
+  ],
+  "text": "Oro pavojus: visoje srityje – 3, dalyje srities – 13 (iš 26).",
+  "time": "2026-11-07T19:10:47+00:00",
+  "src": "ukrainealarm.com",
+  "url": "https://map.ukrainealarm.com/",
+  "air": "ok"
+ },
+ "_meta": {
+  "checked": "2026-11-07T19:10:47+00:00",
+  "sources": {
+   "lt72": {
+    "ok": false,
+    "err": "HTTPError: HTTP Error 403: Forbidden",
+    "type": "air"
+   },
+   "lrt": {
+    "ok": true,
+    "n": 0,
+    "ms": 138,
+    "type": "air"
+   },
+   "meteoalarm-lithuania": {
+    "ok": true,
+    "n": 0,
+    "ms": 910,
+    "type": "weather"
+   },
+   "lv-nbs": {
+    "ok": true,
+    "n": 0,
+    "ms": 1886,
+    "type": "air"
+   },
+   "meteoalarm-latvia": {
+    "ok": true,
+    "n": 0,
+    "ms": 490,
+    "type": "weather"
+   },
+   "kriis": {
+    "ok": true,
+    "n": 0,
+    "ms": 597,
+    "type": "air"
+   },
+   "meteoalarm-estonia": {
+    "ok": true,
+    "n": 0,
+    "ms": 416,
+    "type": "weather"
+   },
+   "meteoalarm-finland": {
+    "ok": true,
+    "n": 10,
+    "ms": 520,
+    "type": "weather"
+   },
+   "rcb": {
+    "ok": true,
+    "n": 0,
+    "ms": 415,
+    "type": "air"
+   },
+   "meteoalarm-poland": {
+    "ok": true,
+    "n": 255,
+    "ms": 2280,
+    "type": "weather"
+   },
+   "ukrainealarm.com": {
+    "ok": true,
+    "n": 16,
+    "of": 26,
+    "ms": 117
+   }
+  }
+ }
+}
