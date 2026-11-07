@@ -424,9 +424,14 @@ function V(id){
   const top=sel[0], regions={};
   for(const a of sel) for(const r of (a.regions||[])){ const t=(a.kind||"air")==="air"?a.level:(W?AW(a):"teal");
     const rk={teal:1,yellow:2,orange:2.5,red:3}; if((rk[t]||0)>(rk[regions[r]]||0)) regions[r]=t; }
-  return {...s, level:top.level, kind:top.kind||"air", aw:top.aw, text:(top.text||[top.event,top.area].filter(Boolean).join(" — "))+(sel.length>1?`  (+${sel.length-1} kiti)`:""),
+  // surinkėjas pateikia sluoksnio sritis iš VISŲ įspėjimų (items – tik pirmi 15)
+  const Ls = s.layers && s.layers[LAYER];
+  if(Ls){ const rg={}; for(const [r,t] of Object.entries(Ls.regions||{})) rg[r] = (LAYER==="air"||W) ? t : "teal";
+    for(const k in regions) delete regions[k]; Object.assign(regions, rg); }
+  const nAll = Ls ? Ls.n : sel.length;
+  return {...s, level:top.level, kind:top.kind||"air", aw:top.aw, text:(top.text||[top.event,top.area].filter(Boolean).join(" — "))+(nAll>1?`  (+${nAll-1} kiti)`:""),
     time:top.time, url:top.url||s.url, src:top.src||s.src, dateOnly:!!top.dateOnly, items:s.items?sel:null,
-    regions:Object.keys(regions).length?regions:null, regionsOnly:sel.every(a=>a.regions&&a.regions.length)};
+    regions:Object.keys(regions).length?regions:null, regionsOnly: Ls ? Ls.only : sel.every(a=>a.regions&&a.regions.length)};
 }
 function renderCards(){
   const box=document.getElementById("cards");

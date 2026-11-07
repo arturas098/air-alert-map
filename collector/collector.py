@@ -789,6 +789,22 @@ def collect() -> dict:
             if regions:
                 result[cc]["regions"] = regions
                 result[cc]["regionsOnly"] = all_matched
+            # sluoksniams (Kariniai / Orai) – sritys iš VISŲ įspėjimų, ne tik iš pirmų 15 sąraše
+            AWR = {"yellow": 1, "orange": 2, "red": 3}
+            lay = {}
+            for name, sel in (("air", [a for a in alerts if a.get("kind") == "air"]),
+                              ("weather", [a for a in alerts if a.get("kind") != "air"])):
+                if not sel:
+                    continue
+                rg: dict[str, str] = {}
+                for a in sel:
+                    t = a["level"] if name == "air" else (a.get("aw") or ("red" if a["level"] == "red" else "yellow"))
+                    rk = RANK if name == "air" else AWR
+                    for iso in a["regions"]:
+                        if rk.get(t, 0) > rk.get(rg.get(iso, ""), 0):
+                            rg[iso] = t
+                lay[name] = {"regions": rg, "only": all(a["regions"] for a in sel), "n": len(sel)}
+            result[cc]["layers"] = lay
         elif air == "ok":
             txt = "Aktyvių perspėjimų nėra."
             if False in st["air"]:   # dalis oro šaltinių neveikia – pasakom, kuo remiamės

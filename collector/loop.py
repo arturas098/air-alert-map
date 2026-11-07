@@ -32,7 +32,7 @@ def compact(data: dict) -> dict:
     for cc, v in data.items():
         if cc.startswith("_"):
             continue
-        c = {k: v[k] for k in ("level", "kind", "text", "air", "weather", "regions", "regionsOnly", "src", "url", "time", "dateOnly")
+        c = {k: v[k] for k in ("level", "kind", "text", "air", "weather", "regions", "regionsOnly", "src", "url", "time", "dateOnly", "layers")
              if k in v and v[k] not in (None, "", False)}
         if c.get("level") in ("white", "none"):
             c.pop("time", None)          # „patikrinta“ laikas kas ciklą kinta – istorijoje nereikalingas
