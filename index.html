@@ -8,7 +8,7 @@
 <style>
 :root{
   --bg:#0a0a0b; --ink:#e9e6df; --ink2:#a9a59c; --ink3:#5d5a55; --ink4:#2a2927;
-  --white:#f2f0ea; --teal:#22D3C5; --yellow:#ffd23f; --red:#ff3b30; --grey:#7c7a75;
+  --white:#f2f0ea; --teal:#22D3C5; --orange:#ff9500; --yellow:#ffd23f; --red:#ff3b30; --grey:#7c7a75;
   --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -43,6 +43,7 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--mo
 .card[data-l="yellow"]{--c:var(--yellow)}
 .card[data-l="white"]{--c:var(--white)}
 .card[data-l="none"]{--c:var(--grey)}
+.card[data-l="orange"]{--c:var(--orange)}
 .card[data-k="weather"],.card[data-k="chem"],.card[data-k="other"]{--c:var(--teal);animation:none}
 .card[data-k="weather"][data-l="red"]{animation:pulse 3s ease-in-out infinite}
 @keyframes pulse{50%{box-shadow:0 0 0 1px rgba(0,0,0,.6),0 0 30px 2px color-mix(in srgb,var(--c) 75%,transparent)}}
@@ -100,6 +101,8 @@ body.histmode #map g{filter:saturate(.9)}
 #settings .row button{font:inherit;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);background:none;border:1px solid var(--ink3);border-radius:999px;padding:6px 10px;cursor:pointer}
 #settings pre{margin-top:10px;white-space:pre-wrap;font:inherit;font-size:11px;color:var(--ink2);min-height:1.5em}
 #settings .x{position:absolute;right:8px;top:6px;background:none;border:0;color:var(--ink2);font-size:18px;cursor:pointer}
+.legend.lg-w{display:none}
+body.lw .legend.lg-w{display:flex} body.lw .legend.lg-a{display:none}
 /* sluoksniai, garsas */
 .tools{position:fixed;right:12px;top:calc(46px + env(safe-area-inset-top));display:flex;gap:6px;align-items:center;z-index:5}
 .seg{display:flex;border:1px solid var(--ink3);border-radius:999px;overflow:hidden;background:rgba(10,10,11,.7)}
@@ -155,7 +158,15 @@ body.stale .card{animation:none!important}
   <button class="chip" id="gear" title="Nustatymai" aria-label="Nustatymai">⚙</button>
 </div>
 
-<div class="legend">
+<div class="legend lg-w">
+  <div><i style="border-color:var(--red);background:rgba(255,59,48,.25)"></i>Raudonas</div>
+  <div><i style="border-color:var(--orange);background:rgba(255,149,0,.22)"></i>Oranžinis</div>
+  <div><i style="border-color:var(--yellow);background:rgba(255,210,63,.2)"></i>Geltonas</div>
+  <div><i style="border-color:var(--white);background:rgba(255,255,255,.12)"></i>Įspėjimų nėra</div>
+  <div><i style="border-color:var(--grey)"></i>Nenustatyta</div>
+  <div style="opacity:.7;text-transform:none;letter-spacing:.04em">MeteoAlarm oficialus kodas</div>
+</div>
+<div class="legend lg-a">
   <div><i style="border-color:var(--red);background:rgba(255,59,48,.25)"></i>Oro pavojus</div>
   <div><i style="border-color:var(--yellow);background:rgba(255,210,63,.2)"></i>Tikėtinas pavojus</div>
   <div><i style="border-color:var(--white);background:rgba(255,255,255,.12)"></i>Pavojaus nėra</div>
@@ -205,10 +216,14 @@ const COUNTRIES = [
 const LEVEL_TXT = {red:"Oro pavojus", yellow:"Tikėtinas oro pavojus", white:"Pavojaus nėra", none:"Nenustatyta"};
 const LEVEL_ALT = {red:"Pavojus", yellow:"Įspėjimas"};
 const KIND = {air:"✈ Oro grėsmė", weather:"☂ Stichija", chem:"☣ Tarša / avarija", other:"! Kita"};
-const COLOR = {red:"#ff3b30", yellow:"#ffd23f", white:"#f2f0ea", none:"#7c7a75", teal:"#22D3C5"};
+const COLOR = {red:"#ff3b30", yellow:"#ffd23f", white:"#f2f0ea", none:"#7c7a75", teal:"#22D3C5", orange:"#ff9500"};
 // oro pavojus – valstybinis kodas (balta/geltona/raudona); stichija ir kita – žydra
 const isAir = s => !s.kind || s.kind==="air";
-const tone = s => (s.level==="red"||s.level==="yellow") && !isAir(s) ? "teal" : s.level;
+// orų sluoksnyje – oficialus MeteoAlarm kodas (geltonas / oranžinis / raudonas); kitur orai – žydra
+const AW = a => a.aw || (a.level==="red"?"red":"yellow");
+const AW_RANK = {yellow:1, orange:2, red:3};
+const AW_TXT = {yellow:"Geltonas įspėjimas", orange:"Oranžinis įspėjimas", red:"Raudonas įspėjimas"};
+const tone = s => (s.level==="red"||s.level==="yellow") && !isAir(s) ? (LAYER==="weather" ? AW(s) : "teal") : s.level;
 
 const BASE = Object.fromEntries(COUNTRIES.map(c=>[c.id,{level:"none",text:"Duomenų nėra arba šaltinis nepasiekiamas.",time:null}]));
 const DEMOS = [
@@ -238,7 +253,7 @@ function hatch(id,color,gap,w,op,ang){
     .attr("patternTransform",`rotate(${ang})`)
     .append("line").attr("x1",0).attr("y1",0).attr("x2",0).attr("y2",gap).attr("stroke",color).attr("stroke-width",w).attr("stroke-opacity",op);
 }
-for(const k of ["red","yellow","white","teal"]) hatch("h-"+k,COLOR[k],6,1.2,.55,45);
+for(const k of ["red","yellow","white","teal","orange"]) hatch("h-"+k,COLOR[k],6,1.2,.55,45);
 
 // popieriaus grūdas – maža triukšmo plytelė kaip CSS fonas (be SVG filtrų)
 (()=>{const c=document.createElement("canvas");c.width=c.height=128;const x=c.getContext("2d");const d=x.createImageData(128,128);
@@ -386,7 +401,7 @@ function renderAlerts(){
     const e=gAlertEdge.append("path").attr("d",d).attr("fill","none").attr("stroke",col)
       .attr("stroke-width",lv==="white"?1.2:2.4).attr("stroke-opacity",lv==="white"?.55:1).attr("stroke-linejoin","round")
       .attr("pointer-events","none").attr("vector-effect","non-scaling-stroke");
-    if(lv==="red") e.append("animate").attr("attributeName","stroke-opacity").attr("values","1;.35;1").attr("dur",tn==="teal"?"3s":"1.6s").attr("repeatCount","indefinite");
+    if(lv==="red") e.append("animate").attr("attributeName","stroke-opacity").attr("values","1;.35;1").attr("dur",isAir(s)?"1.6s":"3s").attr("repeatCount","indefinite");
   });
   if(selected){gAlertEdge.append("path").attr("d",path(SHAPES[selected])).attr("fill","none").attr("stroke","#fff")
     .attr("stroke-width",1).attr("stroke-dasharray","4 3").attr("vector-effect","non-scaling-stroke").attr("pointer-events","none");}
@@ -408,11 +423,12 @@ function V(id){
       text: LAYER==="air" ? (ok?"Oro pavojaus nėra.":"Oro pavojaus būsena nenustatyta.")
                           : (ok?"Orų įspėjimų nėra.":(id==="UKR"?"Ukrainos orų įspėjimų nerenkame.":"Orų duomenų nėra."))};
   }
-  sel.sort((a,b)=>RANKL[b.level]-RANKL[a.level]);
+  const W = LAYER==="weather";
+  sel.sort((a,b)=> W ? AW_RANK[AW(b)]-AW_RANK[AW(a)] : RANKL[b.level]-RANKL[a.level]);
   const top=sel[0], regions={};
-  for(const a of sel) for(const r of (a.regions||[])){ const t=(a.kind||"air")==="air"?a.level:"teal";
-    const rk={teal:1,yellow:2,red:3}; if((rk[t]||0)>(rk[regions[r]]||0)) regions[r]=t; }
-  return {...s, level:top.level, kind:top.kind||"air", text:(top.text||[top.event,top.area].filter(Boolean).join(" — "))+(sel.length>1?`  (+${sel.length-1} kiti)`:""),
+  for(const a of sel) for(const r of (a.regions||[])){ const t=(a.kind||"air")==="air"?a.level:(W?AW(a):"teal");
+    const rk={teal:1,yellow:2,orange:2.5,red:3}; if((rk[t]||0)>(rk[regions[r]]||0)) regions[r]=t; }
+  return {...s, level:top.level, kind:top.kind||"air", aw:top.aw, text:(top.text||[top.event,top.area].filter(Boolean).join(" — "))+(sel.length>1?`  (+${sel.length-1} kiti)`:""),
     time:top.time, url:top.url||s.url, src:top.src||s.src, dateOnly:!!top.dateOnly, items:s.items?sel:null,
     regions:Object.keys(regions).length?regions:null, regionsOnly:sel.every(a=>a.regions&&a.regions.length)};
 }
@@ -422,9 +438,10 @@ function renderCards(){
   box.innerHTML=list.map(c=>{const s=V(c.id);
     const t=!s.time?"—":s.dateOnly?new Date(s.time).toLocaleDateString("lt-LT",{month:"2-digit",day:"2-digit"})+" (laikas nenurodytas)"
       :new Date(s.time).toLocaleTimeString("lt-LT",{hour:"2-digit",minute:"2-digit"});
-    return `<div class="card${selected===c.id?" sel":""}" data-l="${s.level}" data-k="${s.kind||""}" data-id="${c.id}">
+    const wl = LAYER==="weather" && !isAir(s) && (s.level==="red"||s.level==="yellow");
+    return `<div class="card${selected===c.id?" sel":""}" data-l="${wl?AW(s):s.level}" data-k="${wl?"":(s.kind||"")}" data-id="${c.id}">
       <div class="row"><span class="cc">${c.cc}</span><span class="nm">${c.nm}</span></div>
-      <div class="st">${(s.kind&&s.kind!=="air"&&LEVEL_ALT[s.level])||LEVEL_TXT[s.level]}</div>${s.kind?`<div class="kd">${KIND[s.kind]||KIND.other}</div>`:""}
+      <div class="st">${wl?AW_TXT[AW(s)]:(s.kind&&s.kind!=="air"&&LEVEL_ALT[s.level])||LEVEL_TXT[s.level]}</div>${s.kind?`<div class="kd">${KIND[s.kind]||KIND.other}</div>`:""}
       <div class="ds">${esc(s.text)}</div>
       <div class="mt"><span>${safeUrl(s.url)?`<a href="${esc(s.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(s.src||c.src)}</a>`:esc(s.src||c.src)}</span><span>${esc(t)}</span></div></div>`;}).join("");
   box.querySelectorAll(".card").forEach(el=>el.onclick=()=>select(el.dataset.id,true));
@@ -468,11 +485,11 @@ function renderDetail(){
   if(!selected){box.classList.remove("open");return;}
   const c=COUNTRIES.find(x=>x.id===selected), s=V(selected), tn=tone(s);
   box.style.setProperty("--c",`var(--${tn==="none"?"grey":tn})`);
-  const status=(!isAir(s)&&LEVEL_ALT[s.level])||LEVEL_TXT[s.level];
+  const status=(LAYER==="weather"&&!isAir(s)&&(s.level==="red"||s.level==="yellow"))?AW_TXT[AW(s)]:(!isAir(s)&&LEVEL_ALT[s.level])||LEVEL_TXT[s.level];
   let items="";
   if(s.regions && Object.keys(s.regions).length){
     const byTone={}; for(const [i,t] of Object.entries(s.regions)) (byTone[t]=byTone[t]||[]).push(RSHAPES[i]?RSHAPES[i].properties.name:i);
-    items=`<div class="sec">Sritys · ${Object.keys(s.regions).length}</div>`+["red","yellow","teal"].filter(t=>byTone[t]).map(t=>
+    items=`<div class="sec">Sritys · ${Object.keys(s.regions).length}</div>`+["red","orange","yellow","teal"].filter(t=>byTone[t]).map(t=>
       `<div class="it" style="--ic:${COLOR[t]}"><span>${byTone[t].sort().map(esc).join(" · ")}</span></div>`).join("");
   }
   if(s.items && s.items.length){
@@ -619,6 +636,7 @@ document.getElementById("demo").onclick=e=>{
 
 /* ---------- sluoksnių jungiklis ---------- */
 function setLayer(l){ LAYER=l; try{localStorage.setItem("layer",l);}catch(e){}
+  document.body.classList.toggle("lw", l==="weather");
   document.querySelectorAll("#layers button").forEach(b=>b.classList.toggle("on",b.dataset.l===l));
   renderAlerts(); renderDetail(); }
 document.querySelectorAll("#layers button").forEach(b=>b.onclick=()=>setLayer(b.dataset.l));

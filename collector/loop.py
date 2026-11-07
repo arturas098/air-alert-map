@@ -39,7 +39,7 @@ def compact(data: dict) -> dict:
         if c.get("text"):
             c["text"] = c["text"][:240]
         if v.get("items"):
-            c["items"] = [{k: a[k] for k in ("level", "kind", "event", "area", "time", "expires", "regions", "src", "url", "dateOnly")
+            c["items"] = [{k: a[k] for k in ("level", "kind", "event", "area", "time", "expires", "regions", "src", "url", "dateOnly", "aw")
                            if k in a and a[k] not in (None, "", False, [])} for a in v["items"][:10]]
             for a in c["items"]:
                 if a.get("area"):

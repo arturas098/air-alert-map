@@ -97,12 +97,13 @@ def meteoalarm(country_slug: str) -> list[Alert]:
             continue
         aw = child_text(e, "awareness_level").lower()       # pvz. "2; yellow; Moderate"
         sev = child_text(e, "severity").lower()
+        # oficialus MeteoAlarm lygis (aw: yellow / orange / red) + mūsų bendras lygis (level)
         if "red" in aw or sev == "extreme":
-            level = "red"
+            level, awc = "red", "red"
         elif "orange" in aw or sev == "severe":
-            level = "red"
+            level, awc = "red", "orange"
         elif "yellow" in aw or sev == "moderate":
-            level = "yellow"
+            level, awc = "yellow", "yellow"
         else:
             continue
         event = child_text(e, "event") or child_text(e, "title")
@@ -116,7 +117,8 @@ def meteoalarm(country_slug: str) -> list[Alert]:
         expires_s = expires.isoformat() if expires else ""
         out.append(Alert(level=level, kind="weather",
                          text=f"{event} — {area}".strip(" —"), event=event, area=area,
-                         severity=child_text(e, "severity"), expires=expires_s,
+                         severity=child_text(e, "severity"), expires=expires_s, aw=awc,
+                         wtype=(child_text(e, "awareness_type").split(";") + [""])[0].strip(),
                          time=(onset or NOW).isoformat(), url=link, src="MeteoAlarm"))
     return out
 
