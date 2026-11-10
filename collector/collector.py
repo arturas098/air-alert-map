@@ -326,7 +326,7 @@ def _lrt_items() -> list[tuple]:
         title = child_text(it, "title")
         desc = strip_tags(child_text(it, "description"))
         d = parse_dt(child_text(it, "pubDate"))
-        if d and NOW - d <= timedelta(hours=3) and re.search(r"oro pavoj|pavojaus signal|(raudon|geltona)\w* signal", f"{title} {desc}", re.I):
+        if d and NOW - d <= timedelta(hours=3) and re.search(r"pavoj|(raudon|geltona)\w* signal", f"{title} {desc}", re.I):
             out.append((d, title, desc, child_text(it, "link")))
     out.sort(key=lambda x: x[0], reverse=True)                     # naujausi pirmi
     return out
@@ -353,11 +353,11 @@ def lrt_for(cc: str) -> list[Alert]:
         by_lv: dict[str, set] = {"red": set(), "yellow": set()}
         any_active = False
 
-        def color(word: str, ctx: str) -> str:
-            if LRT_END.search(word): return "end"
-            if re.match(r"raudon", word, re.I): return "red"
-            if re.match(r"geltona|tikėtin", word, re.I): return "yellow"
-            return "red" if red_rx.search(ctx) else "yellow"
+        def color(txt: str) -> str:
+            if LRT_END.search(txt): return "end"
+            if re.search(r"geltona|tikėtin", txt, re.I): return "yellow"
+            if red_rx.search(txt) or re.search(r"oro pavojus|oro atak", txt, re.I): return "red"
+            return "yellow"
 
         def regs(txt: str) -> set:
             rg = set(match_regions(cc, txt))
@@ -370,16 +370,19 @@ def lrt_for(cc: str) -> list[Alert]:
         for seg in re.split(r";\s*", title):
             pieces = re.split(r"\s+[–—]\s+", seg)
             if len(pieces) == 1:
-                clauses.append((seg, color("", seg))); continue
-            places = pieces[0]
-            for pc in pieces[1:]:
-                w = (pc.split() or [""])[0]
-                clauses.append((places, color(w, seg)))
-                places = pc.split(",", 1)[1] if "," in pc else ""
-            if places.strip():
-                clauses.append((places, color("", places)))
+                clauses.append((seg, color(seg))); continue
+            if regs(pieces[0]):                            # „A, B apskrityse – raudonas, C – geltonas“
+                places = pieces[0]
+                for pc in pieces[1:]:
+                    clauses.append((places, color(pc.split(",", 1)[0])))
+                    places = pc.split(",", 1)[1] if "," in pc else ""
+                if places.strip():
+                    clauses.append((places, color(places)))
+            else:                                          # „Oro pavojus – Kaune, …; geltonas – Alytuje“
+                for k in range(1, len(pieces)):
+                    clauses.append((pieces[k], color(pieces[k - 1].split(",")[-1])))
         if cc in ("LTU", "LVA") and not any(regs(p) for p, _ in clauses):
-            clauses = [(x, "end" if LRT_END.search(x) else color("", x))
+            clauses = [(x, color(x))
                        for x in re.split(r"(?<=[.;])\s+", desc) if x.strip()]
         for x, c_ in clauses if cc in ("LTU", "LVA") else []:
             rg = regs(x)
@@ -766,6 +769,15 @@ def _tokens(text: str) -> list[str]:
     return norm(text).split()
 
 
+LT_LOC = {"vilniuje": "vilniaus", "kaune": "kauno", "klaipedoje": "klaipedos", "siauliuose": "siauliu",
+          "panevezyje": "panevezio", "alytuje": "alytaus", "marijampoleje": "marijampoles",
+          "druskininkuose": "druskininku", "birstone": "birstono", "palangoje": "palangos",
+          "visagine": "visagino", "elektrenuose": "elektrenu", "neringoje": "neringos", "utenoje": "utenos",
+          "taurageje": "taurages", "telsiuose": "telsiu", "kedainiuose": "kedainiu", "jonavoje": "jonavos",
+          "ukmergeje": "ukmerges", "mazeikiuose": "mazeikiu", "lazdijuose": "lazdiju", "prienuose": "prienu",
+          "varenoje": "varenos", "trakuose": "traku", "silaleje": "silales", "siluteje": "silutes"}
+
+
 def match_lt(text: str) -> set[str]:
     """„Vilniaus, Utenos apskrityse“ → visos tų apskričių savivaldybės;
     „Vilniaus miesto, Šalčininkų rajono savivaldybėse“ → konkrečios savivaldybės."""
@@ -779,6 +791,11 @@ def match_lt(text: str) -> set[str]:
         if t in _LT_STEM or t in _LT_COUNTY:
             pend.append(t); i += 1; continue
         if t in ("ir", "bei", "ar"):
+            i += 1; continue
+        if t in LT_LOC:                                    # „Kaune“, „Alytuje“ – miestas
+            v = _LT_STEM.get(LT_LOC[t], {})
+            iso = v.get("m") or v.get("s") or v.get("r")
+            if iso: out.add(iso)
             i += 1; continue
         kind = ("c" if t.startswith("apskrit") else "m" if t.startswith("miest") or t == "m" else
                 "r" if t.startswith("rajon") or t == "r" else "s" if t.startswith("savivald") else None)
