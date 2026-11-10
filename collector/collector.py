@@ -254,7 +254,7 @@ def lt72() -> list[Alert]:
 # informācija D. mēneša plkst. HH.MM“ skelbia valstybiniame portale LV portāls (VSIA Latvijas Vēstnesis).
 LV_MONTHS = {"janvār": 1, "februār": 2, "mart": 3, "aprīl": 4, "maij": 5, "jūnij": 6, "jūlij": 7,
              "august": 8, "septembr": 9, "oktobr": 10, "novembr": 11, "decembr": 12}
-LV_AIR = re.compile(r"apdraudējum\w*\s+latvijas\s+gaisa\s+telp", re.I)
+LV_AIR = re.compile(r"apdraudējum\w*\s+(latvijas\s+)?gaisa\s+telp|gaisa\s+telp\w*\s+apdraudējum", re.I)
 LV_END = re.compile(r"beidzies|beigas|atcelt|vairs nav|nav apdraudējuma", re.I)
 LV_MAX_H = 4
 
@@ -303,7 +303,13 @@ LRT_FEEDS = ["https://www.lrt.lt/?rss", "https://www.lrt.lt/naujienos/lietuvoje?
 LRT_END = re.compile(r"atšauk|atsauk|baigėsi|nebėra", re.I)
 
 
-def lrt() -> list[Alert]:
+LRT_OTHER = {"LVA": re.compile(r"latvij", re.I), "EST": re.compile(r"estij", re.I),
+             "POL": re.compile(r"lenkij", re.I), "FIN": re.compile(r"suomij", re.I)}
+LRT_LT_NATIONAL = re.compile(r"visoje lietuvoje|visoje šalyje|visoje salyje|lietuvos kariuomenė praneša", re.I)
+_LRT_CACHE: dict | None = None
+
+
+def _lrt_items() -> list[tuple]:
     last_err = None
     for u in LRT_FEEDS:
         try:
@@ -313,22 +319,53 @@ def lrt() -> list[Alert]:
             last_err = ex
     else:
         raise RuntimeError(f"LRT RSS nepasiekiamas: {last_err}")
+    out = []
     for it in root.iter("item"):
         title = child_text(it, "title")
         desc = strip_tags(child_text(it, "description"))
         d = parse_dt(child_text(it, "pubDate"))
+        if d and NOW - d <= timedelta(hours=3) and re.search(r"oro pavoj", f"{title} {desc}", re.I):
+            out.append((d, title, desc, child_text(it, "link")))
+    out.sort(key=lambda x: x[0], reverse=True)                     # naujausi pirmi
+    return out
+
+
+def lrt_for(cc: str) -> list[Alert]:
+    """LRT naujienos apie oro pavojų (paskutinės 3 h), priskirtos šaliai pagal tekstą.
+    Lietuvai – tik jei atpažintos savivaldybės / apskritys arba aiškiai visa šalis.
+    Naujausi pirmi; atšaukimas („atšauktas“, „baigėsi“) panaikina senesnius toje pačioje vietoje."""
+    global _LRT_CACHE
+    if _LRT_CACHE is None:
+        _LRT_CACHE = {"items": _lrt_items()}
+    alerts, ended, ended_all = [], set(), False
+    for d, title, desc, link in _LRT_CACHE["items"]:
         blob = f"{title} {desc}"
-        if not re.search(r"oro pavoj", blob, re.I):
+        others = [k for k, rx in LRT_OTHER.items() if rx.search(title)]
+        target = others[0] if others and not re.search(r"lietuv", title, re.I) else "LTU"
+        if target != cc:
             continue
-        if not d or NOW - d > timedelta(hours=3):
-            return []
+        regions = sorted(match_regions(cc, blob)) if cc in ("LTU", "LVA") else []
+        national = cc != "LTU" or bool(LRT_LT_NATIONAL.search(blob))
         if LRT_END.search(title):
-            return []
-        lv = "red" if LT_RED.search(blob) or re.search(r"raudon|eikite į priedang", blob, re.I) else "yellow"
-        return [Alert(level=lv, kind="air", event="Oro pavojus (pagal LRT)", area=title, text=title,
-                      time=d.isoformat(), expires=(d + timedelta(hours=3)).isoformat(),
-                      url=child_text(it, "link"), src="LRT (žiniasklaida)")]
-    return []
+            if regions: ended.update(regions)
+            else: ended_all = True
+            continue
+        if ended_all:
+            break
+        regions = [r for r in regions if r not in ended]
+        if cc == "LTU" and not regions and not national:
+            continue                                               # vieta neaiški – nedažom visos šalies
+        if not regions and ended:
+            continue
+        lv = "red" if LT_RED.search(blob) or re.search(r"\(raudona\)|raudonas oro|eikite į priedang|oranžin", blob, re.I) else "yellow"
+        alerts.append(Alert(level=lv, kind="air", event="Oro pavojus (pagal LRT)", area=title, text=title,
+                            time=d.isoformat(), expires=(d + timedelta(hours=3)).isoformat(), url=link,
+                            src="LRT (žiniasklaida)", regionsHint=regions))
+    return alerts
+
+
+def lrt() -> list[Alert]:
+    return lrt_for("LTU")
 
 
 # ---------------------------------------------------------------- Estija: kriis.ee RSS
@@ -730,7 +767,7 @@ def tone(a: dict) -> str:
 # (pavadinimas, funkcija, tipas) – tipas „air“ = karinio oro pavojaus šaltinis, „weather“ = orai
 SOURCES = {
     "LTU": [("lt72", lt72, "air"), ("lrt", lrt, "air2")],
-    "LVA": [("lv-nbs", lv_nbs, "air")],
+    "LVA": [("lv-nbs", lv_nbs, "air"), ("lrt-lv", lambda: lrt_for("LVA"), "air2")],
     "EST": [("kriis", kriis, "air")],
     "POL": [("rcb", rcb, "air")],
 }
