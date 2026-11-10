@@ -60,6 +60,8 @@ def parse_dt(s: str) -> datetime | None:
     if not s:
         return None
     s = s.strip().replace("Z", "+00:00")
+    if re.search(r"\d\d:\d\d(:\d\d)? (GMT|UT|UTC)$", s):
+        s = re.sub(r" (GMT|UT|UTC)$", " +0000", s)
     for fmt in (None, "%a, %d %b %Y %H:%M:%S %z", "%d.%m.%Y"):
         try:
             d = datetime.fromisoformat(s) if fmt is None else datetime.strptime(s, fmt)
@@ -384,6 +386,40 @@ def lrt_for(cc: str) -> list[Alert]:
             alerts.append(Alert(level=lv, kind="air", event="Oro pavojus (pagal LRT)", area=title, text=title,
                                 time=d.isoformat(), expires=(d + timedelta(hours=3)).isoformat(), url=link,
                                 src="LRT (žiniasklaida)", regionsHint=sorted(rg)))
+    return alerts
+
+
+LSM_FEED = "https://www.lsm.lv/rss/?lang=lv&catid=20"
+LSM_AIR = re.compile(r"gaisa telpas apdraudējum|apdraudējum\w* latvijas gaisa telp", re.I)
+LSM_END = re.compile(r"beidzies|atcelts|beidzās", re.I)
+
+
+def lsm() -> list[Alert]:
+    """LSM (Latvijas Sabiedriskais medijs) – NBS pranešimų perpasakojimas; antraštė atnaujinama vietoje.
+    „Izsludināts … X novadā; Y novadā – iespējams“ → X raudona, Y geltona; „Beidzies …“ → nėra."""
+    root = ET.fromstring(fetch(LSM_FEED))
+    items = []
+    for it in root.iter("item"):
+        title = child_text(it, "title"); d = parse_dt(child_text(it, "pubDate"))
+        if d and NOW - d <= timedelta(hours=6) and LSM_AIR.search(title):
+            items.append((d, title, child_text(it, "link")))
+    items.sort(key=lambda x: x[0], reverse=True)
+    alerts, ended = [], set()
+    for d, title, link in items:
+        if LSM_END.search(title):
+            ended.update(match_regions("LVA", title)); continue
+        by = {"red": set(), "yellow": set()}
+        for part in re.split(r";\s*", title):
+            rg = set(match_regions("LVA", part)) - ended
+            by["yellow" if re.search(r"iespējam|dzelten", part, re.I) else "red"].update(rg)
+        by["yellow"] -= by["red"]
+        for lv, rg in by.items():
+            if rg:
+                alerts.append(Alert(level=lv, kind="air", event="Gaisa telpas apdraudējums (pagal LSM/NBS)",
+                                    area=title, text=title, time=d.isoformat(),
+                                    expires=(d + timedelta(hours=3)).isoformat(), url=link,
+                                    src="LSM (žiniasklaida, NBS)", regionsHint=sorted(rg)))
+        ended.update(by["red"] | by["yellow"])          # senesni to paties ploto – jau padengti
     return alerts
 
 
@@ -790,7 +826,7 @@ def tone(a: dict) -> str:
 # (pavadinimas, funkcija, tipas) – tipas „air“ = karinio oro pavojaus šaltinis, „weather“ = orai
 SOURCES = {
     "LTU": [("lt72", lt72, "air"), ("lrt", lrt, "air2")],
-    "LVA": [("lv-nbs", lv_nbs, "air"), ("lrt-lv", lambda: lrt_for("LVA"), "air2")],
+    "LVA": [("lv-nbs", lv_nbs, "air"), ("lsm", lsm, "air2")],
     "EST": [("kriis", kriis, "air")],
     "POL": [("rcb", rcb, "air")],
 }
