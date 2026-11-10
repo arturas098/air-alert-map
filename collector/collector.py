@@ -326,7 +326,7 @@ def _lrt_items() -> list[tuple]:
         title = child_text(it, "title")
         desc = strip_tags(child_text(it, "description"))
         d = parse_dt(child_text(it, "pubDate"))
-        if d and NOW - d <= timedelta(hours=3) and re.search(r"oro pavoj", f"{title} {desc}", re.I):
+        if d and NOW - d <= timedelta(hours=3) and re.search(r"oro pavoj|pavojaus signal|(raudon|geltona)\w* signal", f"{title} {desc}", re.I):
             out.append((d, title, desc, child_text(it, "link")))
     out.sort(key=lambda x: x[0], reverse=True)                     # naujausi pirmi
     return out
@@ -349,25 +349,45 @@ def lrt_for(cc: str) -> list[Alert]:
         national = cc != "LTU" or bool(LRT_LT_NATIONAL.search(blob))
         if ended_all:
             break
-        # sakiniai: pirma antraštės dalys; aprašymas – tik jei antraštėje vietų nėra
-        parts = [x for x in re.split(r"[;.]\s*|\s+–\s+(?=\w+ )", title) if x.strip()]
-        if cc in ("LTU", "LVA") and not any(match_regions(cc, x) for x in parts):
-            parts = [x for x in re.split(r"(?<=[.;])\s+", desc) if x.strip()]
         red_rx = re.compile(r"raudon|eikite į priedang|oranžin", re.I)
         by_lv: dict[str, set] = {"red": set(), "yellow": set()}
         any_active = False
-        for x in parts if cc in ("LTU", "LVA") else []:
-            rg = set(match_regions(cc, x))
+
+        def color(word: str, ctx: str) -> str:
+            if LRT_END.search(word): return "end"
+            if re.match(r"raudon", word, re.I): return "red"
+            if re.match(r"geltona|tikėtin", word, re.I): return "yellow"
+            return "red" if red_rx.search(ctx) else "yellow"
+
+        def regs(txt: str) -> set:
+            rg = set(match_regions(cc, txt))
+            if not rg and cc == "LTU" and re.search(r"[a-ząčęėįšųūž]+(ų|os|ės|io|o|aus)\s*$", txt.strip(), re.I):
+                rg = set(match_regions(cc, txt.strip() + " apskrityje"))   # „…, Alytaus – geltonas“
+            return rg
+
+        # antraštė: „A, B apskrityse – raudonas signalas, C – geltonas“, „X apskrityje; Y – raudona“
+        clauses = []                                       # (vietos, spalva)
+        for seg in re.split(r";\s*", title):
+            pieces = re.split(r"\s+[–—]\s+", seg)
+            if len(pieces) == 1:
+                clauses.append((seg, color("", seg))); continue
+            places = pieces[0]
+            for pc in pieces[1:]:
+                w = (pc.split() or [""])[0]
+                clauses.append((places, color(w, seg)))
+                places = pc.split(",", 1)[1] if "," in pc else ""
+            if places.strip():
+                clauses.append((places, color("", places)))
+        if cc in ("LTU", "LVA") and not any(regs(p) for p, _ in clauses):
+            clauses = [(x, "end" if LRT_END.search(x) else color("", x))
+                       for x in re.split(r"(?<=[.;])\s+", desc) if x.strip()]
+        for x, c_ in clauses if cc in ("LTU", "LVA") else []:
+            rg = regs(x)
             if not rg:
                 continue
-            if LRT_END.search(x):
+            if c_ == "end":
                 ended.update(rg); continue
-            lvl = "red" if red_rx.search(x) or (x is parts[-1] and re.search(r"–\s*raudon", title, re.I)) else "yellow"
-            by_lv[lvl].update(rg - ended); any_active = True
-        # „X apskrityje; Y rajonuose – raudona“: raudona dalis paveldi iš antraštės galo
-        m = re.search(r"([^;]+)–\s*raudon", title, re.I)
-        if m:
-            by_lv["red"].update(set(match_regions(cc, m.group(1))) - ended)
+            by_lv[c_].update(rg - ended); any_active = True
         by_lv["yellow"] -= by_lv["red"]
         if LRT_END.search(title) and not any_active:
             if not by_lv["red"] and not by_lv["yellow"] and cc != "LTU":
