@@ -344,23 +344,46 @@ def lrt_for(cc: str) -> list[Alert]:
         target = others[0] if others and not re.search(r"lietuv", title, re.I) else "LTU"
         if target != cc:
             continue
-        regions = sorted(match_regions(cc, blob)) if cc in ("LTU", "LVA") else []
         national = cc != "LTU" or bool(LRT_LT_NATIONAL.search(blob))
-        if LRT_END.search(title):
-            if regions: ended.update(regions)
-            else: ended_all = True
-            continue
         if ended_all:
             break
-        regions = [r for r in regions if r not in ended]
-        if cc == "LTU" and not regions and not national:
-            continue                                               # vieta neaiški – nedažom visos šalies
-        if not regions and ended:
+        # sakiniai: pirma antraštės dalys; aprašymas – tik jei antraštėje vietų nėra
+        parts = [x for x in re.split(r"[;.]\s*|\s+–\s+(?=\w+ )", title) if x.strip()]
+        if cc in ("LTU", "LVA") and not any(match_regions(cc, x) for x in parts):
+            parts = [x for x in re.split(r"(?<=[.;])\s+", desc) if x.strip()]
+        red_rx = re.compile(r"raudon|eikite į priedang|oranžin", re.I)
+        by_lv: dict[str, set] = {"red": set(), "yellow": set()}
+        any_active = False
+        for x in parts if cc in ("LTU", "LVA") else []:
+            rg = set(match_regions(cc, x))
+            if not rg:
+                continue
+            if LRT_END.search(x):
+                ended.update(rg); continue
+            lvl = "red" if red_rx.search(x) or (x is parts[-1] and re.search(r"–\s*raudon", title, re.I)) else "yellow"
+            by_lv[lvl].update(rg - ended); any_active = True
+        # „X apskrityje; Y rajonuose – raudona“: raudona dalis paveldi iš antraštės galo
+        m = re.search(r"([^;]+)–\s*raudon", title, re.I)
+        if m:
+            by_lv["red"].update(set(match_regions(cc, m.group(1))) - ended)
+        by_lv["yellow"] -= by_lv["red"]
+        if LRT_END.search(title) and not any_active:
+            if not by_lv["red"] and not by_lv["yellow"] and cc != "LTU":
+                ended_all = True
             continue
-        lv = "red" if LT_RED.search(blob) or re.search(r"\(raudona\)|raudonas oro|eikite į priedang|oranžin", blob, re.I) else "yellow"
-        alerts.append(Alert(level=lv, kind="air", event="Oro pavojus (pagal LRT)", area=title, text=title,
-                            time=d.isoformat(), expires=(d + timedelta(hours=3)).isoformat(), url=link,
-                            src="LRT (žiniasklaida)", regionsHint=regions))
+        if not by_lv["red"] and not by_lv["yellow"]:
+            if cc == "LTU" or ended:
+                continue                                           # vieta neaiški – nedažom visos šalies
+            lv = "red" if LT_RED.search(blob) or re.search(r"\(raudona\)|raudonas oro|eikite į priedang|oranžin", blob, re.I) else "yellow"
+            by_lv = {lv: set()}
+            if not national:
+                continue
+        for lv, rg in by_lv.items():
+            if not rg and any(by_lv.values()):
+                continue
+            alerts.append(Alert(level=lv, kind="air", event="Oro pavojus (pagal LRT)", area=title, text=title,
+                                time=d.isoformat(), expires=(d + timedelta(hours=3)).isoformat(), url=link,
+                                src="LRT (žiniasklaida)", regionsHint=sorted(rg)))
     return alerts
 
 
