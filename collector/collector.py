@@ -729,7 +729,7 @@ def tone(a: dict) -> str:
 # ---------------------------------------------------------------- sujungimas
 # (pavadinimas, funkcija, tipas) – tipas „air“ = karinio oro pavojaus šaltinis, „weather“ = orai
 SOURCES = {
-    "LTU": [("lt72", lt72, "air"), ("lrt", lrt, "air")],
+    "LTU": [("lt72", lt72, "air"), ("lrt", lrt, "air2")],
     "LVA": [("lv-nbs", lv_nbs, "air")],
     "EST": [("kriis", kriis, "air")],
     "POL": [("rcb", rcb, "air")],
@@ -746,7 +746,7 @@ def collect() -> dict:
     meta = {"checked": NOW.isoformat(timespec="seconds"), "sources": {}}
     for cc in COUNTRIES:
         alerts: list[Alert] = []
-        st = {"air": [], "weather": []}            # True/False kiekvienam šaltiniui
+        st = {"air": [], "air2": [], "weather": []}   # air2 – žiniasklaida: gali patvirtinti pavojų, bet ne „saugu“
         air_ok_names = []
         for name, fn, typ in SOURCES.get(cc, []):
             t0 = time.time()
@@ -805,6 +805,11 @@ def collect() -> dict:
                             rg[iso] = t
                 lay[name] = {"regions": rg, "only": all(a["regions"] for a in sel), "n": len(sel)}
             result[cc]["layers"] = lay
+        elif air != "ok" and any(st["air2"]):
+            result[cc] = {**base, "level": "none",
+                          "text": "Oro pavojaus būsena nenustatyta: oficialus šaltinis nepasiekiamas, "
+                                  "žiniasklaidoje (LRT) pranešimų nėra. Sekite cell broadcast / lt72.lt.",
+                          "time": meta["checked"]}
         elif air == "ok":
             txt = "Aktyvių perspėjimų nėra."
             if False in st["air"]:   # dalis oro šaltinių neveikia – pasakom, kuo remiamės
