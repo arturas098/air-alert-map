@@ -307,6 +307,9 @@ LRT_END = re.compile(r"atšauk|atsauk|baigėsi|nebėra", re.I)
 
 LRT_OTHER = {"LVA": re.compile(r"latvij", re.I), "EST": re.compile(r"estij", re.I),
              "POL": re.compile(r"lenkij", re.I), "FIN": re.compile(r"suomij", re.I)}
+# antraštė turi būti pats pranešimas apie pavojų, ne straipsnis, kuriame jis tik paminėtas
+LRT_ALERT_TITLE = re.compile(r"skelbia|paskelbt|atšauk|signal|tikėtin|raudon|geltona|oro atak|"
+                             r"oro pavojus\s*[–—-]|pavojus\s+(visoje|\w+(se|je|uose)\b)", re.I)
 LRT_LT_NATIONAL = re.compile(r"visoje lietuvoje|visoje šalyje|visoje salyje|lietuvos kariuomenė praneša", re.I)
 _LRT_CACHE: dict | None = None
 
@@ -342,6 +345,8 @@ def lrt_for(cc: str) -> list[Alert]:
     alerts, ended, ended_all = [], set(), False
     for d, title, desc, link in _LRT_CACHE["items"]:
         blob = f"{title} {desc}"
+        if not LRT_ALERT_TITLE.search(title):
+            continue
         others = [k for k, rx in LRT_OTHER.items() if rx.search(title)]
         target = others[0] if others and not re.search(r"lietuv", title, re.I) else "LTU"
         if target != cc:
@@ -393,7 +398,7 @@ def lrt_for(cc: str) -> list[Alert]:
             by_lv[c_].update(rg - ended); any_active = True
         by_lv["yellow"] -= by_lv["red"]
         if LRT_END.search(title) and not any_active:
-            if not by_lv["red"] and not by_lv["yellow"] and cc != "LTU":
+            if not by_lv["red"] and not by_lv["yellow"] and (cc != "LTU" or national):
                 ended_all = True
             continue
         if not by_lv["red"] and not by_lv["yellow"]:
