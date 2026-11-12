@@ -783,10 +783,17 @@ LT_LOC = {"vilniuje": "vilniaus", "kaune": "kauno", "klaipedoje": "klaipedos", "
           "varenoje": "varenos", "trakuose": "traku", "silaleje": "silales", "siluteje": "silutes"}
 
 
+_LT_NOM = {"alytus": "alytaus", "kaunas": "kauno", "klaipeda": "klaipedos", "marijampole": "marijampoles",
+           "panevezys": "panevezio", "siauliai": "siauliu", "taurage": "taurages", "telsiai": "telsiu",
+           "utena": "utenos", "vilnius": "vilniaus"}
+
+
 def match_lt(text: str) -> set[str]:
     """„Vilniaus, Utenos apskrityse“ → visos tų apskričių savivaldybės;
     „Vilniaus miesto, Šalčininkų rajono savivaldybėse“ → konkrečios savivaldybės."""
-    toks, out, pend = _tokens(text), set(), []
+    # MeteoAlarm rašo angliškai vardininku: „Klaipėda county“ → „klaipedos apskritis“
+    toks = [_LT_NOM.get(t, t) for t in _tokens(text)]
+    out, pend = set(), []
     i = 0
     while i < len(toks):
         t = toks[i]
@@ -802,7 +809,7 @@ def match_lt(text: str) -> set[str]:
             iso = v.get("m") or v.get("s") or v.get("r")
             if iso: out.add(iso)
             i += 1; continue
-        kind = ("c" if t.startswith("apskrit") else "m" if t.startswith("miest") or t == "m" else
+        kind = ("c" if t.startswith("apskrit") or t == "county" else "m" if t.startswith("miest") or t == "m" else
                 "r" if t.startswith("rajon") or t == "r" else "s" if t.startswith("savivald") else None)
         if kind and pend:
             for st in pend:
