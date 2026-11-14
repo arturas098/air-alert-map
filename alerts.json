@@ -1,0 +1,798 @@
+{
+ "LTU": {
+  "air": "down",
+  "weather": "ok",
+  "level": "yellow",
+  "kind": "weather",
+  "text": "Dangerous wind — Klaipėda county · Oro pavojaus būsena nenustatyta.",
+  "time": "2026-11-13T10:46:14+00:00",
+  "url": "https://meteoalarm.org?geocode=EMMA_ID:LT003",
+  "src": "MeteoAlarm",
+  "dateOnly": false,
+  "items": [
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Dangerous wind — Klaipėda county",
+    "event": "Dangerous wind",
+    "area": "Klaipėda county",
+    "severity": "Moderate",
+    "expires": "2026-11-15T09:59:59+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-13T10:46:14+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:LT003",
+    "src": "MeteoAlarm",
+    "regions": [
+     "LT-20",
+     "LT-21",
+     "LT-22",
+     "LT-28",
+     "LT-31",
+     "LT-46",
+     "LT-48"
+    ]
+   }
+  ],
+  "regions": {
+   "LT-20": "teal",
+   "LT-21": "teal",
+   "LT-22": "teal",
+   "LT-28": "teal",
+   "LT-31": "teal",
+   "LT-46": "teal",
+   "LT-48": "teal"
+  },
+  "regionsOnly": true,
+  "layers": {
+   "weather": {
+    "regions": {
+     "LT-20": "yellow",
+     "LT-21": "yellow",
+     "LT-22": "yellow",
+     "LT-28": "yellow",
+     "LT-31": "yellow",
+     "LT-46": "yellow",
+     "LT-48": "yellow"
+    },
+    "only": true,
+    "n": 1
+   }
+  }
+ },
+ "LVA": {
+  "air": "ok",
+  "weather": "ok",
+  "level": "white",
+  "text": "Aktyvių perspėjimų nėra.",
+  "time": "2026-11-14T11:16:29+00:00"
+ },
+ "EST": {
+  "air": "ok",
+  "weather": "ok",
+  "level": "yellow",
+  "kind": "weather",
+  "text": "Wind Level 1 — Saare county  (+25 kiti įspėjimai)",
+  "time": "2026-11-13T22:00:00+00:00",
+  "url": "https://meteoalarm.org?polygon=69f2fdaf-e35b-437c-a6cd-ebfe9097ccdd,0,1,3",
+  "src": "MeteoAlarm",
+  "dateOnly": false,
+  "items": [
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Wind Level 1 — Saare county",
+    "event": "Wind Level 1",
+    "area": "Saare county",
+    "severity": "Moderate",
+    "expires": "2026-11-14T16:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-13T22:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=69f2fdaf-e35b-437c-a6cd-ebfe9097ccdd,0,1,3",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-74"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Wind Level 1 — Saare county",
+    "event": "Wind Level 1",
+    "area": "Saare county",
+    "severity": "Moderate",
+    "expires": "2026-11-14T16:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-13T22:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=69f2fdaf-e35b-437c-a6cd-ebfe9097ccdd,0,1,2",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-74"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Wind Level 1 — Saare county",
+    "event": "Wind Level 1",
+    "area": "Saare county",
+    "severity": "Moderate",
+    "expires": "2026-11-14T16:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-13T22:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=69f2fdaf-e35b-437c-a6cd-ebfe9097ccdd,0,1,1",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-74"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Wind Level 1 — Saare county",
+    "event": "Wind Level 1",
+    "area": "Saare county",
+    "severity": "Moderate",
+    "expires": "2026-11-14T16:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-13T22:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=69f2fdaf-e35b-437c-a6cd-ebfe9097ccdd,0,1,0",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-74"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Wind Level 1 — Hiiu county",
+    "event": "Wind Level 1",
+    "area": "Hiiu county",
+    "severity": "Moderate",
+    "expires": "2026-11-14T16:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-13T22:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=69f2fdaf-e35b-437c-a6cd-ebfe9097ccdd,0,0,1",
+    "src": "MeteoAlarm",
+    "regions": []
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Wind Level 1 — Hiiu county",
+    "event": "Wind Level 1",
+    "area": "Hiiu county",
+    "severity": "Moderate",
+    "expires": "2026-11-14T16:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-13T22:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=69f2fdaf-e35b-437c-a6cd-ebfe9097ccdd,0,0,0",
+    "src": "MeteoAlarm",
+    "regions": []
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Wind Level 1 — Pärnu county",
+    "event": "Wind Level 1",
+    "area": "Pärnu county",
+    "severity": "Moderate",
+    "expires": "2026-11-14T17:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T05:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=d3f39088-66a8-449e-8d5a-0d0c605a5331,0,4,1",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-67"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Wind Level 1 — Pärnu county",
+    "event": "Wind Level 1",
+    "area": "Pärnu county",
+    "severity": "Moderate",
+    "expires": "2026-11-14T17:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T05:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=d3f39088-66a8-449e-8d5a-0d0c605a5331,0,4,0",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-67"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Wind Level 1 — Lääne county",
+    "event": "Wind Level 1",
+    "area": "Lääne county",
+    "severity": "Moderate",
+    "expires": "2026-11-14T17:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T05:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=d3f39088-66a8-449e-8d5a-0d0c605a5331,0,3,2",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-57"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Wind Level 1 — Lääne county",
+    "event": "Wind Level 1",
+    "area": "Lääne county",
+    "severity": "Moderate",
+    "expires": "2026-11-14T17:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T05:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=d3f39088-66a8-449e-8d5a-0d0c605a5331,0,3,1",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-57"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Wind Level 1 — Lääne county",
+    "event": "Wind Level 1",
+    "area": "Lääne county",
+    "severity": "Moderate",
+    "expires": "2026-11-14T17:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T05:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=d3f39088-66a8-449e-8d5a-0d0c605a5331,0,3,0",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-57"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Wind Level 1 — Harju county",
+    "event": "Wind Level 1",
+    "area": "Harju county",
+    "severity": "Moderate",
+    "expires": "2026-11-14T17:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T05:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=d3f39088-66a8-449e-8d5a-0d0c605a5331,0,2,4",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-37"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Wind Level 1 — Harju county",
+    "event": "Wind Level 1",
+    "area": "Harju county",
+    "severity": "Moderate",
+    "expires": "2026-11-14T17:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T05:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=d3f39088-66a8-449e-8d5a-0d0c605a5331,0,2,3",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-37"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Wind Level 1 — Harju county",
+    "event": "Wind Level 1",
+    "area": "Harju county",
+    "severity": "Moderate",
+    "expires": "2026-11-14T17:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T05:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=d3f39088-66a8-449e-8d5a-0d0c605a5331,0,2,2",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-37"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Wind Level 1 — Harju county",
+    "event": "Wind Level 1",
+    "area": "Harju county",
+    "severity": "Moderate",
+    "expires": "2026-11-14T17:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T05:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=d3f39088-66a8-449e-8d5a-0d0c605a5331,0,2,1",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-37"
+    ]
+   }
+  ],
+  "regions": {
+   "EE-74": "teal",
+   "EE-67": "teal",
+   "EE-57": "teal",
+   "EE-37": "teal",
+   "EE-59": "teal",
+   "EE-44": "teal",
+   "EE-70": "teal",
+   "EE-65": "teal",
+   "EE-49": "teal",
+   "EE-84": "teal",
+   "EE-82": "teal",
+   "EE-78": "teal"
+  },
+  "regionsOnly": false,
+  "layers": {
+   "weather": {
+    "regions": {
+     "EE-74": "yellow",
+     "EE-67": "yellow",
+     "EE-57": "yellow",
+     "EE-37": "yellow",
+     "EE-59": "yellow",
+     "EE-44": "yellow",
+     "EE-70": "yellow",
+     "EE-65": "yellow",
+     "EE-49": "yellow",
+     "EE-84": "yellow",
+     "EE-82": "yellow",
+     "EE-78": "yellow"
+    },
+    "only": false,
+    "n": 26
+   }
+  }
+ },
+ "FIN": {
+  "air": "none",
+  "weather": "ok",
+  "level": "none",
+  "text": "Oro pavojaus būsena nenustatyta. Viešo oro pavojaus šaltinio šiai šaliai neturime. Orų įspėjimų nėra.",
+  "time": "2026-11-14T11:16:29+00:00"
+ },
+ "POL": {
+  "air": "down",
+  "weather": "ok",
+  "level": "yellow",
+  "kind": "weather",
+  "text": "Yellow Fog warning — Wielkopolskie Province Kalisz County  (+76 kiti įspėjimai) · Oro pavojaus būsena nenustatyta.",
+  "time": "2026-11-14T20:00:00+00:00",
+  "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3061",
+  "src": "MeteoAlarm",
+  "dateOnly": false,
+  "items": [
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Kalisz County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Kalisz County",
+    "severity": "Moderate",
+    "expires": "2026-11-15T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3061",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Konin County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Konin County",
+    "severity": "Moderate",
+    "expires": "2026-11-15T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3062",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Złotowski County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Złotowski County",
+    "severity": "Moderate",
+    "expires": "2026-11-15T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3031",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Poznań County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Poznań County",
+    "severity": "Moderate",
+    "expires": "2026-11-15T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3064",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Wrzesiński County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Wrzesiński County",
+    "severity": "Moderate",
+    "expires": "2026-11-15T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3030",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Wągrowiecki County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Wągrowiecki County",
+    "severity": "Moderate",
+    "expires": "2026-11-15T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3028",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Rawicki County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Rawicki County",
+    "severity": "Moderate",
+    "expires": "2026-11-15T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3022",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Leszno County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Leszno County",
+    "severity": "Moderate",
+    "expires": "2026-11-15T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3063",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Turecki County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Turecki County",
+    "severity": "Moderate",
+    "expires": "2026-11-15T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3027",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Wolsztyński County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Wolsztyński County",
+    "severity": "Moderate",
+    "expires": "2026-11-15T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3029",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Poznański County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Poznański County",
+    "severity": "Moderate",
+    "expires": "2026-11-15T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3021",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Słupecki County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Słupecki County",
+    "severity": "Moderate",
+    "expires": "2026-11-15T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3023",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Śremski County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Śremski County",
+    "severity": "Moderate",
+    "expires": "2026-11-15T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3026",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Pleszewski County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Pleszewski County",
+    "severity": "Moderate",
+    "expires": "2026-11-15T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3020",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Fog warning — Wielkopolskie Province Średzki County",
+    "event": "Yellow Fog warning",
+    "area": "Wielkopolskie Province Średzki County",
+    "severity": "Moderate",
+    "expires": "2026-11-15T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-14T20:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL3025",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-WP"
+    ]
+   }
+  ],
+  "regions": {
+   "PL-WP": "teal",
+   "PL-MZ": "teal",
+   "PL-LD": "teal",
+   "PL-LB": "teal"
+  },
+  "regionsOnly": false,
+  "layers": {
+   "weather": {
+    "regions": {
+     "PL-WP": "yellow",
+     "PL-MZ": "yellow",
+     "PL-LD": "yellow",
+     "PL-LB": "yellow"
+    },
+    "only": false,
+    "n": 77
+   }
+  }
+ },
+ "UKR": {
+  "level": "red",
+  "kind": "air",
+  "regions": {
+   "UA-74": "yellow",
+   "UA-14": "yellow",
+   "UA-32": "yellow",
+   "UA-71": "yellow",
+   "UA-43": "red",
+   "UA-59": "yellow",
+   "UA-09": "red",
+   "UA-12": "yellow",
+   "UA-23": "red",
+   "UA-35": "yellow",
+   "UA-63": "red",
+   "UA-53": "yellow"
+  },
+  "regionsOnly": true,
+  "items": [
+   {
+    "level": "red",
+    "kind": "air",
+    "event": "Oro pavojus visoje srityje",
+    "area": "Luhans'k, Zaporizhzhya, Crimea, Kharkiv",
+    "regions": [
+     "UA-09",
+     "UA-23",
+     "UA-43",
+     "UA-63"
+    ],
+    "time": "2026-11-14T11:16:29+00:00",
+    "src": "ukrainealarm.com",
+    "url": "https://map.ukrainealarm.com/"
+   },
+   {
+    "level": "yellow",
+    "kind": "air",
+    "event": "Pavojus dalyje srities (rajonuose / bendruomenėse)",
+    "area": "Dnipropetrovs'k: Покровська територіальна громада, Червоногригорівська територіальна громада, м. Марганець та Марганецька територіальна громада, Синельниківський район; Donets'k: Маріупольський район, Горлівський район, Краматорський район, Донецький район; Kiev: Вишгородський район, Бориспільський район, Броварський район; Kirovohrad: Олександрійський район; Poltava: Полтавський район, Кременчуцький район, Лубенський район, Миргородський район; Sumy: Шосткинський район, Сумський район, Конотопський район, Охтирський район; Cherkasy: Черкаський район, Золотоніський район; Chernihiv: Корюківський район, Новгород-Сіверський район, Чернігівський район, Ніжинський район",
+    "regions": [
+     "UA-12",
+     "UA-14",
+     "UA-32",
+     "UA-35",
+     "UA-53",
+     "UA-59",
+     "UA-71",
+     "UA-74"
+    ],
+    "time": "2026-11-14T11:16:29+00:00",
+    "src": "ukrainealarm.com",
+    "url": "https://map.ukrainealarm.com/"
+   }
+  ],
+  "text": "Oro pavojus: visoje srityje – 4, dalyje srities – 8 (iš 26).",
+  "time": "2026-11-14T11:16:29+00:00",
+  "src": "ukrainealarm.com",
+  "url": "https://map.ukrainealarm.com/",
+  "air": "ok"
+ },
+ "_meta": {
+  "checked": "2026-11-14T11:16:29+00:00",
+  "sources": {
+   "lt72": {
+    "ok": false,
+    "err": "HTTPError: HTTP Error 403: Forbidden",
+    "type": "air"
+   },
+   "lrt": {
+    "ok": true,
+    "n": 0,
+    "ms": 408,
+    "type": "air2"
+   },
+   "meteoalarm-lithuania": {
+    "ok": true,
+    "n": 1,
+    "ms": 427,
+    "type": "weather"
+   },
+   "lv-nbs": {
+    "ok": true,
+    "n": 0,
+    "ms": 1829,
+    "type": "air"
+   },
+   "lsm": {
+    "ok": true,
+    "n": 0,
+    "ms": 398,
+    "type": "air2"
+   },
+   "meteoalarm-latvia": {
+    "ok": true,
+    "n": 0,
+    "ms": 1014,
+    "type": "weather"
+   },
+   "kriis": {
+    "ok": true,
+    "n": 0,
+    "ms": 406,
+    "type": "air"
+   },
+   "meteoalarm-estonia": {
+    "ok": true,
+    "n": 26,
+    "ms": 755,
+    "type": "weather"
+   },
+   "meteoalarm-finland": {
+    "ok": true,
+    "n": 0,
+    "ms": 929,
+    "type": "weather"
+   },
+   "rcb": {
+    "ok": false,
+    "err": "URLError: <urlopen error [Errno 101] Network is unreachable>",
+    "type": "air"
+   },
+   "meteoalarm-poland": {
+    "ok": true,
+    "n": 77,
+    "ms": 858,
+    "type": "weather"
+   },
+   "ukrainealarm.com": {
+    "ok": true,
+    "n": 12,
+    "of": 26,
+    "ms": 441
+   }
+  }
+ }
+}
