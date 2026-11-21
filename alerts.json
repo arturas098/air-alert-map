@@ -1,0 +1,1099 @@
+{
+ "LTU": {
+  "air": "down",
+  "weather": "ok",
+  "level": "yellow",
+  "kind": "weather",
+  "text": "Dangerous wind — Klaipėda county  (+2 kiti įspėjimai) · Oro pavojaus būsena nenustatyta.",
+  "time": "2026-11-21T09:58:48+00:00",
+  "url": "https://meteoalarm.org?geocode=EMMA_ID:LT003",
+  "src": "MeteoAlarm",
+  "dateOnly": false,
+  "items": [
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Dangerous wind — Klaipėda county",
+    "event": "Dangerous wind",
+    "area": "Klaipėda county",
+    "severity": "Moderate",
+    "expires": "2026-11-22T21:59:59+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T09:58:48+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:LT003",
+    "src": "MeteoAlarm",
+    "regions": [
+     "LT-20",
+     "LT-21",
+     "LT-22",
+     "LT-28",
+     "LT-31",
+     "LT-46",
+     "LT-48"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Dangerous wind — Tauragė county",
+    "event": "Dangerous wind",
+    "area": "Tauragė county",
+    "severity": "Moderate",
+    "expires": "2026-11-21T15:59:59+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T09:58:48+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:LT007",
+    "src": "MeteoAlarm",
+    "regions": [
+     "LT-12",
+     "LT-29",
+     "LT-45",
+     "LT-50"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Dangerous wind — Marijampolė county",
+    "event": "Dangerous wind",
+    "area": "Marijampolė county",
+    "severity": "Moderate",
+    "expires": "2026-11-21T15:59:59+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T09:58:48+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:LT004",
+    "src": "MeteoAlarm",
+    "regions": [
+     "LT-14",
+     "LT-17",
+     "LT-25",
+     "LT-41",
+     "LT-56"
+    ]
+   }
+  ],
+  "regions": {
+   "LT-20": "teal",
+   "LT-21": "teal",
+   "LT-22": "teal",
+   "LT-28": "teal",
+   "LT-31": "teal",
+   "LT-46": "teal",
+   "LT-48": "teal",
+   "LT-12": "teal",
+   "LT-29": "teal",
+   "LT-45": "teal",
+   "LT-50": "teal",
+   "LT-14": "teal",
+   "LT-17": "teal",
+   "LT-25": "teal",
+   "LT-41": "teal",
+   "LT-56": "teal"
+  },
+  "regionsOnly": true,
+  "layers": {
+   "weather": {
+    "regions": {
+     "LT-20": "yellow",
+     "LT-21": "yellow",
+     "LT-22": "yellow",
+     "LT-28": "yellow",
+     "LT-31": "yellow",
+     "LT-46": "yellow",
+     "LT-48": "yellow",
+     "LT-12": "yellow",
+     "LT-29": "yellow",
+     "LT-45": "yellow",
+     "LT-50": "yellow",
+     "LT-14": "yellow",
+     "LT-17": "yellow",
+     "LT-25": "yellow",
+     "LT-41": "yellow",
+     "LT-56": "yellow"
+    },
+    "only": true,
+    "n": 3
+   }
+  }
+ },
+ "LVA": {
+  "air": "ok",
+  "weather": "ok",
+  "level": "white",
+  "text": "Aktyvių perspėjimų nėra.",
+  "time": "2026-11-21T12:08:11+00:00"
+ },
+ "EST": {
+  "air": "ok",
+  "weather": "ok",
+  "level": "yellow",
+  "kind": "weather",
+  "text": "Glazed ice Level 1 — Rapla county  (+25 kiti įspėjimai)",
+  "time": "2026-11-21T00:00:00+00:00",
+  "url": "https://meteoalarm.org?polygon=353f4764-a350-4981-9ec7-b884e5b99540,0,14,0",
+  "src": "MeteoAlarm",
+  "dateOnly": false,
+  "items": [
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Glazed ice Level 1 — Rapla county",
+    "event": "Glazed ice Level 1",
+    "area": "Rapla county",
+    "severity": "Moderate",
+    "expires": "2026-11-24T21:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T00:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=353f4764-a350-4981-9ec7-b884e5b99540,0,14,0",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-70"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Glazed ice Level 1 — Jõgeva county",
+    "event": "Glazed ice Level 1",
+    "area": "Jõgeva county",
+    "severity": "Moderate",
+    "expires": "2026-11-24T21:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T00:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=353f4764-a350-4981-9ec7-b884e5b99540,0,13,0",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-49"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Glazed ice Level 1 — Lääne county",
+    "event": "Glazed ice Level 1",
+    "area": "Lääne county",
+    "severity": "Moderate",
+    "expires": "2026-11-24T21:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T00:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=353f4764-a350-4981-9ec7-b884e5b99540,0,12,2",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-57"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Glazed ice Level 1 — Lääne county",
+    "event": "Glazed ice Level 1",
+    "area": "Lääne county",
+    "severity": "Moderate",
+    "expires": "2026-11-24T21:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T00:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=353f4764-a350-4981-9ec7-b884e5b99540,0,12,1",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-57"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Glazed ice Level 1 — Lääne county",
+    "event": "Glazed ice Level 1",
+    "area": "Lääne county",
+    "severity": "Moderate",
+    "expires": "2026-11-24T21:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T00:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=353f4764-a350-4981-9ec7-b884e5b99540,0,12,0",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-57"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Glazed ice Level 1 — Saare county",
+    "event": "Glazed ice Level 1",
+    "area": "Saare county",
+    "severity": "Moderate",
+    "expires": "2026-11-24T21:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T00:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=353f4764-a350-4981-9ec7-b884e5b99540,0,11,3",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-74"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Glazed ice Level 1 — Saare county",
+    "event": "Glazed ice Level 1",
+    "area": "Saare county",
+    "severity": "Moderate",
+    "expires": "2026-11-24T21:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T00:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=353f4764-a350-4981-9ec7-b884e5b99540,0,11,2",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-74"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Glazed ice Level 1 — Saare county",
+    "event": "Glazed ice Level 1",
+    "area": "Saare county",
+    "severity": "Moderate",
+    "expires": "2026-11-24T21:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T00:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=353f4764-a350-4981-9ec7-b884e5b99540,0,11,1",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-74"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Glazed ice Level 1 — Saare county",
+    "event": "Glazed ice Level 1",
+    "area": "Saare county",
+    "severity": "Moderate",
+    "expires": "2026-11-24T21:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T00:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=353f4764-a350-4981-9ec7-b884e5b99540,0,11,0",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-74"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Glazed ice Level 1 — Ida-Viru county",
+    "event": "Glazed ice Level 1",
+    "area": "Ida-Viru county",
+    "severity": "Moderate",
+    "expires": "2026-11-24T21:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T00:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=353f4764-a350-4981-9ec7-b884e5b99540,0,10,0",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-44"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Glazed ice Level 1 — Põlva county",
+    "event": "Glazed ice Level 1",
+    "area": "Põlva county",
+    "severity": "Moderate",
+    "expires": "2026-11-24T21:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T00:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=353f4764-a350-4981-9ec7-b884e5b99540,0,8,0",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-65"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Glazed ice Level 1 — Pärnu county",
+    "event": "Glazed ice Level 1",
+    "area": "Pärnu county",
+    "severity": "Moderate",
+    "expires": "2026-11-24T21:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T00:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=353f4764-a350-4981-9ec7-b884e5b99540,0,7,1",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-67"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Glazed ice Level 1 — Pärnu county",
+    "event": "Glazed ice Level 1",
+    "area": "Pärnu county",
+    "severity": "Moderate",
+    "expires": "2026-11-24T21:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T00:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=353f4764-a350-4981-9ec7-b884e5b99540,0,7,0",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-67"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Glazed ice Level 1 — Viljandi county",
+    "event": "Glazed ice Level 1",
+    "area": "Viljandi county",
+    "severity": "Moderate",
+    "expires": "2026-11-24T21:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T00:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=353f4764-a350-4981-9ec7-b884e5b99540,0,6,0",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-84"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Glazed ice Level 1 — Harju county",
+    "event": "Glazed ice Level 1",
+    "area": "Harju county",
+    "severity": "Moderate",
+    "expires": "2026-11-24T21:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T00:00:00+00:00",
+    "url": "https://meteoalarm.org?polygon=353f4764-a350-4981-9ec7-b884e5b99540,0,5,4",
+    "src": "MeteoAlarm",
+    "regions": [
+     "EE-37"
+    ]
+   }
+  ],
+  "regions": {
+   "EE-70": "teal",
+   "EE-49": "teal",
+   "EE-57": "teal",
+   "EE-74": "teal",
+   "EE-44": "teal",
+   "EE-65": "teal",
+   "EE-67": "teal",
+   "EE-84": "teal",
+   "EE-37": "teal",
+   "EE-59": "teal",
+   "EE-82": "teal",
+   "EE-78": "teal"
+  },
+  "regionsOnly": false,
+  "layers": {
+   "weather": {
+    "regions": {
+     "EE-70": "yellow",
+     "EE-49": "yellow",
+     "EE-57": "yellow",
+     "EE-74": "yellow",
+     "EE-44": "yellow",
+     "EE-65": "yellow",
+     "EE-67": "yellow",
+     "EE-84": "yellow",
+     "EE-37": "yellow",
+     "EE-59": "yellow",
+     "EE-82": "yellow",
+     "EE-78": "yellow"
+    },
+    "only": false,
+    "n": 26
+   }
+  }
+ },
+ "FIN": {
+  "air": "none",
+  "weather": "ok",
+  "level": "yellow",
+  "kind": "weather",
+  "text": "Traffic weather warning — Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa  (+21 kiti įspėjimai) · Oro pavojaus būsena nenustatyta.",
+  "time": "2026-11-21T09:52:15+00:00",
+  "url": "https://meteoalarm.org?geocode=EMMA_ID:FI020",
+  "src": "MeteoAlarm",
+  "dateOnly": false,
+  "items": [
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa",
+    "event": "Traffic weather warning",
+    "area": "Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa",
+    "severity": "Moderate",
+    "expires": "2026-11-21T22:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T09:52:15+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI020",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-05",
+     "FI-07",
+     "FI-08",
+     "FI-12",
+     "FI-13",
+     "FI-14",
+     "FI-15"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa",
+    "event": "Traffic weather warning",
+    "area": "Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa",
+    "severity": "Moderate",
+    "expires": "2026-11-21T22:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T09:52:15+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI026",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-05",
+     "FI-07",
+     "FI-08",
+     "FI-12",
+     "FI-13",
+     "FI-14",
+     "FI-15"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa",
+    "event": "Traffic weather warning",
+    "area": "Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa",
+    "severity": "Moderate",
+    "expires": "2026-11-21T22:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T09:52:15+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI028",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-05",
+     "FI-07",
+     "FI-08",
+     "FI-12",
+     "FI-13",
+     "FI-14",
+     "FI-15"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa",
+    "event": "Traffic weather warning",
+    "area": "Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa",
+    "severity": "Moderate",
+    "expires": "2026-11-21T22:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T09:52:15+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI029",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-05",
+     "FI-07",
+     "FI-08",
+     "FI-12",
+     "FI-13",
+     "FI-14",
+     "FI-15"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa",
+    "event": "Traffic weather warning",
+    "area": "Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa",
+    "severity": "Moderate",
+    "expires": "2026-11-21T22:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T09:52:15+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI030",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-05",
+     "FI-07",
+     "FI-08",
+     "FI-12",
+     "FI-13",
+     "FI-14",
+     "FI-15"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa",
+    "event": "Traffic weather warning",
+    "area": "Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa",
+    "severity": "Moderate",
+    "expires": "2026-11-21T22:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T09:52:15+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI001",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-05",
+     "FI-07",
+     "FI-08",
+     "FI-12",
+     "FI-13",
+     "FI-14",
+     "FI-15"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa",
+    "event": "Traffic weather warning",
+    "area": "Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa",
+    "severity": "Moderate",
+    "expires": "2026-11-21T22:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T09:52:15+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI027",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-05",
+     "FI-07",
+     "FI-08",
+     "FI-12",
+     "FI-13",
+     "FI-14",
+     "FI-15"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa",
+    "event": "Traffic weather warning",
+    "area": "Keski-Suomi, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Pohjanmaa, Keski-Pohjanmaa, Kainuu, Pohjois-Pohjanmaan Eteläosa",
+    "severity": "Moderate",
+    "expires": "2026-11-21T22:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T09:52:15+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI039",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-03",
+     "FI-05",
+     "FI-07",
+     "FI-08",
+     "FI-12",
+     "FI-13",
+     "FI-14",
+     "FI-15"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Päijät-Häme, Kymenlaakso, Etelä-Karjala, Pirkanmaa, Keski-Suomi, Etelä-Savo, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Kainuu",
+    "event": "Traffic weather warning",
+    "area": "Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Päijät-Häme, Kymenlaakso, Etelä-Karjala, Pirkanmaa, Keski-Suomi, Etelä-Savo, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Kainuu",
+    "severity": "Moderate",
+    "expires": "2026-11-22T22:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T22:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI026",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-02",
+     "FI-03",
+     "FI-04",
+     "FI-05",
+     "FI-06",
+     "FI-08",
+     "FI-09",
+     "FI-11",
+     "FI-13",
+     "FI-15",
+     "FI-16",
+     "FI-17",
+     "FI-18",
+     "FI-19"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Päijät-Häme, Kymenlaakso, Etelä-Karjala, Pirkanmaa, Keski-Suomi, Etelä-Savo, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Kainuu",
+    "event": "Traffic weather warning",
+    "area": "Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Päijät-Häme, Kymenlaakso, Etelä-Karjala, Pirkanmaa, Keski-Suomi, Etelä-Savo, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Kainuu",
+    "severity": "Moderate",
+    "expires": "2026-11-22T22:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T22:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI030",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-02",
+     "FI-03",
+     "FI-04",
+     "FI-05",
+     "FI-06",
+     "FI-08",
+     "FI-09",
+     "FI-11",
+     "FI-13",
+     "FI-15",
+     "FI-16",
+     "FI-17",
+     "FI-18",
+     "FI-19"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Päijät-Häme, Kymenlaakso, Etelä-Karjala, Pirkanmaa, Keski-Suomi, Etelä-Savo, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Kainuu",
+    "event": "Traffic weather warning",
+    "area": "Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Päijät-Häme, Kymenlaakso, Etelä-Karjala, Pirkanmaa, Keski-Suomi, Etelä-Savo, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Kainuu",
+    "severity": "Moderate",
+    "expires": "2026-11-22T22:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T22:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI001",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-02",
+     "FI-03",
+     "FI-04",
+     "FI-05",
+     "FI-06",
+     "FI-08",
+     "FI-09",
+     "FI-11",
+     "FI-13",
+     "FI-15",
+     "FI-16",
+     "FI-17",
+     "FI-18",
+     "FI-19"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Päijät-Häme, Kymenlaakso, Etelä-Karjala, Pirkanmaa, Keski-Suomi, Etelä-Savo, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Kainuu",
+    "event": "Traffic weather warning",
+    "area": "Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Päijät-Häme, Kymenlaakso, Etelä-Karjala, Pirkanmaa, Keski-Suomi, Etelä-Savo, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Kainuu",
+    "severity": "Moderate",
+    "expires": "2026-11-22T22:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T22:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI027",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-02",
+     "FI-03",
+     "FI-04",
+     "FI-05",
+     "FI-06",
+     "FI-08",
+     "FI-09",
+     "FI-11",
+     "FI-13",
+     "FI-15",
+     "FI-16",
+     "FI-17",
+     "FI-18",
+     "FI-19"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Päijät-Häme, Kymenlaakso, Etelä-Karjala, Pirkanmaa, Keski-Suomi, Etelä-Savo, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Kainuu",
+    "event": "Traffic weather warning",
+    "area": "Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Päijät-Häme, Kymenlaakso, Etelä-Karjala, Pirkanmaa, Keski-Suomi, Etelä-Savo, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Kainuu",
+    "severity": "Moderate",
+    "expires": "2026-11-22T22:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T22:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI041",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-02",
+     "FI-03",
+     "FI-04",
+     "FI-05",
+     "FI-06",
+     "FI-08",
+     "FI-09",
+     "FI-11",
+     "FI-13",
+     "FI-15",
+     "FI-16",
+     "FI-17",
+     "FI-18",
+     "FI-19"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Päijät-Häme, Kymenlaakso, Etelä-Karjala, Pirkanmaa, Keski-Suomi, Etelä-Savo, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Kainuu",
+    "event": "Traffic weather warning",
+    "area": "Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Päijät-Häme, Kymenlaakso, Etelä-Karjala, Pirkanmaa, Keski-Suomi, Etelä-Savo, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Kainuu",
+    "severity": "Moderate",
+    "expires": "2026-11-22T22:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T22:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI039",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-02",
+     "FI-03",
+     "FI-04",
+     "FI-05",
+     "FI-06",
+     "FI-08",
+     "FI-09",
+     "FI-11",
+     "FI-13",
+     "FI-15",
+     "FI-16",
+     "FI-17",
+     "FI-18",
+     "FI-19"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Traffic weather warning — Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Päijät-Häme, Kymenlaakso, Etelä-Karjala, Pirkanmaa, Keski-Suomi, Etelä-Savo, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Kainuu",
+    "event": "Traffic weather warning",
+    "area": "Varsinais-Suomi, Satakunta, Uusimaa, Kanta-Häme, Päijät-Häme, Kymenlaakso, Etelä-Karjala, Pirkanmaa, Keski-Suomi, Etelä-Savo, Pohjois-Savo, Pohjois-Karjala, Etelä-Pohjanmaa, Kainuu",
+    "severity": "Moderate",
+    "expires": "2026-11-22T22:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T22:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:FI038",
+    "src": "MeteoAlarm",
+    "regions": [
+     "FI-02",
+     "FI-03",
+     "FI-04",
+     "FI-05",
+     "FI-06",
+     "FI-08",
+     "FI-09",
+     "FI-11",
+     "FI-13",
+     "FI-15",
+     "FI-16",
+     "FI-17",
+     "FI-18",
+     "FI-19"
+    ]
+   }
+  ],
+  "regions": {
+   "FI-03": "teal",
+   "FI-05": "teal",
+   "FI-07": "teal",
+   "FI-08": "teal",
+   "FI-12": "teal",
+   "FI-13": "teal",
+   "FI-14": "teal",
+   "FI-15": "teal",
+   "FI-02": "teal",
+   "FI-04": "teal",
+   "FI-06": "teal",
+   "FI-09": "teal",
+   "FI-11": "teal",
+   "FI-16": "teal",
+   "FI-17": "teal",
+   "FI-18": "teal",
+   "FI-19": "teal"
+  },
+  "regionsOnly": true,
+  "layers": {
+   "weather": {
+    "regions": {
+     "FI-03": "yellow",
+     "FI-05": "yellow",
+     "FI-07": "yellow",
+     "FI-08": "yellow",
+     "FI-12": "yellow",
+     "FI-13": "yellow",
+     "FI-14": "yellow",
+     "FI-15": "yellow",
+     "FI-02": "yellow",
+     "FI-04": "yellow",
+     "FI-06": "yellow",
+     "FI-09": "yellow",
+     "FI-11": "yellow",
+     "FI-16": "yellow",
+     "FI-17": "yellow",
+     "FI-18": "yellow",
+     "FI-19": "yellow"
+    },
+    "only": true,
+    "n": 22
+   }
+  }
+ },
+ "POL": {
+  "air": "ok",
+  "weather": "ok",
+  "level": "red",
+  "kind": "weather",
+  "text": "Orange Wind warning — Central coastal zone  (+2 kiti įspėjimai)",
+  "time": "2026-11-21T07:00:00+00:00",
+  "url": "https://meteoalarm.org?geocode=EMMA_ID:PL804",
+  "src": "MeteoAlarm",
+  "dateOnly": false,
+  "items": [
+   {
+    "level": "red",
+    "kind": "weather",
+    "text": "Orange Wind warning — Central coastal zone",
+    "event": "Orange Wind warning",
+    "area": "Central coastal zone",
+    "severity": "Severe",
+    "expires": "2026-11-21T17:00:00+00:00",
+    "aw": "orange",
+    "wtype": "",
+    "time": "2026-11-21T07:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL804",
+    "src": "MeteoAlarm",
+    "regions": []
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Wind warning — Eastern coastal zone",
+    "event": "Yellow Wind warning",
+    "area": "Eastern coastal zone",
+    "severity": "Moderate",
+    "expires": "2026-11-21T17:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T07:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL805",
+    "src": "MeteoAlarm",
+    "regions": []
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow Wind warning — Western coastal zone",
+    "event": "Yellow Wind warning",
+    "area": "Western coastal zone",
+    "severity": "Moderate",
+    "expires": "2026-11-21T17:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-21T05:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL803",
+    "src": "MeteoAlarm",
+    "regions": []
+   }
+  ],
+  "layers": {
+   "weather": {
+    "regions": {},
+    "only": false,
+    "n": 3
+   }
+  }
+ },
+ "UKR": {
+  "level": "red",
+  "kind": "air",
+  "regions": {
+   "UA-23": "red",
+   "UA-14": "yellow",
+   "UA-74": "yellow",
+   "UA-53": "yellow",
+   "UA-65": "yellow",
+   "UA-59": "yellow",
+   "UA-48": "yellow",
+   "UA-71": "yellow",
+   "UA-18": "yellow",
+   "UA-09": "red",
+   "UA-12": "yellow",
+   "UA-63": "yellow",
+   "UA-35": "yellow",
+   "UA-32": "yellow",
+   "UA-43": "red"
+  },
+  "regionsOnly": true,
+  "items": [
+   {
+    "level": "red",
+    "kind": "air",
+    "event": "Oro pavojus visoje srityje",
+    "area": "Luhans'k, Zaporizhzhya, Crimea",
+    "regions": [
+     "UA-09",
+     "UA-23",
+     "UA-43"
+    ],
+    "time": "2026-11-21T12:08:11+00:00",
+    "src": "ukrainealarm.com",
+    "url": "https://map.ukrainealarm.com/"
+   },
+   {
+    "level": "yellow",
+    "kind": "air",
+    "event": "Pavojus dalyje srities (rajonuose / bendruomenėse)",
+    "area": "Dnipropetrovs'k: Покровська територіальна громада, Червоногригорівська територіальна громада, м. Марганець та Марганецька територіальна громада, Синельниківський район; Donets'k: Донецький район, Бахмутський район, Краматорський район, Волноваський район; Zhytomyr: Коростенський район; Kiev: Бориспільський район, Броварський район, Вишгородський район; Kirovohrad: Олександрійський район; Mykolayiv: Миколаївський район, Баштанський район; Poltava: Полтавський район, Кременчуцький район, Миргородський район, Лубенський район; Sumy: Сумський район, Конотопський район, Шосткинський район, Охтирський район; Kharkiv: Вовчанська територіальна громада, Липецька територіальна громада, Куп’янський район, Чугуївський район; Kherson: Бериславський район; Cherkasy: Золотоніський район; Chernihiv: Ніжинський район, Прилуцький район, Новгород-Сіверський район, Корюківський район",
+    "regions": [
+     "UA-12",
+     "UA-14",
+     "UA-18",
+     "UA-32",
+     "UA-35",
+     "UA-48",
+     "UA-53",
+     "UA-59",
+     "UA-63",
+     "UA-65",
+     "UA-71",
+     "UA-74"
+    ],
+    "time": "2026-11-21T12:08:11+00:00",
+    "src": "ukrainealarm.com",
+    "url": "https://map.ukrainealarm.com/"
+   }
+  ],
+  "text": "Oro pavojus: visoje srityje – 3, dalyje srities – 12 (iš 26).",
+  "time": "2026-11-21T12:08:11+00:00",
+  "src": "ukrainealarm.com",
+  "url": "https://map.ukrainealarm.com/",
+  "air": "ok"
+ },
+ "_meta": {
+  "checked": "2026-11-21T12:08:11+00:00",
+  "sources": {
+   "lt72": {
+    "ok": false,
+    "err": "HTTPError: HTTP Error 403: Forbidden",
+    "type": "air"
+   },
+   "lrt": {
+    "ok": true,
+    "n": 0,
+    "ms": 140,
+    "type": "air2"
+   },
+   "meteoalarm-lithuania": {
+    "ok": true,
+    "n": 3,
+    "ms": 316,
+    "type": "weather"
+   },
+   "lv-nbs": {
+    "ok": true,
+    "n": 0,
+    "ms": 1512,
+    "type": "air"
+   },
+   "lsm": {
+    "ok": true,
+    "n": 0,
+    "ms": 258,
+    "type": "air2"
+   },
+   "meteoalarm-latvia": {
+    "ok": true,
+    "n": 0,
+    "ms": 591,
+    "type": "weather"
+   },
+   "kriis": {
+    "ok": true,
+    "n": 0,
+    "ms": 519,
+    "type": "air"
+   },
+   "meteoalarm-estonia": {
+    "ok": true,
+    "n": 26,
+    "ms": 1012,
+    "type": "weather"
+   },
+   "meteoalarm-finland": {
+    "ok": true,
+    "n": 22,
+    "ms": 632,
+    "type": "weather"
+   },
+   "rcb": {
+    "ok": true,
+    "n": 0,
+    "ms": 409,
+    "type": "air"
+   },
+   "meteoalarm-poland": {
+    "ok": true,
+    "n": 3,
+    "ms": 416,
+    "type": "weather"
+   },
+   "ukrainealarm.com": {
+    "ok": true,
+    "n": 15,
+    "of": 26,
+    "ms": 116
+   }
+  }
+ }
+}
