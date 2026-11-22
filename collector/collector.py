@@ -29,7 +29,7 @@ TIMEOUT = 20
 NOW = datetime.now(timezone.utc)
 RANK = {"none": 0, "white": 1, "yellow": 2, "red": 3}
 
-COUNTRIES = ["LTU", "LVA", "EST", "FIN", "POL"]
+COUNTRIES = ["LTU", "LVA", "EST", "FIN", "POL", "KGD"]
 METEOALARM = {
     "LTU": "lithuania", "LVA": "latvia", "EST": "estonia",
     "FIN": "finland", "POL": "poland",
@@ -871,6 +871,133 @@ def tone(a: dict) -> str:
     return a["level"] if a.get("kind") == "air" else "teal"
 
 
+
+# ---------------------------------------------------------------- Karaliaučius (Kaliningrado sritis)
+# Oficialūs bepiločių / raketų signalai (RSČS, gubernatorius) skelbiami tik „Max“ programėlėje – jos
+# nuskaityti negalim. Todėl: orai – Rosgidrometas (oficialus WMO CAP srautas); oro grėsmė – netiesiogiai:
+# Rosaviacijos „Kilimo“ apribojimai Chrabrovo oro uoste (Telegram) + TASS / RIA pranešimai (žiniasklaida).
+RHM_FEED = "https://meteoinfo.ru/hmc-output/cap/cap-feed/en/atom.xml"
+
+
+def rosgidromet_kgd() -> list[Alert]:
+    root = ET.fromstring(fetch(RHM_FEED))
+    out: list[Alert] = []
+    for e in root:
+        if local(e.tag) != "entry":
+            continue
+        summ = child_text(e, "summary")
+        if not re.match(r"\s*Kaliningrad", summ, re.I):
+            continue
+        cap_url = ""
+        for c in e:
+            if local(c.tag) == "link" and c.get("href"):
+                cap_url = c.get("href")
+                if "cap" in (c.get("type") or ""):
+                    break
+        lvl = re.search(r"level\s*(\d)\s*of\s*3", summ, re.I)
+        n = int(lvl.group(1)) if lvl else 1
+        level, awc = ("yellow", "yellow") if n <= 1 else ("red", "orange") if n == 2 else ("red", "red")
+        event = child_text(e, "title") or summ
+        onset = expires = None; desc = ""
+        try:   # pilnas CAP – galiojimo laikas ir aprašymas
+            cap = ET.fromstring(fetch(cap_url))
+            info = next((x for x in cap.iter() if local(x.tag) == "info"), None)
+            if info is not None:
+                onset = parse_dt(child_text(info, "onset")) or parse_dt(child_text(info, "effective"))
+                expires = parse_dt(child_text(info, "expires"))
+                desc = child_text(info, "description")
+        except Exception:  # noqa: BLE001 – be CAP detalių vis tiek rodom
+            pass
+        if expires and expires < NOW:
+            continue
+        if onset and onset > NOW + timedelta(hours=12):
+            continue
+        area = "Kaliningrado sritis"
+        out.append(Alert(level=level, kind="weather", text=f"{event} — {area}" + (f": {desc}" if desc else ""),
+                         event=event, area=area, severity=f"{n} lygis iš 3", expires=expires.isoformat() if expires else "",
+                         aw=awc, wtype=event, time=(onset or NOW).isoformat(), url="https://meteoinfo.ru/hazards",
+                         src="Rosgidrometas (meteoinfo.ru)"))
+    return out
+
+
+KGD_AIRPORT = re.compile(r"КАЛИНИНГРАД|Храброво|ХРАБРОВО", re.I)
+
+
+def tg_posts(channel: str, pages: int = 3) -> list[tuple[datetime, str, str]]:
+    """Viešo Telegram kanalo įrašai (t.me/s/…): [(laikas UTC, tekstas, nuoroda)], seniausi pirmi."""
+    posts, before = {}, ""
+    for _ in range(pages):
+        h = fetch(f"https://t.me/s/{channel}" + (f"?before={before}" if before else ""))
+        for blk in re.split(r'(?=<div class="tgme_widget_message_wrap)', h)[1:]:
+            m = re.search(r'data-post="([^"]+)"', blk)
+            t = re.search(r'<time[^>]+datetime="([^"]+)"', blk)
+            x = re.search(r'<div class="tgme_widget_message_text js-message_text"[^>]*>(.*?)</div>', blk, re.S)
+            if m and t and x:
+                posts[m.group(1)] = (parse_dt(t.group(1)), strip_tags(x.group(1).replace("<br/>", " ")), "https://t.me/" + m.group(1))
+        ids = [int(k.rsplit("/", 1)[1]) for k in posts]
+        if not ids or min(v[0] for v in posts.values() if v[0]) < NOW - timedelta(hours=48):
+            break
+        before = str(min(ids))
+    return sorted((v for v in posts.values() if v[0]), key=lambda v: v[0])
+
+
+def favt_kgd_events() -> list[tuple[datetime, str, str, str]]:
+    """Rosaviacija apie Chrabrovą: [(laikas, 'on'|'off', tekstas, nuoroda)]."""
+    ev = []
+    for d, txt, url in tg_posts("favt_info"):
+        if not KGD_AIRPORT.search(txt):
+            continue
+        if re.search(r"СНЯТ", txt, re.I):
+            ev.append((d, "off", txt, url))
+        elif re.search(r"ВВЕДЕН|ограничени", txt, re.I) and not re.search(r"корректировк", txt, re.I):
+            ev.append((d, "on", txt, url))
+    return ev
+
+
+def favt_kgd() -> list[Alert]:
+    ev = [e for e in favt_kgd_events() if NOW - e[0] < timedelta(hours=6)]
+    if not ev or ev[-1][1] != "on":
+        return []
+    d, _, txt, url = ev[-1]
+    return [Alert(level="yellow", kind="air", event="Chrabrovo oro uosto apribojimai („Kilimas“)",
+                  area="Kaliningrado sritis",
+                  text="Rosaviacija uždarė Chrabrovo oro uostą – dažniausiai dėl bepiločių grėsmės (netiesioginis signalas).",
+                  time=d.isoformat(), url=url, src="Rosaviacija (Telegram)")]
+
+
+RU_FEEDS = ["https://tass.ru/rss/v2.xml", "https://ria.ru/export/rss2/archive/index.xml"]
+KGD_NEWS = re.compile(r"Калининград|Неманск|Советск|Черняховск|Балтийск|Гусев|Храброво", re.I)
+RU_THREAT = re.compile(r"беспилотн\w* опасност|ракетн\w* опасност|опасност\w* (атаки )?БПЛА|угроз\w* (атаки )?БПЛА|"
+                       r"воздушн\w* тревог|сирен", re.I)
+RU_END = re.compile(r"отбой|отмен|снят|угрозы нет|режим .* отмен", re.I)
+
+
+def ru_news_kgd() -> list[Alert]:
+    items, last_err, okn = [], None, 0
+    for u in RU_FEEDS:
+        try:
+            root = ET.fromstring(fetch(u)); okn += 1
+        except Exception as ex:  # noqa: BLE001
+            last_err = ex; continue
+        for it in root.iter("item"):
+            d = parse_dt(child_text(it, "pubDate"))
+            t = child_text(it, "title")
+            if d and NOW - d < timedelta(hours=3) and KGD_NEWS.search(t) and (RU_THREAT.search(t) or RU_END.search(t) and re.search(r"БПЛА|беспилот|ракет", t, re.I)):
+                items.append((d, t, child_text(it, "link"), u))
+    if not okn and last_err:
+        raise last_err
+    items.sort(reverse=True)
+    if not items or RU_END.search(items[0][1]):      # naujausias – atšaukimas
+        return []
+    d, t, link, u = items[0]
+    red = bool(re.search(r"ракетн", t, re.I))
+    dist = re.findall(r"(\w+ск\w*) (?:район|округ)", t)
+    return [Alert(level="red" if red else "yellow", kind="air",
+                  event="Raketų pavojus" if red else "Bepiločių pavojus",
+                  area=(", ".join(re.sub(r"ском$", "ский", x) for x in dist) + " r.") if dist else "Kaliningrado sritis", text=t, time=d.isoformat(),
+                  url=link, src="TASS" if "tass" in u else "RIA Novosti")]
+
+
 # ---------------------------------------------------------------- sujungimas
 # (pavadinimas, funkcija, tipas) – tipas „air“ = karinio oro pavojaus šaltinis, „weather“ = orai
 SOURCES = {
@@ -878,10 +1005,18 @@ SOURCES = {
     "LVA": [("lv-nbs", lv_nbs, "air"), ("lsm", lsm, "air2")],
     "EST": [("kriis", kriis, "air")],
     "POL": [("rcb", rcb, "air")],
+    "KGD": [("favt-kgd", favt_kgd, "air2"), ("ru-news-kgd", ru_news_kgd, "air2"),
+            ("rosgidromet-kgd", rosgidromet_kgd, "weather")],
 }
 for cc, slug in METEOALARM.items():
     SOURCES.setdefault(cc, []).append((f"meteoalarm-{slug}", lambda s=slug: meteoalarm(s), "weather"))
 
+AIR2_NOTE = {
+    "LTU": "Oro pavojaus būsena nenustatyta: oficialus šaltinis nepasiekiamas, "
+           "žiniasklaidoje (LRT) pranešimų nėra. Sekite cell broadcast / lt72.lt.",
+    "KGD": "Oro pavojaus būsena nenustatyta: oficialūs Rusijos signalai skelbiami tik „Max“ programėlėje. "
+           "Chrabrovo oro uostas be apribojimų, TASS / RIA pranešimų nėra.",
+}
 AIR_NOTE = {"none": "Viešo oro pavojaus šaltinio šiai šaliai neturime.",
             "down": "Oro pavojaus šaltinis šiuo metu neveikia."}
 
@@ -951,10 +1086,11 @@ def collect() -> dict:
                 lay[name] = {"regions": rg, "only": all(a["regions"] for a in sel), "n": len(sel)}
             result[cc]["layers"] = lay
         elif air != "ok" and any(st["air2"]):
-            result[cc] = {**base, "level": "none",
-                          "text": "Oro pavojaus būsena nenustatyta: oficialus šaltinis nepasiekiamas, "
-                                  "žiniasklaidoje (LRT) pranešimų nėra. Sekite cell broadcast / lt72.lt.",
-                          "time": meta["checked"]}
+            note = AIR2_NOTE.get(cc, "Oro pavojaus būsena nenustatyta: oficialus šaltinis nepasiekiamas, "
+                                          "žiniasklaidoje pranešimų nėra.")
+            if weather == "ok":
+                note += " Orų įspėjimų nėra."
+            result[cc] = {**base, "level": "none", "text": note, "time": meta["checked"]}
         elif air == "ok":
             txt = "Aktyvių perspėjimų nėra."
             if False in st["air"]:   # dalis oro šaltinių neveikia – pasakom, kuo remiamės

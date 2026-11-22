@@ -82,6 +82,53 @@ def add_snapshot(hist: list, data: dict) -> list:
     return hist
 
 
+BF_SRC = "Rosaviacija (atkurta istorija)"
+
+
+def backfill_kgd(hist: list) -> list:
+    """Karaliaučius: Chrabrovo apribojimų laikotarpius (Rosaviacijos Telegram, 48 h) įrašom į istoriją.
+    Laikas – tikslus iš įrašų; kartojant nedubliuojama."""
+    try:
+        sys.path.insert(0, str(ROOT / "collector"))
+        import collector as c
+        ev = c.favt_kgd_events()
+    except Exception as ex:  # noqa: BLE001
+        print("KGD istorijos atkurti nepavyko:", ex); return hist
+    spans, start = [], None
+    for d, kind, txt, url in ev:
+        if kind == "on" and start is None:
+            start = (d, url)
+        elif kind == "off" and start:
+            spans.append((start[0], d, start[1])); start = None
+    if start:
+        spans.append((start[0], None, start[1]))
+    for a, b, url in spans:
+        ta, tb = a.isoformat(timespec="seconds"), b.isoformat(timespec="seconds") if b else None
+        if any(any(i.get("src") == BF_SRC and i.get("time") == ta for i in (h["d"].get("KGD", {}).get("items") or [])) for h in hist):
+            continue
+        item = {"level": "yellow", "kind": "air", "event": "Chrabrovo oro uosto apribojimai („Kilimas“)",
+                "area": "Kaliningrado sritis", "time": ta, "src": BF_SRC, "url": url}
+        def at(t):   # momentinė kopija laiku t (jei nėra – ankstesnės kopija)
+            prev = [h for h in hist if h["t"] <= t]
+            if prev and prev[-1]["t"] == t:
+                return prev[-1]
+            h = {"t": t, "d": json.loads(json.dumps(prev[-1]["d"])) if prev else {}}
+            hist.append(h); hist.sort(key=lambda x: x["t"]); return h
+        at(ta)
+        if tb:
+            end = at(tb)
+            if end["d"].get("KGD", {}).get("level") in (None, "yellow") and BF_SRC in json.dumps(end["d"].get("KGD", {})):
+                end["d"]["KGD"] = {"level": "none", "text": "Chrabrovo apribojimai atšaukti."}
+        for h in hist:
+            if h["t"] >= ta and (tb is None or h["t"] < tb):
+                k = h["d"].setdefault("KGD", {"level": "none"})
+                k.setdefault("items", []).append(item)
+                if k.get("level") in ("none", "white", None) or k.get("kind") == "weather" and k.get("level") != "red":
+                    k.update(level="yellow", kind="air", text="Chrabrovo oro uosto apribojimai (atkurta iš Rosaviacijos)")
+        print("KGD istorija atkurta:", ta, "–", tb or "dabar")
+    return hist
+
+
 def collect() -> dict:
     subprocess.run([sys.executable, str(ROOT / "collector/collector.py")], check=True, cwd=ROOT, timeout=180)
     return json.loads((ROOT / "alerts.json").read_text(encoding="utf-8"))
@@ -119,7 +166,7 @@ def main() -> int:
     once = "--once" in sys.argv
     t_end = time.time() + DURATION
     last, last_pub = None, 0.0
-    hist = load_history()
+    hist = backfill_kgd(load_history())
     print("istorija:", len(hist), "įrašų")
     while True:
         t0 = time.time()

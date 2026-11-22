@@ -34,7 +34,7 @@ Tikslas: jokio trečiųjų šalių serverio. Viskas veikia tavo įrenginyje.
 ## Sprendimai
 - Žemėlapis piešiamas pačių (D3 + Natural Earth), be tile serverių. Veikia offline, jokio API rakto.
 - Viskas sudėta į vieną `index.html` failą, kad lengva būtų įdėti į APK assets.
-- Šalys be šaltinių (BY, RU, KGD) paslėptos iš UI.
+- Šalys be šaltinių (BY, RU) paslėptos iš UI. Karaliaučius (KGD) rodomas: orai iš Rosgidrometo, oro grėsmė netiesiogiai (žr. SOURCES.md).
 - Pavojaus tipas (`kind`) atskirtas nuo lygio (`level`): karas ir stichija gali būti tą pačią dieną.
 
 ## Kiti žingsniai

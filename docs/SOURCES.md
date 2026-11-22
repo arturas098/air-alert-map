@@ -53,8 +53,23 @@ Ribojimas: gauni tik ten, kur fiziškai yra telefonas.
 
 Surinkėjas bando iš eilės ir rašo `UKR.regions = {"UA-63":"red", …}` (ISO 3166-2). Krymas (UA-43) ir Sevastopolis (UA-40) žemėlapyje priskirti Ukrainai.
 
+## Karaliaučius (Kaliningrado sritis, `KGD`)
+Oficialūs signalai („Беспилотная / Ракетная опасность“) skelbiami tik per RSČS ir gubernatoriaus kanalus
+„Max“ programėlėje, kurios automatiškai nuskaityti negalima. Todėl naudojami šie šaltiniai:
+
+| Tipas | Šaltinis | Pastabos |
+|---|---|---|
+| ☂ orai | **Rosgidrometas**: oficialus WMO CAP srautas `meteoinfo.ru/hmc-output/cap/cap-feed/en/atom.xml` | filtruojama „Kaliningrad Region“; 1 lygis → geltonas, 2 → oranžinis, 3 → raudonas |
+| ✈ netiesiogiai | **Rosaviacija** Telegram `t.me/s/favt_info` | Chrabrovo „ВВЕДЕНЫ ограничения“ → geltonas, „СНЯТЫ“ → atšaukta. Tai oro uosto uždarymas, dažniausiai dėl bepiločių grėsmės |
+| ✈ žiniasklaida | **TASS, RIA Novosti** RSS (3 h) | antraštė su „Калининград…“ ir „беспилотная / ракетная опасность“; „отбой / угрозы нет“ → atšaukta |
+
+Abu ✈ šaltiniai yra `air2` tipo: jie gali parodyti pavojų, bet niekada nerodo „pavojaus nėra“.
+Kai signalų nėra, rodoma „nenustatyta“. Istorijoje Chrabrovo apribojimų laikotarpiai (48 val.)
+atkuriami iš Rosaviacijos įrašų laiko (`loop.py: backfill_kgd`).
+Sritis žemėlapyje nuspalvinama visa, nes šaltiniai rajonų beveik nenurodo.
+
 ## Be šaltinių
-Baltarusija, Rusija, Karaliaučius: viešų pavojaus sistemų nėra. UI jas paslepia.
+Baltarusija, Rusija: viešų pavojaus sistemų nėra. UI jas paslepia.
 
 ## Šalių suskirstymas (kaip rodomos dalys)
 | Šalis | Administracinis lygis žemėlapyje | Kaip skelbia oficialūs įspėjimai | Pastabos |
