@@ -941,16 +941,22 @@ def tg_posts(channel: str, pages: int = 3) -> list[tuple[datetime, str, str]]:
     return sorted((v for v in posts.values() if v[0]), key=lambda v: v[0])
 
 
+FAVT_DIAG: dict = {}
+
+
 def favt_kgd_events() -> list[tuple[datetime, str, str, str]]:
     """Rosaviacija apie Chrabrovą: [(laikas, 'on'|'off', tekstas, nuoroda)]."""
     ev = []
-    for d, txt, url in tg_posts("favt_info"):
+    posts = tg_posts("favt_info")
+    FAVT_DIAG.update(posts=len(posts), since=posts[0][0].isoformat(timespec="minutes") if posts else "")
+    for d, txt, url in posts:
         if not KGD_AIRPORT.search(txt):
             continue
         if re.search(r"СНЯТ", txt, re.I):
             ev.append((d, "off", txt, url))
         elif re.search(r"ВВЕДЕН|ограничени|по согласовани", txt, re.I) and not re.search(r"корректировк", txt, re.I):
             ev.append((d, "on", txt, url))
+    FAVT_DIAG["kgd"] = [f"{d.isoformat(timespec='minutes')} {k}" for d, k, _, _ in ev]
     return ev
 
 
@@ -1037,6 +1043,8 @@ def collect() -> dict:
                 if typ == "air":
                     air_ok_names.append(name)
                 meta["sources"][name] = {"ok": True, "n": len(got), "ms": int((time.time() - t0) * 1000), "type": typ}
+                if name == "favt-kgd" and FAVT_DIAG:
+                    meta["sources"][name]["diag"] = dict(FAVT_DIAG)
             except Exception as ex:  # noqa: BLE001
                 st[typ].append(False)
                 meta["sources"][name] = {"ok": False, "err": f"{type(ex).__name__}: {ex}"[:200], "type": typ}

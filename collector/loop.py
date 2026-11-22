@@ -92,6 +92,7 @@ def backfill_kgd(hist: list) -> list:
         sys.path.insert(0, str(ROOT / "collector"))
         import collector as c
         ev = c.favt_kgd_events()
+        print("KGD Rosaviacijos įvykiai (48 h):", c.FAVT_DIAG)
     except Exception as ex:  # noqa: BLE001
         print("KGD istorijos atkurti nepavyko:", ex); return hist
     spans, start = [], None
