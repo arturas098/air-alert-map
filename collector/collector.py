@@ -948,7 +948,8 @@ def favt_kgd_events() -> list[tuple[datetime, str, str, str]]:
     """Rosaviacija apie Chrabrovą: [(laikas, 'on'|'off', tekstas, nuoroda)]."""
     ev = []
     posts = tg_posts("favt_info")
-    FAVT_DIAG.update(posts=len(posts), since=posts[0][0].isoformat(timespec="minutes") if posts else "")
+    FAVT_DIAG.update(posts=len(posts), since=posts[0][0].isoformat(timespec="minutes") if posts else "",
+                     recent=[f"{u.rsplit('/', 1)[1]} {t[:90]!r}" for d, t, u in posts if NOW - d < timedelta(hours=12)][-6:])
     for d, txt, url in posts:
         if not KGD_AIRPORT.search(txt):
             continue
