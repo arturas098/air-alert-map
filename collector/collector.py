@@ -949,7 +949,7 @@ def favt_kgd_events() -> list[tuple[datetime, str, str, str]]:
             continue
         if re.search(r"СНЯТ", txt, re.I):
             ev.append((d, "off", txt, url))
-        elif re.search(r"ВВЕДЕН|ограничени", txt, re.I) and not re.search(r"корректировк", txt, re.I):
+        elif re.search(r"ВВЕДЕН|ограничени|по согласовани", txt, re.I) and not re.search(r"корректировк", txt, re.I):
             ev.append((d, "on", txt, url))
     return ev
 
