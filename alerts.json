@@ -1,0 +1,487 @@
+{
+ "LTU": {
+  "air": "down",
+  "weather": "ok",
+  "level": "none",
+  "text": "Oro pavojaus būsena nenustatyta: oficialus šaltinis nepasiekiamas, žiniasklaidoje (LRT) pranešimų nėra. Sekite cell broadcast / lt72.lt. Orų įspėjimų nėra.",
+  "time": "2026-11-28T13:02:18+00:00"
+ },
+ "LVA": {
+  "air": "ok",
+  "weather": "ok",
+  "level": "white",
+  "text": "Aktyvių perspėjimų nėra.",
+  "time": "2026-11-28T13:02:18+00:00"
+ },
+ "EST": {
+  "air": "ok",
+  "weather": "ok",
+  "level": "white",
+  "text": "Aktyvių perspėjimų nėra.",
+  "time": "2026-11-28T13:02:18+00:00"
+ },
+ "FIN": {
+  "air": "none",
+  "weather": "ok",
+  "level": "none",
+  "text": "Oro pavojaus būsena nenustatyta. Viešo oro pavojaus šaltinio šiai šaliai neturime. Orų įspėjimų nėra.",
+  "time": "2026-11-28T13:02:18+00:00"
+ },
+ "POL": {
+  "air": "ok",
+  "weather": "ok",
+  "level": "yellow",
+  "kind": "weather",
+  "text": "Yellow snow-ice warning — Podkarpackie Province Krosno County  (+30 kiti įspėjimai)",
+  "time": "2026-11-28T17:00:00+00:00",
+  "url": "https://meteoalarm.org?geocode=EMMA_ID:PL1861",
+  "src": "MeteoAlarm",
+  "dateOnly": false,
+  "items": [
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow snow-ice warning — Podkarpackie Province Krosno County",
+    "event": "Yellow snow-ice warning",
+    "area": "Podkarpackie Province Krosno County",
+    "severity": "Moderate",
+    "expires": "2026-11-29T06:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-28T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL1861",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-PK"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow snow-ice warning — Podkarpackie Province Leski County",
+    "event": "Yellow snow-ice warning",
+    "area": "Podkarpackie Province Leski County",
+    "severity": "Moderate",
+    "expires": "2026-11-29T06:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-28T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL1821",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-PK"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow snow-ice warning — Podkarpackie Province Krośnieński County",
+    "event": "Yellow snow-ice warning",
+    "area": "Podkarpackie Province Krośnieński County",
+    "severity": "Moderate",
+    "expires": "2026-11-29T06:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-28T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL1807",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-PK"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow snow-ice warning — Podkarpackie Province Jasielski County",
+    "event": "Yellow snow-ice warning",
+    "area": "Podkarpackie Province Jasielski County",
+    "severity": "Moderate",
+    "expires": "2026-11-29T06:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-28T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL1805",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-PK"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow snow-ice warning — Podkarpackie Province Brzozowski County",
+    "event": "Yellow snow-ice warning",
+    "area": "Podkarpackie Province Brzozowski County",
+    "severity": "Moderate",
+    "expires": "2026-11-29T06:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-28T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL1802",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-PK"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow snow-ice warning — Podkarpackie Province Sanocki County",
+    "event": "Yellow snow-ice warning",
+    "area": "Podkarpackie Province Sanocki County",
+    "severity": "Moderate",
+    "expires": "2026-11-29T06:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-28T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL1817",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-PK"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow low-temperature warning — Śląskie Province Bielsko-Biała County",
+    "event": "Yellow low-temperature warning",
+    "area": "Śląskie Province Bielsko-Biała County",
+    "severity": "Moderate",
+    "expires": "2026-11-30T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-28T19:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL2461",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-SL"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow snow-ice warning — Podkarpackie Province Bieszczadzki County",
+    "event": "Yellow snow-ice warning",
+    "area": "Podkarpackie Province Bieszczadzki County",
+    "severity": "Moderate",
+    "expires": "2026-11-29T06:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-28T17:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL1801",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-PK"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow low-temperature warning — Śląskie Province Żywiecki County",
+    "event": "Yellow low-temperature warning",
+    "area": "Śląskie Province Żywiecki County",
+    "severity": "Moderate",
+    "expires": "2026-11-30T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-28T19:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL2417",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-SL"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow low-temperature warning — Śląskie Province Cieszyński County",
+    "event": "Yellow low-temperature warning",
+    "area": "Śląskie Province Cieszyński County",
+    "severity": "Moderate",
+    "expires": "2026-11-30T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-28T19:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL2403",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-SL"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow low-temperature warning — Śląskie Province Bielski County",
+    "event": "Yellow low-temperature warning",
+    "area": "Śląskie Province Bielski County",
+    "severity": "Moderate",
+    "expires": "2026-11-30T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-28T19:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL2402",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-SL"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow low-temperature warning — Podkarpackie Province Leski County",
+    "event": "Yellow low-temperature warning",
+    "area": "Podkarpackie Province Leski County",
+    "severity": "Moderate",
+    "expires": "2026-11-30T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-28T19:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL1821",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-PK"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow low-temperature warning — Podkarpackie Province Krosno County",
+    "event": "Yellow low-temperature warning",
+    "area": "Podkarpackie Province Krosno County",
+    "severity": "Moderate",
+    "expires": "2026-11-30T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-28T19:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL1861",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-PK"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow low-temperature warning — Podkarpackie Province Sanocki County",
+    "event": "Yellow low-temperature warning",
+    "area": "Podkarpackie Province Sanocki County",
+    "severity": "Moderate",
+    "expires": "2026-11-30T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-28T19:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL1817",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-PK"
+    ]
+   },
+   {
+    "level": "yellow",
+    "kind": "weather",
+    "text": "Yellow low-temperature warning — Podkarpackie Province Krośnieński County",
+    "event": "Yellow low-temperature warning",
+    "area": "Podkarpackie Province Krośnieński County",
+    "severity": "Moderate",
+    "expires": "2026-11-30T07:00:00+00:00",
+    "aw": "yellow",
+    "wtype": "",
+    "time": "2026-11-28T19:00:00+00:00",
+    "url": "https://meteoalarm.org?geocode=EMMA_ID:PL1807",
+    "src": "MeteoAlarm",
+    "regions": [
+     "PL-PK"
+    ]
+   }
+  ],
+  "regions": {
+   "PL-PK": "teal",
+   "PL-SL": "teal",
+   "PL-MA": "teal",
+   "PL-DS": "teal"
+  },
+  "regionsOnly": true,
+  "layers": {
+   "weather": {
+    "regions": {
+     "PL-PK": "yellow",
+     "PL-SL": "yellow",
+     "PL-MA": "yellow",
+     "PL-DS": "yellow"
+    },
+    "only": true,
+    "n": 31
+   }
+  }
+ },
+ "KGD": {
+  "air": "none",
+  "weather": "ok",
+  "level": "none",
+  "text": "Oro pavojaus būsena nenustatyta: oficialūs Rusijos signalai skelbiami tik „Max“ programėlėje. Chrabrovo oro uostas be apribojimų, TASS / RIA pranešimų nėra. Orų įspėjimų nėra.",
+  "time": "2026-11-28T13:02:18+00:00"
+ },
+ "UKR": {
+  "level": "red",
+  "kind": "air",
+  "regions": {
+   "UA-14": "yellow",
+   "UA-23": "red",
+   "UA-59": "yellow",
+   "UA-12": "yellow",
+   "UA-51": "yellow",
+   "UA-48": "yellow",
+   "UA-74": "yellow",
+   "UA-43": "red",
+   "UA-09": "red",
+   "UA-63": "yellow"
+  },
+  "regionsOnly": true,
+  "items": [
+   {
+    "level": "red",
+    "kind": "air",
+    "event": "Oro pavojus visoje srityje",
+    "area": "Luhans'k, Zaporizhzhya, Crimea",
+    "regions": [
+     "UA-09",
+     "UA-23",
+     "UA-43"
+    ],
+    "time": "2026-11-28T13:02:18+00:00",
+    "src": "ukrainealarm.com",
+    "url": "https://map.ukrainealarm.com/"
+   },
+   {
+    "level": "yellow",
+    "kind": "air",
+    "event": "Pavojus dalyje srities (rajonuose / bendruomenėse)",
+    "area": "Dnipropetrovs'k: Покровська територіальна громада, Червоногригорівська територіальна громада, м. Марганець та Марганецька територіальна громада, Синельниківський район; Donets'k: Кальміуський район, Бахмутський район, Донецький район, Покровський район; Mykolayiv: Миколаївський район; Odessa: Березівський район, Одеський район, Роздільнянський район, Білгород-Дністровський район; Sumy: Сумський район, Шосткинський район, Конотопський район, Охтирський район; Kharkiv: Вовчанська територіальна громада, Липецька територіальна громада, Чугуївський район, Куп’янський район; Chernihiv: Новгород-Сіверський район, Корюківський район",
+    "regions": [
+     "UA-12",
+     "UA-14",
+     "UA-48",
+     "UA-51",
+     "UA-59",
+     "UA-63",
+     "UA-74"
+    ],
+    "time": "2026-11-28T13:02:18+00:00",
+    "src": "ukrainealarm.com",
+    "url": "https://map.ukrainealarm.com/"
+   }
+  ],
+  "text": "Oro pavojus: visoje srityje – 3, dalyje srities – 7 (iš 26).",
+  "time": "2026-11-28T13:02:18+00:00",
+  "src": "ukrainealarm.com",
+  "url": "https://map.ukrainealarm.com/",
+  "air": "ok"
+ },
+ "_meta": {
+  "checked": "2026-11-28T13:02:18+00:00",
+  "sources": {
+   "lt72": {
+    "ok": false,
+    "err": "HTTPError: HTTP Error 403: Forbidden",
+    "type": "air"
+   },
+   "lrt": {
+    "ok": true,
+    "n": 0,
+    "ms": 171,
+    "type": "air2"
+   },
+   "meteoalarm-lithuania": {
+    "ok": true,
+    "n": 0,
+    "ms": 791,
+    "type": "weather"
+   },
+   "lv-nbs": {
+    "ok": true,
+    "n": 0,
+    "ms": 1931,
+    "type": "air"
+   },
+   "lsm": {
+    "ok": true,
+    "n": 0,
+    "ms": 717,
+    "type": "air2"
+   },
+   "meteoalarm-latvia": {
+    "ok": true,
+    "n": 0,
+    "ms": 529,
+    "type": "weather"
+   },
+   "kriis": {
+    "ok": true,
+    "n": 0,
+    "ms": 407,
+    "type": "air"
+   },
+   "meteoalarm-estonia": {
+    "ok": true,
+    "n": 0,
+    "ms": 621,
+    "type": "weather"
+   },
+   "meteoalarm-finland": {
+    "ok": true,
+    "n": 0,
+    "ms": 600,
+    "type": "weather"
+   },
+   "rcb": {
+    "ok": true,
+    "n": 0,
+    "ms": 444,
+    "type": "air"
+   },
+   "meteoalarm-poland": {
+    "ok": true,
+    "n": 31,
+    "ms": 1019,
+    "type": "weather"
+   },
+   "favt-kgd": {
+    "ok": true,
+    "n": 0,
+    "ms": 1248,
+    "type": "air2",
+    "diag": {
+     "posts": 40,
+     "since": "2026-11-25T23:31+00:00",
+     "recent": [
+      "9588 '⛔️ Аэропорты — БУГУЛЬМА — УФА ✈️ ВВЕДЕНЫ временные ограничения на прием и выпуск воздушных'",
+      "9589 '⬜️ Аэропорты — ВНУКОВО — ДОМОДЕДОВО — КАЛУГА (Грабцево) — ТАМБОВ (Донское) ✈️ СНЯТЫ ограни'",
+      "9590 '⬜️ Аэропорт САМАРА (Курумоч) ✈️ СНЯТЫ ограничения на прием и выпуск воздушных судов. ✈️ Ог'",
+      "9591 '▫️ Аэропорт КРАСНОДАР (Пашковский) ✈️ ВВЕДЕНЫ дополнительные * временные ограничения на пр'",
+      "9592 '⬜️ Аэропорт КРАСНОДАР (Пашковский) ✈️ СНЯТЫ ограничения на прием и выпуск воздушных судов.'",
+      "9593 '⬜️ Аэропорты — БУГУЛЬМА — УФА ✈️ СНЯТЫ ограничения на прием и выпуск воздушных судов. ✈️ О'"
+     ],
+     "kgd": []
+    }
+   },
+   "ru-news-kgd": {
+    "ok": true,
+    "n": 0,
+    "ms": 2523,
+    "type": "air2"
+   },
+   "rosgidromet-kgd": {
+    "ok": true,
+    "n": 0,
+    "ms": 1618,
+    "type": "weather"
+   },
+   "ukrainealarm.com": {
+    "ok": true,
+    "n": 10,
+    "of": 26,
+    "ms": 436
+   }
+  }
+ }
+}
